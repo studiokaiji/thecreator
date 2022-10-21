@@ -7,5 +7,25 @@
       "packages/*"
     ]
   },
-  "packageManager": "yarn@3.2.0"
+  "scripts": {
+    "lint": "yarn run lint:eslint && yarn run lint:",
+    "lint:eslint": "eslint .",
+    "lint:prettier": "prettier --check .",
+    "fix": "yarn run fix:prettier && yarn run fix:eslint",
+    "fix:eslint": "yarn run lint:eslint -- --fix",
+    "fix:prettier": "yarn run lint:prettier -- --write"
+  },
+  "packageManager": "yarn@3.2.0",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.40.1",
+    "@typescript-eslint/parser": "^5.40.1",
+    "eslint": "^8.25.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-react": "^7.31.10",
+    "eslint-plugin-sort": "^2.4.0",
+    "prettier": "^2.7.1",
+    "prettier-plugin-sort-json": "^0.0.3",
+    "typescript": "^4.8.4"
+  }
 }
