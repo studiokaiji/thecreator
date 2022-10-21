@@ -1,0 +1,11 @@
+{
+  "name": "thecreator",
+  "version": "0.1.0",
+  "main": "index.js",
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "packageManager": "yarn@3.2.0"
+}
