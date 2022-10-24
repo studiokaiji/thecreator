@@ -1,6 +1,7 @@
 import { Web3ReactProvider } from '@web3-react/core';
 import { providers } from 'ethers';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import './firebase';
 
 import './App.css';
 import { IndexPage } from './pages';
