@@ -3,6 +3,8 @@ import { useWallet } from '../hooks/useWallet';
 export const IndexPage = () => {
   const { account, activate, active, chainId, deactivate } = useWallet();
 
+  
+
   return (
     <div>
       <div>Connection Status: {active.toString()}</div>
