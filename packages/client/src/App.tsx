@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './firebase';
 
 import './App.css';
+import { AuthProvider } from './contexts/AuthContext';
 import { IndexPage } from './pages';
 
 const getLibrary = (provider: any) => {
@@ -13,11 +14,13 @@ const getLibrary = (provider: any) => {
 function App() {
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
-      <BrowserRouter>
-        <Routes>
-          <Route element={<IndexPage />} path={'/'} />
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route element={<IndexPage />} path={'/'} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     </Web3ReactProvider>
   );
 }
