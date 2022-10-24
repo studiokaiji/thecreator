@@ -1,3 +1,4 @@
+import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
@@ -16,7 +17,7 @@ export const connectors = {
 };
 
 export const useWallet = () => {
-  const web3React = useWeb3React();
+  const web3React = useWeb3React<Web3Provider>();
 
   const activate = (
     connector: keyof typeof connectors,
