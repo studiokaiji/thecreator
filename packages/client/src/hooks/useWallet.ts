@@ -33,5 +33,7 @@ export const useWallet = () => {
     });
   }, []);
 
-  return { ...web3React, activate };
+  const account = web3React.account?.toLowerCase();
+
+  return { ...web3React, account, activate };
 };
