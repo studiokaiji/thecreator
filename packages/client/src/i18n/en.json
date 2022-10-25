@@ -1,1 +1,8 @@
-{}
+{
+  "becomeACreator": "Become a Creator",
+  "creatorConsole": "CreatorConsole",
+  "notConnectedWallet": "Not Connected Wallet",
+  "settings": "Settings",
+  "supportingCreators": "Supporting Creators",
+  "walletSelectMessage": "Select a wallet to connect."
+}
