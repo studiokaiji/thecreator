@@ -25,7 +25,9 @@ export const useAuth = () => {
 
   useEffect(() => {
     if (!needAuth || !account || !active || !library) return;
-    authentication();
+    authentication().catch(() => {
+      deactivate();
+    });
   }, [needAuth, account, active, library]);
 
   const authentication = async () => {
