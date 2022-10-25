@@ -1,15 +1,27 @@
+import { Web3ReactProvider } from '@web3-react/core';
+import { providers } from 'ethers';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import './firebase';
 
 import './App.css';
+import { AuthProvider } from './contexts/AuthContext';
 import { IndexPage } from './pages';
+
+const getLibrary = (provider: any) => {
+  return new providers.Web3Provider(provider);
+};
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route element={<IndexPage />} path={'/'} />
-      </Routes>
-    </BrowserRouter>
+    <Web3ReactProvider getLibrary={getLibrary}>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route element={<IndexPage />} path={'/'} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </Web3ReactProvider>
   );
 }
 
