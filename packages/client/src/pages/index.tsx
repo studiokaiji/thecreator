@@ -1,3 +1,5 @@
+import Button from '@mui/material/Button';
+
 import { useAuth } from '@/hooks/useAuth';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useWallet } from '@/hooks/useWallet';
@@ -14,9 +16,9 @@ export const IndexPage = () => {
       <p>Account: {account?.toString()}</p>
       <div>Network ID: {chainId?.toString()}</div>
       <div>CurrentUser: {JSON.stringify(currentUser, null, 2)}</div>
-      <button onClick={() => (active ? signIn('injected') : signOut())}>
+      <Button onClick={() => (active ? signIn('injected') : signOut())}>
         {active ? 'Disconnect Wallet' : 'Connect Wallet'}
-      </button>
+      </Button>
     </div>
   );
 };

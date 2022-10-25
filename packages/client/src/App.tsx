@@ -3,7 +3,6 @@ import { providers } from 'ethers';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './firebase';
 
-import './App.css';
 import { AuthProvider } from './contexts/AuthContext';
 import { IndexPage } from './pages';
 
