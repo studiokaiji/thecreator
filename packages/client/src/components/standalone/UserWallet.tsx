@@ -4,6 +4,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import LoyaltyIcon from '@mui/icons-material/Loyalty';
 import SettingsIcon from '@mui/icons-material/Settings';
+import { PopoverOrigin } from '@mui/material';
 import Box from '@mui/material/Box';
 import ButtonBase from '@mui/material/ButtonBase';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -26,6 +27,7 @@ import { useCurrentUser } from '@/hooks/useCurrentUser';
 type UserWalletProps = {
   width?: number | string;
   height?: number | string;
+  anchorOrigin?: PopoverOrigin;
 };
 
 type UserWalletMenuBodyProps = {
@@ -140,7 +142,11 @@ const UserWalletMenuBody = ({
   );
 };
 
-export const UserWallet = ({ height = 56, width = 300 }: UserWalletProps) => {
+export const UserWallet = ({
+  anchorOrigin,
+  height = 56,
+  width = 300,
+}: UserWalletProps) => {
   const { checking, currentUser } = useCurrentUser();
 
   const [isOpenMenu, setIsOpenMenu] = useState(false);
@@ -207,7 +213,11 @@ export const UserWallet = ({ height = 56, width = 300 }: UserWalletProps) => {
           </Stack>
         </Box>
       </ButtonBase>
-      <Menu onClose={() => setIsOpenMenu(false)} open={isOpenMenu}>
+      <Menu
+        anchorOrigin={anchorOrigin}
+        onClose={() => setIsOpenMenu(false)}
+        open={isOpenMenu}
+      >
         <UserWalletMenuBody
           isConnected={!!currentUser}
           isCreator={true}
