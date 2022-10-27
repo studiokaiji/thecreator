@@ -22,7 +22,7 @@ export const NavBar = () => {
     >
       <Toolbar>
         <Link to="/">
-          <Box sx={{ height: 16 }}>
+          <Box sx={{ height: 18 }}>
             <img src={logoPath} />
           </Box>
         </Link>
