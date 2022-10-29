@@ -27,3 +27,5 @@
 firebase-debug.log*
 firestore-debug.log*
 ui-debug.log*
+
+typechain-types
