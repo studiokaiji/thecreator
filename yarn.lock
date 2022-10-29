@@ -2681,10 +2681,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@studiokaiji/meltprotocol-contracts@npm:0.1.0-alpha.4":
-  version: 0.1.0-alpha.4
-  resolution: "@studiokaiji/meltprotocol-contracts@npm:0.1.0-alpha.4::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40studiokaiji%2Fmeltprotocol-contracts%2F0.1.0-alpha.4%2F42e94c212287d8b4284b3e540792eab95df76044"
-  checksum: 8327967fa592e98ba977c2f5bf7c315b526c87ddcf11a63432bc974959dbfa9cb36fc93e88bd8ad86ec85e922bda178a155a202e9a51d614a833fcdd948673e6
+"@studiokaiji/meltprotocol-contracts@npm:0.1.0-alpha.5":
+  version: 0.1.0-alpha.5
+  resolution: "@studiokaiji/meltprotocol-contracts@npm:0.1.0-alpha.5::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40studiokaiji%2Fmeltprotocol-contracts%2F0.1.0-alpha.5%2Fa97f6ee3f4a7416900506dac300743e9aadbdf59"
+  checksum: d19cfb0a18cf5b03a84070bc4be64f12cff2292b4e028b6500a81980ed7162c09845eac86c2d7d2adb247eb69a903637a701f73ef31b739c3c8deba3e2a5b42e
   languageName: node
   linkType: hard
 
@@ -9153,7 +9153,7 @@ fsevents@~2.3.2:
     "@nomiclabs/hardhat-ethers": ^2.2.1
     "@nomiclabs/hardhat-waffle": ^2.0.3
     "@openzeppelin/contracts": ^4.7.3
-    "@studiokaiji/meltprotocol-contracts": 0.1.0-alpha.4
+    "@studiokaiji/meltprotocol-contracts": 0.1.0-alpha.5
     "@typechain/ethers-v5": ^10.1.0
     "@typechain/hardhat": ^6.1.3
     "@types/mocha": ^10.0.0
