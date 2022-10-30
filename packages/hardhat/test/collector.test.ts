@@ -98,7 +98,7 @@ describe('Collector', () => {
       it('If amount is larger than min, fee is applied.', async () => {
         const amount = 10e9;
         const fee = await collectorContract.calculateFee(amount);
-        expect(fee.toNumber()).eq(amount * (defaultRate / 100));
+        expect(fee.toNumber()).eq(amount / (defaultRate / 100));
       });
 
       it('If amount is smaller than min, min is applied.', async () => {

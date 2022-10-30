@@ -93,7 +93,7 @@ contract Collector is Ownable {
         if (_amount < min) {
             return min;
         }
-        return _amount.mul(uint256(rate).div(100));
+        return _amount.div(uint256(rate).div(100));
     }
 
     /**
