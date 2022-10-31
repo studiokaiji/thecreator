@@ -7,6 +7,7 @@ import './firebase';
 import { NavBar } from './components/standalone/NavBar';
 import { AuthProvider } from './contexts/AuthContext';
 import { IndexPage } from './pages';
+import { CreatePage } from './pages/create';
 
 const getLibrary = (provider: any) => {
   return new providers.Web3Provider(provider);
@@ -20,7 +21,8 @@ function App() {
         <BrowserRouter>
           <NavBar />
           <Routes>
-            <Route element={<IndexPage />} path={'/'} />
+            <Route element={<IndexPage />} path="/" />
+            <Route element={<CreatePage />} path="/create" />
           </Routes>
         </BrowserRouter>
       </AuthProvider>
