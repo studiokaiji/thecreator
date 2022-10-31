@@ -9,7 +9,8 @@ const defaultMin = 10e7;
 describe('Collector', () => {
   let owner: SignerWithAddress;
   let stranger: SignerWithAddress;
-  let collectorContract: Contract;
+
+  let collectorContractProxy: Contract;
 
   before(async () => {
     [owner, stranger] = await ethers.getSigners();
@@ -20,18 +21,40 @@ describe('Collector', () => {
     min = defaultMin,
     to = owner.address
   ) => {
-    const factory = await ethers.getContractFactory('Collector');
-    collectorContract = await (await factory.deploy(rate, min, to)).deployed();
-    return collectorContract;
+    const collectorFactory = await ethers.getContractFactory('Collector');
+    const collectorContract = await (
+      await collectorFactory.deploy()
+    ).deployed();
+
+    const proxyFactory = await ethers.getContractFactory('ERC1967Proxy');
+    const proxyContract = await (
+      await proxyFactory.deploy(
+        collectorContract.address,
+        collectorContract.interface.encodeFunctionData('initialize', [
+          rate,
+          min,
+          to,
+        ])
+      )
+    ).deployed();
+
+    collectorContractProxy = await ethers.getContractAt(
+      'Collector',
+      proxyContract.address
+    );
+
+    return collectorContractProxy;
   };
 
-  describe('Constructor', () => {
-    describe('constructor', () => {
-      it('constructor', async () => {
+  describe('Initialize', () => {
+    describe('initialize', () => {
+      it('initialize', async () => {
         await deploy();
-        const setFeeEvent = (await collectorContract.queryFilter('SetFee'))[0];
+        const setFeeEvent = (
+          await collectorContractProxy.queryFilter('SetFee')
+        )[0];
         const setPaymentToEvent = (
-          await collectorContract.queryFilter('SetPaymentTo')
+          await collectorContractProxy.queryFilter('SetPaymentTo')
         )[0];
         expect(setFeeEvent.args?.rate).eq(defaultRate);
         expect(setFeeEvent.args?.min).eq(defaultMin);
@@ -54,34 +77,38 @@ describe('Collector', () => {
       it('setFee', async () => {
         const newRate = defaultRate + 10 * 100;
         const newMin = defaultMin + 10;
-        const { wait } = await collectorContract.setFee(newRate, newMin);
+        const { wait } = await collectorContractProxy.setFee(newRate, newMin);
         const tx = await wait();
 
         const setFeeEvent = tx.events[0];
         expect(setFeeEvent.args?.rate).eq(newRate);
         expect(setFeeEvent.args?.min).eq(newMin);
 
-        expect(await collectorContract.rate()).eq(newRate);
-        expect(await collectorContract.min()).eq(newMin);
+        expect(await collectorContractProxy.rate()).eq(newRate);
+        expect(await collectorContractProxy.min()).eq(newMin);
       });
 
       it('Fee must be less than 10000.', async () => {
         const invalidRate = 10001;
-        expect(collectorContract.setFee(invalidRate, defaultMin)).revertedWith(
-          'Collector: Invalid rate'
-        );
+        expect(
+          collectorContractProxy.setFee(invalidRate, defaultMin)
+        ).revertedWith('Collector: Invalid rate');
       });
 
       it('Only the owner can call it.', async () => {
         expect(
-          collectorContract.connect(stranger).setFee(defaultRate, defaultMin)
+          collectorContractProxy
+            .connect(stranger)
+            .setFee(defaultRate, defaultMin)
         ).revertedWith('Ownable: caller is not the owner');
       });
     });
 
     describe('setPaymentTo', () => {
       it('setPaymentTo', async () => {
-        const { wait } = await collectorContract.setPaymentTo(stranger.address);
+        const { wait } = await collectorContractProxy.setPaymentTo(
+          stranger.address
+        );
         const tx = await wait();
         const setPaymentToEvent = tx.events[0];
         expect(setPaymentToEvent.args?.to).eq(stranger.address);
@@ -89,7 +116,9 @@ describe('Collector', () => {
 
       it('Only the owner can call it.', async () => {
         expect(
-          collectorContract.connect(stranger).setPaymentTo(stranger.address)
+          collectorContractProxy
+            .connect(stranger)
+            .setPaymentTo(stranger.address)
         ).revertedWith('Ownable: caller is not the owner');
       });
     });
@@ -97,19 +126,19 @@ describe('Collector', () => {
     describe('calculateFee', () => {
       it('If amount is larger than min, fee is applied.', async () => {
         const amount = 10e9;
-        const fee = await collectorContract.calculateFee(amount);
+        const fee = await collectorContractProxy.calculateFee(amount);
         expect(fee.toNumber()).eq(amount / (defaultRate / 100));
       });
 
       it('If amount is smaller than min, min is applied.', async () => {
         const amount = defaultMin - 10e5;
-        const fee = await collectorContract.calculateFee(amount);
+        const fee = await collectorContractProxy.calculateFee(amount);
         expect(fee.toNumber()).eq(defaultMin);
       });
 
       it('If amount is 0, fee is also 0.', async () => {
         const amount = 0;
-        const fee = await collectorContract.calculateFee(amount);
+        const fee = await collectorContractProxy.calculateFee(amount);
         expect(fee.toNumber()).eq(amount);
       });
     });
@@ -127,7 +156,9 @@ describe('Collector', () => {
           await erc20Factory.deploy('TEST_TOKEN', 'TEST')
         ).deployed();
 
-        const { wait } = await collectorContract.setPaymentTo(stranger.address);
+        const { wait } = await collectorContractProxy.setPaymentTo(
+          stranger.address
+        );
         await wait();
       };
 
@@ -136,7 +167,7 @@ describe('Collector', () => {
         await mintRes.wait();
 
         const approveRes = await erc20Contract.approve(
-          collectorContract.address,
+          collectorContractProxy.address,
           mintAmount
         );
         await approveRes.wait();
@@ -148,7 +179,7 @@ describe('Collector', () => {
 
       it('payAFee', async () => {
         await mintAndApprove();
-        const { wait } = await collectorContract.payAFee(
+        const { wait } = await collectorContractProxy.payAFee(
           erc20Contract.address,
           mintAmount
         );
@@ -166,7 +197,7 @@ describe('Collector', () => {
 
       it('If fee is 0, it is rejected.', async () => {
         expect(
-          collectorContract.payAFee(erc20Contract.address, mintAmount)
+          collectorContractProxy.payAFee(erc20Contract.address, mintAmount)
         ).revertedWith('Collector: Amount is 0.');
       });
     });

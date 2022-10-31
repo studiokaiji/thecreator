@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import '@openzeppelin/contracts/access/Ownable.sol';
+import '@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol';
 import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
+import '@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol';
 import './the-creator-product.sol';
 
 /**
@@ -11,7 +12,7 @@ import './the-creator-product.sol';
 @author Haruki Nazawa
 @notice Collects fees from Creator Product Contracts.
 */
-contract Collector is Ownable {
+contract Collector is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     using SafeMath for uint256;
 
     event SetFee(uint16 rate, uint240 min);
@@ -46,11 +47,12 @@ contract Collector is Ownable {
     @param _to Fee payable to.
     @dev _rate must be uint from 0 to 10000. percent to two decimal places. So 10000 is 100%, 1000 is 10%, 1 is 0.01%. 
     */
-    constructor(
+    function initialize(
         uint16 _rate,
         uint240 _min,
         address _to
-    ) {
+    ) public initializer {
+        __Ownable_init();
         setFee(_rate, _min);
         setPaymentTo(_to);
     }
@@ -105,4 +107,6 @@ contract Collector is Ownable {
         require(token.transferFrom(_msgSender(), paymentTo, fee));
         emit PayAFee(token, _msgSender(), paymentTo, fee);
     }
+
+    function _authorizeUpgrade(address) internal override onlyOwner {}
 }
