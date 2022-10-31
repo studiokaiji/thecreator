@@ -5693,6 +5693,7 @@ __metadata:
     firebase: ^9.12.1
     react: ^18.2.0
     react-dom: ^18.2.0
+    react-hook-form: ^7.38.0
     react-router-dom: ^6.4.2
     vite: ^3.1.0
   languageName: unknown
@@ -13271,6 +13272,15 @@ fsevents@~2.3.2:
   peerDependencies:
     react: ^18.2.0
   checksum: 7d323310bea3a91be2965f9468d552f201b1c27891e45ddc2d6b8f717680c95a75ae0bc1e3f5cf41472446a2589a75aed4483aee8169287909fcd59ad149e8cc
+  languageName: node
+  linkType: hard
+
+"react-hook-form@npm:^7.38.0":
+  version: 7.38.0
+  resolution: "react-hook-form@npm:7.38.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17 || ^18
+  checksum: 16d5f117e39ec09f73def706fb4e189aa11e19191231082fe7e15481701beb2b81260581012db8939799d8011a6132561659dd864b08270691353e134c4f06b0
   languageName: node
   linkType: hard
 
