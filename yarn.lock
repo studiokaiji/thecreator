@@ -2678,13 +2678,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@studiokaiji/meltjs@npm:0.1.0-alpha.1":
-  version: 0.1.0-alpha.1
-  resolution: "@studiokaiji/meltjs@npm:0.1.0-alpha.1::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40studiokaiji%2Fmeltjs%2F0.1.0-alpha.1%2F33ed69a2fb5c4dad77b7dbb37e99dbb765bb8f4d"
+"@studiokaiji/meltjs@npm:0.1.0-alpha.6":
+  version: 0.1.0-alpha.6
+  resolution: "@studiokaiji/meltjs@npm:0.1.0-alpha.6::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40studiokaiji%2Fmeltjs%2F0.1.0-alpha.6%2F7e6cd34d476590b0ba0518745f238aed2ded1327"
   dependencies:
     ethers: ^5.7.1
     ipfs-http-client: ^54.0.2
-  checksum: cc860de2375c7fc573f2e70200c1466b82093c31a4fd4baa5c4a752fb0e30508994284ebf00659b5e44e60081aae227e95185ec9471dfe1ff73f220fa46c4cf3
+  checksum: c1fc542b6224c822dc7c4d08dccc4044a281516de8eb1089dcbf7fdeec0793e14ef6af0329a8e6b9c16886e4a80eb88ed9570b646a1e028f47320725002ed139
   languageName: node
   linkType: hard
 
@@ -5681,7 +5681,7 @@ __metadata:
     "@emotion/styled": ^11.10.4
     "@mui/icons-material": ^5.10.9
     "@mui/material": ^5.10.10
-    "@studiokaiji/meltjs": 0.1.0-alpha.1
+    "@studiokaiji/meltjs": 0.1.0-alpha.6
     "@types/react": ^18.0.17
     "@types/react-dom": ^18.0.6
     "@vitejs/plugin-react": ^2.1.0
