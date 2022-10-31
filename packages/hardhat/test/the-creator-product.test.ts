@@ -17,7 +17,7 @@ const planUsage = 1000;
 describe('TheCreatorProduct', () => {
   let owner: SignerWithAddress;
   let feeReceiver: SignerWithAddress;
-  let collectorContract: Contract;
+  let collectorProxyContract: Contract;
   let erc20Contract: Contract;
   let productContract: Contract;
   let erc1155MitableOnlyOwnerContract: Contract;
@@ -29,11 +29,29 @@ describe('TheCreatorProduct', () => {
   });
 
   const deployCollectorContract = async () => {
-    const factory = await ethers.getContractFactory('Collector');
-    collectorContract = await (
-      await factory.deploy(rate, min, feeReceiver.address)
+    const collectorFactory = await ethers.getContractFactory('Collector');
+    const collectorContract = await (
+      await collectorFactory.deploy()
     ).deployed();
-    return collectorContract;
+
+    const proxyFactory = await ethers.getContractFactory('ERC1967Proxy');
+    const proxyContract = await (
+      await proxyFactory.deploy(
+        collectorContract.address,
+        collectorContract.interface.encodeFunctionData('initialize', [
+          rate,
+          min,
+          feeReceiver.address,
+        ])
+      )
+    ).deployed();
+
+    collectorProxyContract = await ethers.getContractAt(
+      'Collector',
+      proxyContract.address
+    );
+
+    return collectorProxyContract;
   };
 
   const deployERC20Contract = async () => {
@@ -69,7 +87,7 @@ describe('TheCreatorProduct', () => {
         productName,
         productSymbol,
         erc20Contract.address,
-        collectorContract.address,
+        collectorProxyContract.address,
         constants.AddressZero
       )
     ).deployed();
