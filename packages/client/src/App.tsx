@@ -8,6 +8,7 @@ import { NavBar } from './components/standalone/NavBar';
 import { AuthProvider } from './contexts/AuthContext';
 import { IndexPage } from './pages';
 import { CreatePage } from './pages/create';
+import { CustomThemeProvider } from './theme';
 
 const getLibrary = (provider: any) => {
   return new providers.Web3Provider(provider);
@@ -17,14 +18,16 @@ function App() {
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
       <AuthProvider>
-        <CssBaseline />
-        <BrowserRouter>
-          <NavBar />
-          <Routes>
-            <Route element={<IndexPage />} path="/" />
-            <Route element={<CreatePage />} path="/create" />
-          </Routes>
-        </BrowserRouter>
+        <CustomThemeProvider>
+          <CssBaseline />
+          <BrowserRouter>
+            <NavBar />
+            <Routes>
+              <Route element={<IndexPage />} path="/" />
+              <Route element={<CreatePage />} path="/create" />
+            </Routes>
+          </BrowserRouter>
+        </CustomThemeProvider>
       </AuthProvider>
     </Web3ReactProvider>
   );
