@@ -1850,29 +1850,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/base@npm:5.0.0-alpha.102":
-  version: 5.0.0-alpha.102
-  resolution: "@mui/base@npm:5.0.0-alpha.102"
-  dependencies:
-    "@babel/runtime": ^7.19.0
-    "@emotion/is-prop-valid": ^1.2.0
-    "@mui/types": ^7.2.0
-    "@mui/utils": ^5.10.9
-    "@popperjs/core": ^2.11.6
-    clsx: ^1.2.1
-    prop-types: ^15.8.1
-    react-is: ^18.2.0
-  peerDependencies:
-    "@types/react": ^17.0.0 || ^18.0.0
-    react: ^17.0.0 || ^18.0.0
-    react-dom: ^17.0.0 || ^18.0.0
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-  checksum: 226fff05a8edf868c2f626ce666cbd73e3c5399a934735ea57a3fa56cab1ecef6b4298a60dae93f3825b19a4c40fa1e879300a9bf816fea9a82866ac8fc16674
-  languageName: node
-  linkType: hard
-
 "@mui/base@npm:5.0.0-alpha.104":
   version: 5.0.0-alpha.104
   resolution: "@mui/base@npm:5.0.0-alpha.104"
@@ -1896,10 +1873,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/core-downloads-tracker@npm:^5.10.10":
-  version: 5.10.10
-  resolution: "@mui/core-downloads-tracker@npm:5.10.10"
-  checksum: 534c066edf4d8b656e31000ac2eab8ed211cad4a0d35841eaf77751b38b76fe76114b94a18360292aa39753fe4e99ab0ab37466908991f96fc7c2ceeffc2c80b
+"@mui/core-downloads-tracker@npm:^5.10.12":
+  version: 5.10.12
+  resolution: "@mui/core-downloads-tracker@npm:5.10.12"
+  checksum: 894c7ee810851de2ee5de43648822e6f5ea639e4ab494fd54c9a6cb6dbace608b5634699fab05978f2d21efc4378bbce83b8352ef7aa958afd3d387c32373244
   languageName: node
   linkType: hard
 
@@ -1919,7 +1896,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/lab@npm:^5.0.0-alpha.106":
+"@mui/lab@npm:^5.0.0-alpha.105":
   version: 5.0.0-alpha.106
   resolution: "@mui/lab@npm:5.0.0-alpha.106"
   dependencies:
@@ -1949,14 +1926,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/material@npm:^5.10.10":
-  version: 5.10.10
-  resolution: "@mui/material@npm:5.10.10"
+"@mui/material@npm:^5.10.12":
+  version: 5.10.12
+  resolution: "@mui/material@npm:5.10.12"
   dependencies:
     "@babel/runtime": ^7.19.0
-    "@mui/base": 5.0.0-alpha.102
-    "@mui/core-downloads-tracker": ^5.10.10
-    "@mui/system": ^5.10.10
+    "@mui/base": 5.0.0-alpha.104
+    "@mui/core-downloads-tracker": ^5.10.12
+    "@mui/system": ^5.10.12
     "@mui/types": ^7.2.0
     "@mui/utils": ^5.10.9
     "@types/react-transition-group": ^4.4.5
@@ -1978,7 +1955,7 @@ __metadata:
       optional: true
     "@types/react":
       optional: true
-  checksum: 3bd9a1dd71ec6d7012266633e078e52ecd653c4a6fc286d24b04edae3e85f569a7ba9840443dca0212744f87afe2758599367dcff96bc23c0db79ddcc5ca5177
+  checksum: 37b3d605d0cdb5136ac5a568d1c3c00ad5a3e01242cea6bccad5ccb08512e3c600dde75af852515c947b994fb5afa972044faac07416d347cbb6e503651c23a3
   languageName: node
   linkType: hard
 
@@ -2017,34 +1994,6 @@ __metadata:
     "@emotion/styled":
       optional: true
   checksum: 62a8cb51dcf6e9f03ad265eeafb260bcc4454654c1fccc05ff910a83e9dabf4e9fa8e23a46b5da4659e768899447a3e7a97bc57a1eb60157aaac9ee77385c569
-  languageName: node
-  linkType: hard
-
-"@mui/system@npm:^5.10.10":
-  version: 5.10.10
-  resolution: "@mui/system@npm:5.10.10"
-  dependencies:
-    "@babel/runtime": ^7.19.0
-    "@mui/private-theming": ^5.10.9
-    "@mui/styled-engine": ^5.10.8
-    "@mui/types": ^7.2.0
-    "@mui/utils": ^5.10.9
-    clsx: ^1.2.1
-    csstype: ^3.1.1
-    prop-types: ^15.8.1
-  peerDependencies:
-    "@emotion/react": ^11.5.0
-    "@emotion/styled": ^11.3.0
-    "@types/react": ^17.0.0 || ^18.0.0
-    react: ^17.0.0 || ^18.0.0
-  peerDependenciesMeta:
-    "@emotion/react":
-      optional: true
-    "@emotion/styled":
-      optional: true
-    "@types/react":
-      optional: true
-  checksum: a2cb5bcc8e3a07038672f955d8352d3fa7a6239665efac3c7b4adf59fa64dc258b844f2decb0db3dd378b9fc0e0ca856ec5172e077702ff94e3a635b6ca8c462
   languageName: node
   linkType: hard
 
@@ -5761,8 +5710,8 @@ __metadata:
     "@emotion/react": ^11.10.4
     "@emotion/styled": ^11.10.4
     "@mui/icons-material": ^5.10.9
-    "@mui/lab": ^5.0.0-alpha.106
-    "@mui/material": ^5.10.10
+    "@mui/lab": ^5.0.0-alpha.105
+    "@mui/material": ^5.10.12
     "@studiokaiji/meltjs": 0.1.0-alpha.6
     "@types/react": ^18.0.17
     "@types/react-dom": ^18.0.6
