@@ -33,13 +33,7 @@ export const NavBar = () => {
         </Box>
         <Box sx={{ flexGrow: 1 }} />
 
-        <UserWallet
-          anchorOrigin={{
-            horizontal: 'right',
-            vertical: 'bottom',
-          }}
-          height={64}
-        />
+        <UserWallet height={64} horizontal="right" />
       </Toolbar>
     </AppBar>
   );
