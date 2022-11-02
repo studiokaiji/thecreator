@@ -30,9 +30,5 @@
   },
   "include": [
     "./typechain-types"
-  ],
-  "dependencies": {
-    "i18next": "^22.0.2",
-    "react-i18next": "^12.0.0"
-  }
+  ]
 }
