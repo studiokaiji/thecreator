@@ -35,12 +35,13 @@ describe('TheCreatorProduct', () => {
     ).deployed();
 
     const proxyFactory = await ethers.getContractFactory('ERC1967Proxy');
-    const proxyContract = await (
+    const proxyContract = await(
       await proxyFactory.deploy(
         collectorContract.address,
         collectorContract.interface.encodeFunctionData('initialize', [
-          rate,
-          min,
+          [erc20Contract.address],
+          [rate],
+          [min],
           feeReceiver.address,
         ])
       )

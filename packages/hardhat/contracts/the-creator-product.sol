@@ -26,7 +26,7 @@ contract TheCreatorProduct is Product, ERC1155Holder {
         uint256 balance = baseToken.balanceOf(address(this));
         require(balance > 0, 'TheCreatorProduct: No balance');
 
-        uint256 fee = collector.calculateFee(balance);
+        uint256 fee = collector.calculateFee(baseToken, balance);
         baseToken.approve(address(collector), fee);
         collector.payAFee(baseToken, fee);
 
