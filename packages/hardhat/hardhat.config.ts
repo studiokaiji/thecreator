@@ -2,6 +2,8 @@ import { HardhatUserConfig } from 'hardhat/config';
 import '@typechain/hardhat';
 import '@nomiclabs/hardhat-ethers';
 import '@nomiclabs/hardhat-waffle';
+import './tasks/deploy';
+import './tasks/local-setup';
 
 const config: HardhatUserConfig = {
   solidity: {
