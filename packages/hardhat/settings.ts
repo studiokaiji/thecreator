@@ -11,14 +11,12 @@ const settings: Settings<'weth'> = {
       rate: {
         default: 3 * 100, // 3%
       },
-      to: {
-        default: '0x0...',
-      },
+      to: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
     },
   },
   networks: {
     31337: {
-      weth: '',
+      weth: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
     },
   },
 };
