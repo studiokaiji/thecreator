@@ -1,8 +1,16 @@
 {
   "becomeACreator": "Become a Creator",
+  "create": "Create",
   "creatorConsole": "CreatorConsole",
+  "creatorName": "Creator Name",
+  "deployed": "Deployment Complete",
+  "deploying": "Deploying",
+  "failedToSendTx": "Failed to send transaction.",
+  "goToCreatorPage": "Go To Creator Page",
   "notConnectedWallet": "Not Connected Wallet",
+  "receiveToken": "Receive Token",
   "settings": "Settings",
   "supportingCreators": "Supporting Creators",
+  "waitingSendTx": "Waiting for transaction to be sent",
   "walletSelectMessage": "Select a wallet to connect."
 }
