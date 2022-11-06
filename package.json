@@ -13,9 +13,17 @@
     "lint:prettier": "prettier --check .",
     "fix": "yarn run fix:prettier && yarn run fix:eslint",
     "fix:eslint": "yarn run lint:eslint -- --fix",
-    "fix:prettier": "yarn run lint:prettier -- --write"
+    "fix:prettier": "yarn run lint:prettier -- --write",
+    "node:hardhat": "yarn workspace hardhat hardhat node",
+    "local-setup:hardhat": "yarn workspace hardhat hardhat local-setup --network localhost",
+    "start-node-and-setup:hardhat": "yarn run node:hardhat && yarn run local-setup:hardhat",
+    "dev:client": "yarn workspace client run dev",
+    "build:client": "yarn workspace clien run build",
+    "preview:client": "yarn workspace client run preview",
+    "emulator:firebase": "firebase emulators:start",
+    "ganache": "ganache --chain.chainId 31337 -m 'test test test test test test test test test test test junk'"
   },
-  "packageManager": "yarn@3.2.0",
+  "packageManager": "yarn@3.0.0",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.40.1",
     "@typescript-eslint/parser": "^5.40.1",
