@@ -142,20 +142,28 @@ const UserWalletMenuBody = ({
 };
 
 export const UserWallet = ({
-  height = 56,
+  height = 64,
   horizontal = 'right',
   width = 300,
 }: UserWalletProps) => {
   const { checking, currentUser } = useCurrentUser();
 
-  const [isOpenMenu, setIsOpenMenu] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const isOpenMenu = Boolean(anchorEl);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const { t } = useTranslation();
 
   return (
     <Box>
       <ButtonBase
-        onClick={() => setIsOpenMenu(true)}
+        onClick={handleClick}
         sx={(theme) => ({
           ':hover': {
             backgroundColor: theme.palette.grey[200],
@@ -165,7 +173,7 @@ export const UserWallet = ({
           width,
         })}
       >
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ width: 'calc(100% - 20px)' }}>
           <Stack
             alignItems="center"
             direction="row"
@@ -217,7 +225,7 @@ export const UserWallet = ({
           horizontal,
           vertical: Number(height),
         }}
-        onClose={() => setIsOpenMenu(false)}
+        onClose={handleClose}
         open={isOpenMenu}
       >
         <UserWalletMenuBody
