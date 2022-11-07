@@ -1,4 +1,5 @@
 import { createTheme, ThemeProvider } from '@mui/material';
+import { blue } from '@mui/material/colors';
 import { FC, ReactNode } from 'react';
 
 const h = (fontSize: string) => ({
@@ -7,7 +8,27 @@ const h = (fontSize: string) => ({
 });
 
 const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#000',
+    },
+    secondary: {
+      main: blue[500],
+    },
+  },
   typography: {
+    fontFamily: [
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(','),
     h1: h('4rem'),
     h2: h('3rem'),
     h3: h('2.5rem'),
