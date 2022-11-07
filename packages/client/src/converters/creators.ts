@@ -21,7 +21,6 @@ export const creatorConverter: FirestoreDataConverter<Partial<CreatorDocData>> =
       creatorName,
       description,
       pinningPostId,
-      txHash,
     }) => {
       return {
         contractAddress,
@@ -29,7 +28,6 @@ export const creatorConverter: FirestoreDataConverter<Partial<CreatorDocData>> =
         creatorName,
         description,
         pinningPostId,
-        txHash,
       };
     },
   };
