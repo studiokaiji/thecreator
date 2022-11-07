@@ -23,15 +23,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const { account } = useWallet();
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(setCurrentUser);
-    return () => unsubscribe();
+    auth.onAuthStateChanged(setCurrentUser);
   }, []);
 
   useEffect(() => {
+    if (currentUser === undefined) return;
     isConnectedWallet(currentUser?.uid).then(async (isConnected) => {
       if (!isConnected && currentUser) await auth.signOut();
     });
-  }, [account]);
+  }, [account, currentUser]);
 
   return (
     <AuthContext.Provider value={{ currentUser }}>
