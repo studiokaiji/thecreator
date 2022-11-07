@@ -1,7 +1,6 @@
 import WalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import GroupIcon from '@mui/icons-material/Group';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import LoyaltyIcon from '@mui/icons-material/Loyalty';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { PopoverOrigin } from '@mui/material';
@@ -220,7 +219,6 @@ export const UserWallet = ({
                 {t('notConnectedWallet').toString()}
               </Typography>
             )}
-            {!checking && <KeyboardArrowDownIcon htmlColor="gray" />}
           </Stack>
         </Box>
       </ButtonBase>
