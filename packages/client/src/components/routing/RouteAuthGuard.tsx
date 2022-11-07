@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 
-export const AuthCheck: FC<{ children: ReactNode }> = ({ children }) => {
+export const RouteAuthGuard: FC<{ children: ReactNode }> = ({ children }) => {
   const { checking, currentUser } = useCurrentUser();
 
   if (checking) {
