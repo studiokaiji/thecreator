@@ -1,4 +1,5 @@
 {
+  "backToInput": "Back to input",
   "becomeACreator": "Become a Creator",
   "create": "Create",
   "creatorConsole": "CreatorConsole",
@@ -6,7 +7,7 @@
   "deployed": "Deployment Complete",
   "deploying": "Deploying",
   "failedToSendTx": "Failed to send transaction.",
-  "goToCreatorPage": "Go To Creator Page",
+  "goToCreatorConsole": "Go To Creator Console",
   "notConnectedWallet": "Not Connected Wallet",
   "receiveToken": "Receive Token",
   "settings": "Settings",

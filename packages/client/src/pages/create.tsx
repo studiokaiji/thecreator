@@ -11,6 +11,7 @@ import { setDoc } from 'firebase/firestore';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 import { getCreatorDocRef } from '@/converters/creators';
 import { useWallet } from '@/hooks/useWallet';
@@ -42,6 +43,8 @@ export const CreatePage = () => {
   const onClickCreatePageButtonHandler = () => {
     if (!library || !account) return;
 
+    const { creatorName, receiveToken } = getValues();
+
     (async () => {
       setStatus('waitingSendTx');
 
@@ -50,8 +53,6 @@ export const CreatePage = () => {
         library.getSigner()
       );
 
-      const { creatorName, receiveToken } = getValues();
-
       const txRes = await factoryContract.create(
         creatorName,
         'SYMBOL',
@@ -59,15 +60,6 @@ export const CreatePage = () => {
       );
       setStatus('deploying');
       setTxHash(txRes.hash);
-
-      const docRef = getCreatorDocRef(account);
-      await setDoc(docRef, {
-        contractAddress: '',
-        creatorName,
-        description: '',
-        pinningPostId: '',
-        txHash,
-      });
 
       const txReceipt = await txRes.wait();
       setStatus('deployed');
@@ -80,18 +72,28 @@ export const CreatePage = () => {
       const contractAddress = event.args.product;
       setContractAddress(contractAddress);
 
+      const docRef = getCreatorDocRef(account);
+
       await setDoc(docRef, {
         contractAddress,
-        txHash: '',
-      });
+        creatorName,
+        description: '',
+        pinningPostId: '',
+      }).catch((e) => console.error(e));
     })().catch((e) => {
       setStatus('failedToSendTx');
-      console.log(e);
       setErrorMessage(JSON.stringify(e, null, 2));
     });
   };
 
   const { t } = useTranslation();
+
+  const back = () => {
+    setStatus('typing');
+    setTxHash('');
+    setContractAddress('');
+    setErrorMessage('');
+  };
 
   return (
     <Box sx={{ m: 'auto' }}>
@@ -121,15 +123,20 @@ export const CreatePage = () => {
         <Box sx={{ textAlign: 'center' }}>
           <Typography variant="h6">{t(status)}</Typography>
           {txHash && <Typography>Transaction Hash: {txHash}</Typography>}
-          {contractAddress && (
-            <Button
-              onClick={onClickCreatePageButtonHandler}
-              variant="contained"
-            >
-              {t('goToCreatorPage')}
-            </Button>
+          {contractAddress && status === 'deployed' && (
+            <>
+              <Typography>Contract Address: {contractAddress}</Typography>
+              <Link to="/edit">{t('goToCreatorConsole')}</Link>
+            </>
           )}
-          {errorMessage && <Typography color="red">{errorMessage}</Typography>}
+          {errorMessage && (
+            <>
+              <Typography color="red">{errorMessage}</Typography>
+              <Button onClick={back} variant="contained">
+                {t('backToInput')}
+              </Button>
+            </>
+          )}
         </Box>
       )}
     </Box>
