@@ -21,5 +21,5 @@ export const useCreator = (address?: string) => {
     return snapshot.data();
   };
 
-  return useSWR(() => address, fetcher);
+  return useSWR(() => address, fetcher, { revalidateOnFocus: false });
 };
