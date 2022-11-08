@@ -16,12 +16,11 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 
-import { MinimalLink } from '../helpers/MinimalLink';
-import { RoundedButton } from '../helpers/RoundedButton';
-
-import { UserWallet } from './UserWallet';
+import { UserWallet } from '../UserWallet';
 
 import logoPath from '@/assets/TheCreator.svg';
+import { MinimalLink } from '@/components/helpers/MinimalLink';
+import { RoundedButton } from '@/components/helpers/RoundedButton';
 
 const MenuItem = styled(Item)(() => ({
   borderRadius: '5px',
