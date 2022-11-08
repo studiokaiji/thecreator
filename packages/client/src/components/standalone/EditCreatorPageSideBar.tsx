@@ -10,6 +10,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Item from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
 import { styled } from '@mui/system';
+import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 
 import { MinimalLink } from '../helpers/MinimalLink';
@@ -25,36 +26,39 @@ const MenuItem = styled(Item)(() => ({
   padding: '10px 16px',
 }));
 
-const items = [
-  {
-    Icon: HomeIcon,
-    path: '/edit/profile',
-    text: 'Profile',
-  },
-  {
-    Icon: CreditCardIcon,
-    path: '/edit/membership',
-    text: 'Membership',
-  },
-  {
-    Icon: PeopleIcon,
-    path: '/edit/supporters',
-    text: 'Supporters',
-  },
-  {
-    Icon: TollIcon,
-    path: '/edit/payout',
-    text: 'Payout',
-  },
-  {
-    Icon: SettingsIcon,
-    path: '/edit/settings',
-    text: 'Settings',
-  },
-];
-
 export const EditCreatorPageSideBar = (props: DrawerProps) => {
   const { pathname } = useLocation();
+
+  const { t } = useTranslation();
+
+  const items = [
+    {
+      Icon: HomeIcon,
+      path: '/edit/profile',
+      text: t('profile'),
+    },
+    {
+      Icon: CreditCardIcon,
+      path: '/edit/membership',
+      text: t('membership'),
+    },
+    {
+      Icon: PeopleIcon,
+      path: '/edit/supporters',
+      text: t('supporters'),
+    },
+    {
+      Icon: TollIcon,
+      path: '/edit/payout',
+      text: t('payout'),
+    },
+    {
+      Icon: SettingsIcon,
+      path: '/edit/settings',
+      text: t('settings'),
+    },
+  ];
+
   return (
     <Drawer
       open
@@ -96,7 +100,7 @@ export const EditCreatorPageSideBar = (props: DrawerProps) => {
             ))}
           </MenuList>
           <RoundedButton fullWidth size="large" variant="contained">
-            + Create New Post
+            + {t('createNewPost')}
           </RoundedButton>
         </Box>
         <Box>
