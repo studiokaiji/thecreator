@@ -4,10 +4,11 @@ import { providers } from 'ethers';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './firebase';
 
-import { NavBar } from './components/standalone/NavBar';
+import { NavLayout } from './components/layout/NavLayout';
 import { AuthProvider } from './contexts/AuthContext';
 import { IndexPage } from './pages';
 import { CreatePage } from './pages/create';
+import { EditCreatorProfilePage } from './pages/edit/profile';
 import { CustomThemeProvider } from './theme';
 
 const getLibrary = (provider: any) => {
@@ -21,11 +22,16 @@ function App() {
         <CustomThemeProvider>
           <CssBaseline />
           <BrowserRouter>
-            <NavBar />
-            <Routes>
-              <Route element={<IndexPage />} path="/" />
-              <Route element={<CreatePage />} path="/create" />
-            </Routes>
+            <NavLayout>
+              <Routes>
+                <Route element={<IndexPage />} path="/" />
+                <Route element={<CreatePage />} path="/create" />
+                <Route
+                  element={<EditCreatorProfilePage />}
+                  path="/edit/profile"
+                />
+              </Routes>
+            </NavLayout>
           </BrowserRouter>
         </CustomThemeProvider>
       </AuthProvider>
