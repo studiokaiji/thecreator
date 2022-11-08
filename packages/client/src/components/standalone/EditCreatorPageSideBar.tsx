@@ -45,7 +45,7 @@ export const EditCreatorPageSideBar = (props: EditCreatorPageSideBarProps) => {
   const items = [
     {
       Icon: HomeIcon,
-      path: '/edit/profile',
+      path: '/edit/profile#posts',
       text: t('profile'),
     },
     {
