@@ -45,8 +45,9 @@ export const EditCreatorPageSideBar = (props: EditCreatorPageSideBarProps) => {
   const items = [
     {
       Icon: HomeIcon,
-      path: '/edit/profile#posts',
+      path: '/edit/profile',
       text: t('profile'),
+      to: '/edit/profile#posts',
     },
     {
       Icon: CreditCardIcon,
@@ -114,9 +115,9 @@ export const EditCreatorPageSideBar = (props: EditCreatorPageSideBarProps) => {
               </Link>
             </Box>
             <MenuList sx={{ my: 4 }}>
-              {items.map(({ Icon, path, text }) => (
+              {items.map(({ Icon, path, text, to }) => (
                 <Box key={path} sx={{ mb: 1 }}>
-                  <MinimalLink to={path}>
+                  <MinimalLink to={to || path}>
                     <MenuItem selected={path === pathname}>
                       <ListItemIcon>
                         <Icon sx={{ color: 'black' }} />
