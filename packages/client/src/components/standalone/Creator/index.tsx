@@ -1,11 +1,10 @@
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { useState } from 'react';
 
 import { ActionButtons } from './ActionButton';
 import { ProfileImages } from './ProfileImages';
-import { Section, SectionLinks } from './SectionLinks';
+import { Sections } from './Sections';
 
 import { useCreator } from '@/hooks/useCreator';
 import { useWindowSize } from '@/hooks/useWindowSize';
@@ -20,8 +19,6 @@ export const Creator = ({ editable }: CreatorProps) => {
   const { width } = useWindowSize();
   const minimize = editable ? width < 620 : width < 320;
 
-  const [section, setSection] = useState<Section>('posts');
-
   return (
     <Box>
       <ProfileImages />
@@ -35,10 +32,10 @@ export const Creator = ({ editable }: CreatorProps) => {
             <Typography>{data?.description}</Typography>
           </Stack>
         </Stack>
-        <Stack spacing={2}>
-          <SectionLinks onChangeSection={setSection} />
-          <div>A</div>
-        </Stack>
+        <Sections
+          plansSection={<div>Plans</div>}
+          postsSection={<div>Posts</div>}
+        />
       </Stack>
     </Box>
   );
