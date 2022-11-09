@@ -1,4 +1,5 @@
 {
+  "audio": "Audio",
   "backToInput": "Back to input",
   "becomeACreator": "Become a Creator",
   "create": "Create",
@@ -9,16 +10,20 @@
   "deploying": "Deploying",
   "failedToSendTx": "Failed to send transaction.",
   "goToCreatorConsole": "Go To Creator Console",
+  "image": "Image",
   "membership": "Membership",
   "notConnectedWallet": "Not Connected Wallet",
   "payout": "Payout",
   "plans": "Plans",
+  "postType": "Post type",
   "posts": "Posts",
   "profile": "Profile",
   "receiveToken": "Receive Token",
   "settings": "Settings",
   "supporters": "Supporters",
   "supportingCreators": "Supporting Creators",
+  "text": "Text",
+  "video": "Video",
   "waitingSendTx": "Waiting for transaction to be sent",
   "walletSelectMessage": "Select a wallet to connect."
 }
