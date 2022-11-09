@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import { ActionButtons } from './ActionButton';
 import { ProfileImages } from './ProfileImages';
 import { Sections } from './Sections';
+import { Posts } from './posts';
 
 import { useCreator } from '@/hooks/useCreator';
 import { useWindowSize } from '@/hooks/useWindowSize';
@@ -32,10 +33,14 @@ export const Creator = ({ editable }: CreatorProps) => {
             <Typography>{data?.description}</Typography>
           </Stack>
         </Stack>
-        <Sections
-          plansSection={<div>Plans</div>}
-          postsSection={<div>Posts</div>}
-        />
+        <Box>
+          <Box sx={{ maxWidth: 640, mx: 'auto' }}>
+            <Sections
+              plansSection={<div>Plans</div>}
+              postsSection={<Posts />}
+            />
+          </Box>
+        </Box>
       </Stack>
     </Box>
   );
