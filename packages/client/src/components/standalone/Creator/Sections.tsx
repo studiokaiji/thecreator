@@ -23,7 +23,7 @@ export const Sections = ({ plansSection, postsSection }: SectionsProps) => {
   }, [hash]);
 
   return (
-    <Stack spacing={2}>
+    <Stack spacing={5}>
       <Stack direction="row" spacing={2} sx={{ fontWeight: 500, mx: 'auto' }}>
         <MinimalLink
           sx={{
