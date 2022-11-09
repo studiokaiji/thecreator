@@ -18,9 +18,10 @@ import { Link, useLocation } from 'react-router-dom';
 
 import { UserWallet } from '../UserWallet';
 
+import { CreateNewPostButton } from './CreateNewPostButton';
+
 import logoPath from '@/assets/TheCreator.svg';
 import { MinimalLink } from '@/components/helpers/MinimalLink';
-import { RoundedButton } from '@/components/helpers/RoundedButton';
 
 const MenuItem = styled(Item)(() => ({
   borderRadius: '5px',
@@ -126,9 +127,7 @@ export const EditCreatorPageSideBar = (props: EditCreatorPageSideBarProps) => {
                 </Box>
               ))}
             </MenuList>
-            <RoundedButton fullWidth size="large" variant="contained">
-              + {t('createNewPost')}
-            </RoundedButton>
+            <CreateNewPostButton />
           </Box>
           <Box>
             <Divider />
