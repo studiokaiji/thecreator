@@ -8,6 +8,8 @@ import * as functions from 'firebase-functions';
 const admin = firebaseAdmin.initializeApp();
 const cors = corsLib();
 
+const NONCE_MESSAGE = 'Please sign for TheCreator account authentication.';
+
 export const getNonceToSign = functions.https.onRequest((request, response) =>
   cors(request, response, async () => {
     try {
@@ -31,13 +33,15 @@ export const getNonceToSign = functions.https.onRequest((request, response) =>
       } else {
         // The user document does not exist, create it first
         const generatedNonce = randomUUID();
+        const nonce = `${NONCE_MESSAGE}\n${generatedNonce}`;
+
         // Create an Auth user
         const createdUser = await admin.auth().createUser({
           uid: request.body.address,
         });
         // Associate the nonce with that user
         await admin.firestore().collection('users').doc(createdUser.uid).set({
-          nonce: generatedNonce,
+          nonce,
         });
         return response.status(200).json({ nonce: generatedNonce });
       }
