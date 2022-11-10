@@ -12,5 +12,8 @@
     "dev": "wrangler dev --local",
     "publish": "wrangler publish"
   },
-  "private": true
+  "private": true,
+  "dependencies": {
+    "hono": "^2.5.0"
+  }
 }
