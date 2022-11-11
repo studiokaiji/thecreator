@@ -8990,6 +8990,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"firebase-auth-cloudflare-workers@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "firebase-auth-cloudflare-workers@npm:1.0.0"
+  checksum: 66a8181f122c9a8842f20bcee7fc642640195a25a5c9a22d0d411283c717bc672d05d642d335b322916425e54cca27e7b2208e51316d56a704efca1f2cd4e437
+  languageName: node
+  linkType: hard
+
 "firebase-functions-test@npm:^0.2.0":
   version: 0.2.3
   resolution: "firebase-functions-test@npm:0.2.3"
@@ -17457,6 +17464,7 @@ typescript@^4.8.4:
   resolution: "workers@workspace:packages/workers"
   dependencies:
     "@cloudflare/workers-types": ^3.18.0
+    firebase-auth-cloudflare-workers: ^1.0.0
     hono: ^2.5.0
     typescript: ^4.8.4
     wrangler: 2.1.15
