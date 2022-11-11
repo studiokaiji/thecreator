@@ -3,6 +3,3 @@ main = "src/index.ts"
 compatibility_date = "2022-11-10"
 
 tsconfig = "./tsconfig.json"
-
-[build]
-command = "yarn run build"
