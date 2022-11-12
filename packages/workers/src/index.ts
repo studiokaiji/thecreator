@@ -6,14 +6,22 @@ import {
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 
+interface Env extends VerifyFirebaseAuthEnv {
+  CHAIN_ID: number;
+  CHAIN_RPC_ENDPOINT: string;
+  CHAIN_RPC_ENDPOINT_1: string;
+  CHAIN_RPC_ENDPOINT_2: string;
+  MULTICALL_CONTRACT_ADDRESS: string;
+}
+
 const config = {
   projectId: 'melt-thecreator',
 };
 
-const app = new Hono<{ Bindings: VerifyFirebaseAuthEnv }>();
+const app = new Hono<{ Bindings: Env }>();
 
 app.use(
-  '*',
+  '/echo-id-token',
   cors({
     allowHeaders: ['Content-Type', 'Authorization'],
     allowMethods: ['POST', 'GET', 'OPTIONS'],
@@ -26,7 +34,7 @@ app.use(
 );
 
 app.get('/hello', (c) => {
-  return c.json('Hello');
+  return c.json({ CHAIN_ID: c.env.CHAIN_ID });
 });
 
 app.get('/echo-id-token', (c) => {

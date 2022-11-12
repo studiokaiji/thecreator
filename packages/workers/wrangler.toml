@@ -5,11 +5,27 @@ workers_dev = true
 
 tsconfig = "./tsconfig.json"
 
-[vars]
+[env.local.vars]
 FIREBASE_AUTH_EMULATOR_HOST = "127.0.0.1:9099" # Specify if using emulator.
 PUBLIC_JWK_CACHE_KEY = "public-jwk-cache-key" # Cache key to store and get public jwk.
+CHAIN_RPC_ENDPOINT="127.0.0.1:8545"
+CHAIN_ID="31337"
+MULTICALL_CONTRACT_ADDRESS=""
 
-[[kv_namespaces]]
+[[env.local.kv_namespaces]]
+binding = "PUBLIC_JWK_CACHE_KV"
+id = "daeee1dc85cd4949a62e7aaa3be0b4cd"
+preview_id = "testingId"
+
+[env.production.vars]
+PUBLIC_JWK_CACHE_KEY = "public-jwk-cache-key" # Cache key to store and get public jwk.
+CHAIN_RPC_ENDPOINT="https://polygon-mainnet.g.alchemy.com/v2/bVUlXIXBMbSORNOTC-tqrAfpDVYTtuWj"
+CHAIN_RPC_ENDPOINT_1="https://rpc.ankr.com/polygon"
+CHAIN_RPC_ENDPOINT_2="https://thecreator.infura-ipfs.io"
+CHAIN_ID="137"
+MULTICALL_CONTRACT_ADDRESS=""
+
+[[env.production.kv_namespaces]]
 binding = "PUBLIC_JWK_CACHE_KV"
 id = "daeee1dc85cd4949a62e7aaa3be0b4cd"
 preview_id = "testingId"
