@@ -1,5 +1,15 @@
 name = "workers"
 main = "src/index.ts"
 compatibility_date = "2022-11-10"
+workers_dev = true
 
 tsconfig = "./tsconfig.json"
+
+[vars]
+FIREBASE_AUTH_EMULATOR_HOST = "127.0.0.1:9099" # Specify if using emulator.
+PUBLIC_JWK_CACHE_KEY = "public-jwk-cache-key" # Cache key to store and get public jwk.
+
+[[kv_namespaces]]
+binding = "PUBLIC_JWK_CACHE_KV"
+id = "daeee1dc85cd4949a62e7aaa3be0b4cd"
+preview_id = "testingId"

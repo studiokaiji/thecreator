@@ -14,7 +14,7 @@
   },
   "private": true,
   "dependencies": {
-    "firebase-auth-cloudflare-workers": "^1.0.0",
+    "@honojs/firebase-auth": "^1.0.1",
     "hono": "^2.5.0"
   }
 }
