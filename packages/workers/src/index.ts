@@ -8,9 +8,7 @@ import { cors } from 'hono/cors';
 
 interface Env extends VerifyFirebaseAuthEnv {
   CHAIN_ID: number;
-  CHAIN_RPC_ENDPOINT: string;
-  CHAIN_RPC_ENDPOINT_1: string;
-  CHAIN_RPC_ENDPOINT_2: string;
+  CHAIN_RPC_ENDPOINTS: string[];
   MULTICALL_CONTRACT_ADDRESS: string;
 }
 
@@ -32,10 +30,6 @@ app.use(
   }),
   verifyFirebaseAuth(config)
 );
-
-app.get('/hello', (c) => {
-  return c.json({ CHAIN_ID: c.env.CHAIN_ID });
-});
 
 app.get('/echo-id-token', (c) => {
   const idToken = getFirebaseToken(c);
