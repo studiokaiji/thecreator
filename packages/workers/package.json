@@ -15,6 +15,7 @@
   "private": true,
   "dependencies": {
     "@ethersproject/bignumber": "^5.7.0",
+    "@ethersproject/contracts": "^5.7.0",
     "@honojs/firebase-auth": "^1.0.1",
     "hono": "^2.5.0"
   }
