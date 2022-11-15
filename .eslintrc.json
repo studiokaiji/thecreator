@@ -58,7 +58,7 @@
         "extensions": [".js", ".jsx", ".ts", ".tsx"]
       },
       "typescript": {
-        "project": "./packages/client"
+        "project": ["./packages/client", "./packages/workers"]
       }
     },
     "react": {

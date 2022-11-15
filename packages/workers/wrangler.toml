@@ -11,10 +11,11 @@ PUBLIC_JWK_CACHE_KEY = "public-jwk-cache-key" # Cache key to store and get publi
 CHAIN_RPC_ENDPOINTS=["127.0.0.1:8545"]
 CHAIN_ID="31337"
 
-[[env.local.kv_namespaces]]
-binding = "PUBLIC_JWK_CACHE_KV"
-id = "daeee1dc85cd4949a62e7aaa3be0b4cd"
-preview_id = "testingId"
+[env.local]
+kv_namespaces = [
+  { binding = "PUBLIC_JWK_CACHE_KV", id="b4a473dd2e158379b4d43d958d0548a3", preview_id = "b4a473dd2e158379b4d43d958d0548a3" },
+  { binding = "SUBSCRIPTION_CACHE_KV", id="c9664447722d4a71b4d91d13132d343", preview_id = "c9664447722d4a71b4d91d13132d343" }
+]
 
 [env.production.vars]
 PUBLIC_JWK_CACHE_KEY = "public-jwk-cache-key" # Cache key to store and get public jwk.
@@ -23,9 +24,9 @@ CHAIN_RPC_ENDPOINTS=[
   "https://rpc.ankr.com/polygon",
   "https://thecreator.infura-ipfs.io"
 ]
-CHAIN_ID="137"
 
-[[env.production.kv_namespaces]]
-binding = "PUBLIC_JWK_CACHE_KV"
-id = "daeee1dc85cd4949a62e7aaa3be0b4cd"
-preview_id = "testingId"
+[env.production]
+kv_namespaces = [
+  { binding = "PUBLIC_JWK_CACHE_KV", id = "b4a473dd2e158379b4d43d958d0548a3" },
+  { binding = "SUBSCRIPTION_CACHE_KV", id = "c9664447722d4a71b4d91d13132d343" }
+]
