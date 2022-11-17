@@ -39,7 +39,7 @@ export const checkSubscription = async (
   id: string,
   creatorContractAddress: string,
   planId: BigNumberish
-) => {
+): Promise<[boolean, { subscription: Subscription; plan: Plan }]> => {
   // Getting Subscription and plan from Creator contract with multicall
   const contract = new Contract(creatorContractAddress, creatorAbi);
   const multicallInputs = [
@@ -64,7 +64,11 @@ export const checkSubscription = async (
   const plan: Plan = returnData[1];
 
   // Check if the plan you are signing up for meets your plan requirements.
-  return (
-    subscription.isValid && BigNumber.from(plan.usage).gte(subscription.usage)
-  );
+  return [
+    subscription.isValid && BigNumber.from(plan.usage).gte(subscription.usage),
+    {
+      plan,
+      subscription,
+    },
+  ];
 };
