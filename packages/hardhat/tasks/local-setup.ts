@@ -59,5 +59,11 @@ task('local-setup').setAction(async (_, { ethers }) => {
     productFactoryContract.address
   );
 
+  const multicallContract = await (
+    await (await ethers.getContractFactory('Multicall')).deploy()
+  ).deployed();
+
+  console.log('Multicall Deployed.', multicallContract.address);
+
   console.log('End local-setup');
 });
