@@ -10,5 +10,5 @@
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": false 
   },
-  "include": ["@types", "typechain-types"]
+  "include": ["@types"]
 }
