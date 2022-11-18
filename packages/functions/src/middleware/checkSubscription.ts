@@ -7,6 +7,9 @@ import {
   JsonRpcProvider,
 } from '@ethersproject/providers';
 
+import { Multicall__factory } from '../../../hardhat/typechain-types/factories/contracts/multicall/multicall.sol';
+import { TheCreatorProduct__factory } from '../../../hardhat/typechain-types/factories/contracts/the-creator-product.sol';
+
 export type Subscription = {
   tokenId: BigNumber;
   balance: BigNumber;
@@ -24,29 +27,33 @@ export type Plan = {
   meta: string;
 };
 
-const creatorAbi =
-  '[{"inputs":[{"internalType":"address","name":"_customer","type":"address"}],"name":"subscriptions","outputs":[{"components":[{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"uint256","name":"balance","type":"uint256"},{"internalType":"uint256","name":"lastMintedAt","type":"uint256"},{"internalType":"uint256","name":"planId","type":"uint256"},{"internalType":"uint256","name":"usage","type":"uint256"},{"internalType":"address","name":"nft","type":"address"},{"internalType":"string","name":"meta","type":"string"},{"internalType":"bool","name":"isValid","type":"bool"}],"internalType":"struct Product.Subscription","name":"_subsctiption","type":"tuple"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_planId","type":"uint256"}],"name":"plans","outputs":[{"components":[{"internalType":"uint256","name":"usage","type":"uint256"},{"internalType":"address","name":"nft","type":"address"},{"internalType":"string","name":"meta","type":"string"}],"internalType":"struct Product.Plan","name":"_plan","type":"tuple"}],"stateMutability":"view","type":"function"}]';
+const getProviderFromEnv = () => {
+  if (!process.env.CHAIN_RPC_ENDPOINTS) {
+    throw Error('Need process.env.CHAIN_RPC_ENDPOINTS');
+  }
 
-const multicallAbi =
-  '[{"constant":true,"inputs":[],"name":"getCurrentBlockTimestamp","outputs":[{"name":"timestamp","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"components":[{"name":"target","type":"address"},{"name":"callData","type":"bytes"}],"name":"calls","type":"tuple[]"}],"name":"aggregate","outputs":[{"name":"blockNumber","type":"uint256"},{"name":"returnData","type":"bytes[]"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getLastBlockHash","outputs":[{"name":"blockHash","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"addr","type":"address"}],"name":"getEthBalance","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCurrentBlockDifficulty","outputs":[{"name":"difficulty","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCurrentBlockGasLimit","outputs":[{"name":"gaslimit","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCurrentBlockCoinbase","outputs":[{"name":"coinbase","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"blockNumber","type":"uint256"}],"name":"getBlockHash","outputs":[{"name":"blockHash","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"}]';
+  const endpoints = JSON.parse(
+    process.env.CHAIN_RPC_ENDPOINTS || '[]'
+  ) as string[];
 
-const endpoints = JSON.parse(
-  process.env.CHAIN_RPC_ENDPOINTS as string
-) as string[];
-
-const defaultProvider = new FallbackProvider(
-  endpoints.map((url) => new JsonRpcProvider(url)),
-  1
-);
+  return new FallbackProvider(
+    endpoints.map((url) => new JsonRpcProvider(url)),
+    1
+  );
+};
 
 export const checkSubscription = async (
   id: string,
   creatorContractAddress: string,
   planId: BigNumberish,
-  provider: BaseProvider = defaultProvider
+  provider: BaseProvider = getProviderFromEnv(),
+  multicallContractAddress = process.env.MULTICALL_ADDRESS
 ): Promise<[boolean, { subscription: Subscription; plan: Plan }]> => {
   // Getting Subscription and plan from Creator contract with multicall
-  const contract = new Contract(creatorContractAddress, creatorAbi);
+  const contract = TheCreatorProduct__factory.getContract(
+    creatorContractAddress,
+    TheCreatorProduct__factory.abi
+  );
   const multicallInputs = [
     {
       callData: contract.interface.encodeFunctionData('subscriptions', [id]),
@@ -58,19 +65,32 @@ export const checkSubscription = async (
     },
   ];
 
+  if (!multicallContractAddress) {
+    throw Error(
+      'If process.env.MULTICALL_ADDRESS does not exist, multicallContractAddress is required.'
+    );
+  }
+
   const multicall = new Contract(
-    process.env.MULTICALL_ADDRESS as string,
-    multicallAbi,
+    multicallContractAddress,
+    Multicall__factory.abi,
     provider
   );
-  const { returnData } = await multicall.aggregate(multicallInputs);
+  const { returnData } = await multicall.callStatic.aggregate(multicallInputs);
 
-  const subscription: Subscription = returnData[0];
-  const plan: Plan = returnData[1];
+  const subscription = contract.interface.decodeFunctionResult(
+    'subscriptions',
+    returnData[0]
+  )[0] as Subscription;
+
+  const plan = contract.interface.decodeFunctionResult(
+    'plans',
+    returnData[1]
+  )[0] as Plan;
 
   // Check if the plan you are signing up for meets your plan requirements.
   return [
-    subscription.isValid && BigNumber.from(plan.usage).gte(subscription.usage),
+    subscription.isValid && plan.usage.gte(subscription.usage),
     {
       plan,
       subscription,
