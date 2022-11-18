@@ -4137,6 +4137,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/chai-as-promised@npm:^7.1.5":
+  version: 7.1.5
+  resolution: "@types/chai-as-promised@npm:7.1.5"
+  dependencies:
+    "@types/chai": "*"
+  checksum: 7c1345c6e32513d52d8e562ec173c23161648d6b792046525f18803a9932d7b3ad3dca8f0181e3c529ec42b106099f174e34edeb184d61dc93e32c98b5132fd4
+  languageName: node
+  linkType: hard
+
 "@types/chai@npm:*":
   version: 4.3.3
   resolution: "@types/chai@npm:4.3.3"
@@ -6836,6 +6845,17 @@ __metadata:
   bin:
     cborg: cli.js
   checksum: e44a103cc2d2fd0e925e8d2d2049552551c6ae3ed143c52863bd740b39fa4652979f1f898b63190fe61247d08aa4c391f3a19e2dea1d19510e82740599ac8610
+  languageName: node
+  linkType: hard
+
+"chai-as-promised@npm:^7.1.1":
+  version: 7.1.1
+  resolution: "chai-as-promised@npm:7.1.1"
+  dependencies:
+    check-error: ^1.0.2
+  peerDependencies:
+    chai: ">= 2.1.2 < 5"
+  checksum: 7262868a5b51a12af4e432838ddf97a893109266a505808e1868ba63a12de7ee1166e9d43b5c501a190c377c1b11ecb9ff8e093c89f097ad96c397e8ec0f8d6a
   languageName: node
   linkType: hard
 
@@ -10011,20 +10031,24 @@ fsevents@~2.3.2:
     "@aws-sdk/s3-request-presigner": ^3.210.0
     "@metamask/eth-sig-util": ^5.0.0
     "@types/chai": ^4.3.4
+    "@types/chai-as-promised": ^7.1.5
     "@types/mocha": ^10.0.0
     "@typescript-eslint/eslint-plugin": ^5.12.0
     "@typescript-eslint/parser": ^5.12.0
     chai: ^4.3.7
+    chai-as-promised: ^7.1.1
     cors: ^2.8.5
     eslint: ^8.9.0
     eslint-config-google: ^0.14.0
     eslint-plugin-import: ^2.25.4
+    ethereum-waffle: ^3.4.4
     ethers: ^5.7.2
     firebase-admin: ^10.0.2
     firebase-functions: ^4.0.2
     firebase-functions-test: ^0.2.0
     jsonwebtoken: ^8.5.1
     mocha: ^10.1.0
+    tsconfig-paths: ^4.1.0
     typescript: ^4.8.4
     zod: ^3.19.1
   languageName: unknown
@@ -16808,7 +16832,7 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"tsconfig-paths@npm:^4.0.0":
+"tsconfig-paths@npm:^4.0.0, tsconfig-paths@npm:^4.1.0":
   version: 4.1.0
   resolution: "tsconfig-paths@npm:4.1.0"
   dependencies:
