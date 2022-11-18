@@ -1,7 +1,11 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import type { BigNumberish } from '@ethersproject/bignumber';
 import { Contract } from '@ethersproject/contracts';
-import { FallbackProvider, JsonRpcProvider } from '@ethersproject/providers';
+import {
+  BaseProvider,
+  FallbackProvider,
+  JsonRpcProvider,
+} from '@ethersproject/providers';
 
 export type Subscription = {
   tokenId: BigNumber;
@@ -30,7 +34,7 @@ const endpoints = JSON.parse(
   process.env.CHAIN_RPC_ENDPOINTS as string
 ) as string[];
 
-const provider = new FallbackProvider(
+const defaultProvider = new FallbackProvider(
   endpoints.map((url) => new JsonRpcProvider(url)),
   1
 );
@@ -38,7 +42,8 @@ const provider = new FallbackProvider(
 export const checkSubscription = async (
   id: string,
   creatorContractAddress: string,
-  planId: BigNumberish
+  planId: BigNumberish,
+  provider: BaseProvider = defaultProvider
 ): Promise<[boolean, { subscription: Subscription; plan: Plan }]> => {
   // Getting Subscription and plan from Creator contract with multicall
   const contract = new Contract(creatorContractAddress, creatorAbi);
