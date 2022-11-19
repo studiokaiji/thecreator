@@ -18,12 +18,6 @@ const accessTokenManager = new AccessTokenManager<AccessTokenPayload>(
   'SECRET_KEY'
 );
 
-const contentsExtensions = {
-  audio: 'aac',
-  images: 'jpeg',
-  text: 'md',
-};
-
 const requestDataSchama = z.object({
   accessToken: z.string().optional(),
   creatorContractAddress: z.string().regex(/^0x[a-fA-F0-9]{40}$/g),
@@ -160,12 +154,11 @@ export const getDownloadSignedUrls = https.onCall(async (d, context) => {
     throw new https.HttpsError('internal', reason);
   }
 
-  const extension = contentsExtensions[postData.contentsType];
   const storageKeysParent = `/${input.creatorContractAddress}/posts/${input.postId}`;
 
   const urls = await Promise.all(
     [...new Array(postData.contentsCount)].map((_, i) => {
-      const Key = `${storageKeysParent}/${i}.${extension}`;
+      const Key = `${storageKeysParent}/${i}}`;
       return getSignedUrl(
         s3,
         new GetObjectCommand({
@@ -180,8 +173,7 @@ export const getDownloadSignedUrls = https.onCall(async (d, context) => {
   });
 
   const cacheVal = urls.reduce<{ [key: string]: string }>((prev, url, i) => {
-    const key = `${i}.${extension}`;
-    prev[key] = url;
+    prev[i] = url;
     return prev;
   }, {});
 
