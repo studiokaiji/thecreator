@@ -17,14 +17,17 @@ export const creatorConverter: FirestoreDataConverter<Partial<CreatorDocData>> =
       return snapshot.data(opts) as CreatorDocData;
     },
     toFirestore: ({
-      contractAddress,
+      creatorAddress,
       creatorName,
       description,
       pinningPostId,
     }) => {
+      if (!creatorAddress || !creatorName || !description || !pinningPostId) {
+        throw Error('Required values are not specified.');
+      }
       return {
-        contractAddress,
         createdAt: serverTimestamp(),
+        creatorAddress,
         creatorName,
         description,
         pinningPostId,
@@ -35,5 +38,5 @@ export const creatorConverter: FirestoreDataConverter<Partial<CreatorDocData>> =
 export const getCreatorsCollectionRef = () =>
   collection(db, 'creators').withConverter(creatorConverter);
 
-export const getCreatorDocRef = (address: string) =>
-  doc(db, 'creators', address).withConverter(creatorConverter);
+export const getCreatorDocRef = (contractAddress: string) =>
+  doc(db, 'creators', contractAddress).withConverter(creatorConverter);
