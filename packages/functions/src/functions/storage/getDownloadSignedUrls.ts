@@ -1,7 +1,8 @@
 import { GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { database } from 'firebase-admin';
 import { https } from 'firebase-functions';
-import { z } from 'zod';
+import {  z } from 'zod';
 
 import { postConverter } from '../../converters/postConverter';
 import { db, rtdb, s3 } from '../../instances';
@@ -114,14 +115,89 @@ const verify = async (
   }
 };
 
+const fetchUrlsFromCache = async (
+  cacheRef: database.Reference
+): Promise<{
+  urls: string[];
+  planId: string;
+  expiry: number;
+  contentsType: string;
+} | null> => {
+  const cacheSnapshot = await cacheRef.get();
+  if (!cacheSnapshot.exists()) {
+    return null;
+  }
+
+  const cacheData = cacheSnapshot.val();
+  if (
+    !cacheData ||
+    !cacheData.planId ||
+    !cacheData.expiry ||
+    cacheData.expiry > Date.now()
+  ) {
+    return null;
+  }
+
+  return cacheData;
+};
+
+const setUrlsToCache = async (
+  cacheRef: database.Reference,
+  urls: string[],
+  planId: string,
+  contentsType: string
+) => {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const setVal = { contentsType, expiry: tomorrow, planId, urls };
+  await cacheRef.set(setVal);
+};
+
 export const getDownloadSignedUrls = https.onCall(async (d, context) => {
   if (!context.auth) {
     throw new https.HttpsError('unauthenticated', 'Need auth');
   }
 
+  const uid = context.auth.uid;
+
   const input = await requestDataSchama.parseAsync(d).catch(() => {
     throw new https.HttpsError('invalid-argument', 'Invalid input input');
   });
+
+  const verifyWithHttpsError = async (planId: string) => {
+    const result = await verify(
+      input.creatorContractAddress,
+      planId,
+      uid,
+      input.accessToken
+    );
+
+    const { ok, reason } = result;
+
+    if (!ok) {
+      if (
+        reason === 'Invalid access token' ||
+        reason === 'Subscription without access rights'
+      ) {
+        throw new https.HttpsError(
+          'permission-denied',
+          'Access to contents denied'
+        );
+      }
+      throw new https.HttpsError('internal', reason);
+    }
+
+    return result;
+  };
+
+  const storageKeysParent = `/${input.creatorContractAddress}/${input.postId}`;
+  const cacheRef = rtdb.ref(storageKeysParent);
+
+  const cached = await fetchUrlsFromCache(cacheRef);
+  if (cached) {
+    const { tokens } = await verifyWithHttpsError(cached.planId);
+    return { contentsType: cached.contentsType, tokens, urls: cached.urls };
+  }
 
   const postRef = db
     .doc(`/creators/${input.creatorContractAddress}/posts/${input.postId}`)
@@ -134,27 +210,7 @@ export const getDownloadSignedUrls = https.onCall(async (d, context) => {
     throw new https.HttpsError('not-found', 'Post not found');
   }
 
-  const { ok, reason, tokens } = await verify(
-    input.creatorContractAddress,
-    postData.planId,
-    context.auth.uid,
-    input.accessToken
-  );
-
-  if (!ok) {
-    if (
-      reason === 'Invalid access token' ||
-      reason === 'Subscription without access rights'
-    ) {
-      throw new https.HttpsError(
-        'permission-denied',
-        'Access to contents denied'
-      );
-    }
-    throw new https.HttpsError('internal', reason);
-  }
-
-  const storageKeysParent = `/${input.creatorContractAddress}/posts/${input.postId}`;
+  const { tokens } = await verifyWithHttpsError(postData.planId);
 
   const urls = await Promise.all(
     [...new Array(postData.contentsCount)].map((_, i) => {
@@ -172,12 +228,14 @@ export const getDownloadSignedUrls = https.onCall(async (d, context) => {
     throw new https.HttpsError('internal', 'Failed to get content url');
   });
 
-  const cacheVal = urls.reduce<{ [key: string]: string }>((prev, url, i) => {
-    prev[i] = url;
-    return prev;
-  }, {});
-
-  await rtdb.ref(storageKeysParent).set(cacheVal, (e) => e && console.error(e));
+  await setUrlsToCache(
+    cacheRef,
+    urls,
+    postData.planId,
+    postData.contentsType
+  ).catch(() => {
+    console.error('Failed to set urls to cache');
+  });
 
   return {
     contentsType: postData.contentsType,
