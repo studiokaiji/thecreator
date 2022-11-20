@@ -29,7 +29,7 @@ const theme = createTheme({
       '"Segoe UI Emoji"',
       '"Segoe UI Symbol"',
     ].join(','),
-    h1: h('4rem'),
+    h1: h('3.5rem'),
     h2: h('3rem'),
     h3: h('2.5rem'),
     h4: h('2rem'),
