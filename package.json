@@ -24,7 +24,10 @@
     "ganache": "ganache --chain.chainId 31337 -m 'test test test test test test test test test test test junk'",
     "build:functions": "yarn workspace functions build",
     "watch:functions": "yarn workspace functions build:watch",
-    "deploy:functions": "yarn worksapce functions deploy" 
+    "deploy:functions": "yarn worksapce functions deploy",
+    "functions": "yarn workspace functions",
+    "hardhat": "yarn workspace hardhat",
+    "client": "yarn workspace client"
   },
   "packageManager": "yarn@3.2.4",
   "devDependencies": {
