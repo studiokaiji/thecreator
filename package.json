@@ -17,6 +17,8 @@
     "node:hardhat": "yarn workspace hardhat hardhat node",
     "local-setup:hardhat": "yarn workspace hardhat hardhat local-setup --network localhost",
     "start-node-and-setup:hardhat": "yarn run node:hardhat && yarn run local-setup:hardhat",
+    "compile:hardhat": "yarn workspace hardhat hardhat compile",
+    "test:hardhat": "yarn workspace hardhat hardhat test",
     "dev:client": "yarn workspace client run dev",
     "build:client": "yarn workspace clien run build",
     "preview:client": "yarn workspace client run preview",
