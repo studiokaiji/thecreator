@@ -18,7 +18,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@contracts/*": ["../hardhat/typechain-types/*"],
+      "@contracts": ["../hardhat/typechain-types/index.ts"],
       "#types/*": ["@types/*"]
     }
   },
