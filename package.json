@@ -21,7 +21,10 @@
     "build:client": "yarn workspace clien run build",
     "preview:client": "yarn workspace client run preview",
     "emulator:firebase": "firebase emulators:start",
-    "ganache": "ganache --chain.chainId 31337 -m 'test test test test test test test test test test test junk'"
+    "ganache": "ganache --chain.chainId 31337 -m 'test test test test test test test test test test test junk'",
+    "build:functions": "yarn workspace functions build",
+    "watch:functions": "yarn workspace functions build:watch",
+    "deploy:functions": "yarn worksapce functions deploy" 
   },
   "packageManager": "yarn@3.2.4",
   "devDependencies": {
