@@ -12,32 +12,40 @@ export const NavLayout: FC<{ children: ReactNode }> = ({ children }) => {
 
   const { width } = useWindowSize();
 
-  if (pathname.split('/')[1] === 'edit') {
-    const minimize = width < 1000;
-    return (
-      <Box sx={{ display: minimize ? 'block' : 'flex' }}>
-        <Box
-          sx={
-            minimize
-              ? {
-                  position: 'absolute',
-                  top: 0,
-                  zIndex: 10,
-                }
-              : {}
-          }
-        >
-          <EditCreatorPageSideBar minimize={minimize} />
+  const Component = () => {
+    if (pathname.split('/')[1] === 'edit') {
+      const minimize = width < 1000;
+      return (
+        <Box sx={{ display: minimize ? 'block' : 'flex' }}>
+          <Box
+            sx={
+              minimize
+                ? {
+                    position: 'absolute',
+                    top: 0,
+                    zIndex: 10,
+                  }
+                : {}
+            }
+          >
+            <EditCreatorPageSideBar minimize={minimize} />
+          </Box>
+          <Box sx={{ flexGrow: 1 }}>{children}</Box>
         </Box>
-        <Box sx={{ flexGrow: 1 }}>{children}</Box>
+      );
+    }
+
+    return (
+      <Box>
+        <NavBar />
+        {children}
       </Box>
     );
-  }
+  };
 
   return (
-    <Box>
-      <NavBar />
-      {children}
+    <Box sx={{ backgroundColor: '#F9F9FA', minHeight: '100vh', width: '100%' }}>
+      <Component />
     </Box>
   );
 };
