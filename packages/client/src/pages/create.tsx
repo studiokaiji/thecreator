@@ -72,10 +72,10 @@ export const CreatePage = () => {
       const contractAddress = event.args.product;
       setContractAddress(contractAddress);
 
-      const docRef = getCreatorDocRef(account);
+      const docRef = getCreatorDocRef(contractAddress);
 
       await setDoc(docRef, {
-        contractAddress,
+        creatorAddress: account,
         creatorName,
         description: '',
         pinningPostId: '',
