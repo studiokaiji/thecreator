@@ -4,7 +4,7 @@ import { Creator } from '@/components/standalone/Creator';
 
 export const EditCreatorProfilePage = () => {
   return (
-    <Box>
+    <Box sx={{ minHeight: '101vh' }}>
       <Creator editable />
     </Box>
   );
