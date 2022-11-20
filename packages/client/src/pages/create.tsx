@@ -1,4 +1,4 @@
-import { TheCreatorProductFactory__factory } from '@contracts/index';
+import { TheCreatorProductFactory__factory } from '@contracts';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
@@ -79,6 +79,7 @@ export const CreatePage = () => {
         creatorName,
         description: '',
         pinningPostId: '',
+        updatedAt: new Date(),
       }).catch((e) => console.error(e));
     })().catch((e) => {
       setStatus('failedToSendTx');
