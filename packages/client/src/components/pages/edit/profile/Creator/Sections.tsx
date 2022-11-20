@@ -3,7 +3,7 @@ import { ReactNode, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { MinimalLink } from '../../helpers/MinimalLink';
+import { MinimalLink } from '@/components/helpers/MinimalLink';
 
 type SectionsProps = {
   postsSection: ReactNode;

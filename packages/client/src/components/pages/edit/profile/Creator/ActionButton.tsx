@@ -3,7 +3,7 @@ import ShareIcon from '@mui/icons-material/ShareOutlined';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 
-import { RoundedButton } from '../../helpers/RoundedButton';
+import { RoundedButton } from '@/components/helpers/RoundedButton';
 
 type ActionButtonsProps = {
   minimize: boolean;
