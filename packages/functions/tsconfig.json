@@ -11,10 +11,11 @@
     "paths": {
       "@contracts": ["../hardhat/typechain-types/index.ts"],
       "@/*": ["src/*"]
-    }
+    },
+    "skipLibCheck": true
   },
   "compileOnSave": true,
   "include": [
     "src", "test"
-  ]
+  ],
 }
