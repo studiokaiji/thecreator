@@ -78,6 +78,7 @@ export const CreatePage = () => {
         creatorAddress: account,
         creatorName,
         description: '',
+        id: '',
         pinningPostId: '',
         updatedAt: new Date(),
       }).catch((e) => console.error(e));

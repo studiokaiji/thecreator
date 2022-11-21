@@ -4,4 +4,5 @@ export type CreatorDocData = {
   description: string;
   pinningPostId: string;
   updatedAt: Date;
+  id: string;
 };
