@@ -10,7 +10,8 @@ export const connectors = {
     bridge: 'https://bridge.walletconnect.org',
     qrcode: true,
     rpc: {
-      137: import.meta.env.VITE_POLYGON_MAINNET_PROVIDER_RPC_URL,
+      [import.meta.env.VITE_CHAIN_ID]: import.meta.env
+        .VITE_POLYGON_MAINNET_WALLET_PROVIDER_RPC_URL,
     },
   }),
 };
@@ -24,22 +25,40 @@ export const useWallet = () => {
     throwErrors?: boolean
   ) => web3React.activate(connectors[connector], onError, throwErrors);
 
-  const switchChain = async (chainId = 137) => {
+  const switchChain = async () => {
     if (!web3React.library) throw Error('Not connected wallet');
 
-    const hexChainId = `0x${chainId.toString(16)}`;
+    const hexChainId = `0x${Number(import.meta.env.VITE_CHAIN_ID).toString(
+      16
+    )}`;
 
     try {
-      await web3React.library.send('wallet_switchEthereumChain', [hexChainId]);
-    } catch (e: any) {
-      if (e.code === 4902 && chainId === 137) {
-        await web3React.library.send('wallet_addEthereumChain', [
-          {
-            chainId: hexChainId,
-            rpcUrl: import.meta.env.VITE_POLYGON_MAINNET_PROVIDER_RPC_URL,
-          },
-        ]);
+      await web3React.library.send('wallet_switchEthereumChain', [
+        {
+          chainId: hexChainId,
+        },
+      ]);
+    } catch (switchErr) {
+      if (
+        (switchErr as { code: number }).code !== 4902 ||
+        !import.meta.env.DEV
+      ) {
+        throw switchErr;
       }
+
+      await web3React.library.send('wallet_addEthereumChain', [
+        {
+          blockExplorerUrls: import.meta.env.VITE_POLYGON_MAINNET_EXPLORER_URL,
+          chainId: hexChainId,
+          chainName: import.meta.env.VITE_POLYGON_MAINNET_PROVIDER_CHAIN_NAME,
+          nativeCurrency: {
+            decimals: import.meta.env.VITE_POLYGON_DECIMALS,
+            name: import.meta.env.VITE_POLYGON_NAME,
+            symbol: import.meta.env.VITE_POLYGON_SYMBOL,
+          },
+          rpcUrls: import.meta.env.VITE_POLYGON_MAINNET_WALLET_PROVIDER_RPC_URL,
+        },
+      ]);
     }
   };
 
