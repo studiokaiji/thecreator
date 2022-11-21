@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { getCreatorDocRef } from '@/converters/creators';
+import { useOnlyValidNetwork } from '@/hooks/useOnlyValidNetwork';
 import { useWallet } from '@/hooks/useWallet';
 
 type ReceiveToken = 'weth' | 'usdc';
@@ -38,7 +39,9 @@ export const CreatePage = () => {
   const [contractAddress, setContractAddress] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const { account, library } = useWallet();
+  const { account, library, switchChain } = useWallet();
+
+  useOnlyValidNetwork();
 
   const onClickCreatePageButtonHandler = () => {
     if (!library || !account) return;
@@ -47,6 +50,8 @@ export const CreatePage = () => {
 
     (async () => {
       setStatus('waitingSendTx');
+
+      await switchChain();
 
       const factoryContract = TheCreatorProductFactory__factory.connect(
         import.meta.env.VITE_PRODUCT_FACTORY_CONTRACT_ADDRESS,
