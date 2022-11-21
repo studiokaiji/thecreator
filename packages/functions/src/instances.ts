@@ -1,5 +1,5 @@
 import { S3Client } from '@aws-sdk/client-s3';
-import { initializeApp } from 'firebase-admin';
+import * as firebaseAdmin from 'firebase-admin';
 
 export const s3 = new S3Client({
   credentials: {
@@ -12,7 +12,7 @@ export const s3 = new S3Client({
   region: 'auto',
 });
 
-export const admin = initializeApp();
+export const admin = firebaseAdmin.initializeApp();
 
 export const db = admin.firestore();
 export const rtdb = admin.database();

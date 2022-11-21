@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { connectAuthEmulator, getAuth } from 'firebase/auth';
 import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
+import { connectFunctionsEmulator, getFunctions } from 'firebase/functions';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBQjTfZAeing_fF39k9OnrScLd8cuYdp5c',
@@ -21,6 +22,13 @@ connectFirestoreEmulator(
   db,
   import.meta.env.VITE_FIREBASE_FIRESTORE_HOST,
   import.meta.env.VITE_FIREBASE_FIRESTORE_PORT
+);
+
+export const functions = getFunctions();
+connectFunctionsEmulator(
+  functions,
+  import.meta.env.VITE_FIREBASE_FUNCTIONS_HOST,
+  import.meta.env.VITE_FIREBASE_FUNCTIONS_PORT
 );
 
 export default app;

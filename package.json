@@ -21,7 +21,7 @@
     "dev:client": "yarn workspace client run dev",
     "build:client": "yarn workspace clien run build",
     "preview:client": "yarn workspace client run preview",
-    "emulator:firebase": "firebase emulators:start",
+    "emulator:firebase": "firebase emulators:start --import ./packages/client/emulator-data --export-on-exit",
     "ganache": "ganache --chain.chainId 31337 -m 'test test test test test test test test test test test junk'",
     "build:functions": "yarn workspace functions build",
     "watch:functions": "yarn workspace functions build:watch",

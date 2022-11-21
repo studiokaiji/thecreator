@@ -1,16 +1,9 @@
 import { signInWithCustomToken } from 'firebase/auth';
+import { httpsCallable } from 'firebase/functions';
 import { useEffect, useState } from 'react';
 
-import { auth } from '@/firebase';
+import { auth, functions } from '@/firebase';
 import { connectors, useWallet } from '@/hooks/useWallet';
-
-type NonceResponse = {
-  nonce: string;
-};
-
-type VerifyResponse = {
-  token: string;
-};
 
 const toHex = (v: string) =>
   v
@@ -37,50 +30,38 @@ export const useAuth = () => {
 
     setNeedAuth(false);
 
-    // Fetch nonce
-    const headers = {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    };
-    const nonceRes = await fetch(
-      `${import.meta.env.VITE_FIREBASE_FUNCTIONS_ENDPOINT}/getNonceToSign`,
-      {
-        body: JSON.stringify({ address: account }),
-        headers,
-        method: 'POST',
-        mode: 'cors',
-      }
-    );
-    if (nonceRes.status !== 200)
-      throw Error(`Failed to fetch nonce. Reason: ${nonceRes.statusText}`);
-
-    const { nonce }: NonceResponse = await nonceRes.json();
+    const { data: nonceData } = await httpsCallable<
+      { address: string },
+      { nonce: string }
+    >(
+      functions,
+      'getNonceToSign'
+    )({ address: account }).catch((e) => {
+      throw Error(`Failed to fetch nonce. Reason: ${e.message}`);
+    });
 
     // Sign to nonce
     const signature = await library.send('personal_sign', [
-      `0x${toHex(nonce)}`,
+      `0x${toHex(nonceData.nonce)}`,
       account,
     ]);
 
     // Verify signature
-    const verifyRes = await fetch(
-      `${import.meta.env.VITE_FIREBASE_FUNCTIONS_ENDPOINT}/verifySignedMessage`,
+    const { data: verifyData } = await httpsCallable<
       {
-        body: JSON.stringify({ address: account, signature }),
-        headers,
-        method: 'POST',
-        mode: 'cors',
-      }
-    );
-    if (verifyRes.status !== 200)
-      throw Error(
-        `Failed to verify signature. Reason: ${verifyRes.statusText}`
-      );
-
-    const { token }: VerifyResponse = await verifyRes.json();
+        address: string;
+        signature: string;
+      },
+      { token: string }
+    >(
+      functions,
+      'verifySignedMessage'
+    )({ address: account, signature }).catch((e) => {
+      throw Error(`Failed to verify signature. Reason: ${e.message}`);
+    });
 
     // Sign in with custom token
-    const { user } = await signInWithCustomToken(auth, token);
+    const { user } = await signInWithCustomToken(auth, verifyData.token);
     return user;
   };
 
