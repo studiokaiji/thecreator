@@ -4,7 +4,9 @@ import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
+import Paper from '@mui/material/Paper';
 import Select from '@mui/material/Select';
+import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { setDoc } from 'firebase/firestore';
@@ -13,6 +15,7 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
+import { MainSpacingLayout } from '@/components/layout/MainSpacingLayout';
 import { getCreatorDocRef } from '@/converters/creators';
 import { useOnlyValidNetwork } from '@/hooks/useOnlyValidNetwork';
 import { useWallet } from '@/hooks/useWallet';
@@ -88,6 +91,10 @@ export const CreatePage = () => {
         updatedAt: new Date(),
       }).catch((e) => console.error(e));
     })().catch((e) => {
+      if (e.code === 'ACTION_REJECTED') {
+        back();
+        return;
+      }
       setStatus('failedToSendTx');
       setErrorMessage(JSON.stringify(e, null, 2));
     });
@@ -104,48 +111,63 @@ export const CreatePage = () => {
 
   return (
     <Box sx={{ m: 'auto' }}>
-      <Typography align="center" variant="h3">
-        {t('becomeACreator')}
-      </Typography>
-      {status === 'typing' ? (
-        <form>
-          <TextField
-            {...register('creatorName')}
-            label={t('creatorName')}
-            sx={{ width: '100%' }}
-            variant="standard"
-          />
-          <FormControl sx={{ width: '100%' }} variant="standard">
-            <InputLabel>{t('receiveToken')}</InputLabel>
-            <Select {...register('receiveToken')} defaultValue="usdc">
-              <MenuItem value="weth">ETH(WETH)</MenuItem>
-              <MenuItem value="usdc">USDC</MenuItem>
-            </Select>
-          </FormControl>
-          <Button onClick={onClickCreatePageButtonHandler} variant="contained">
-            {t('create')}
-          </Button>
-        </form>
-      ) : (
-        <Box sx={{ textAlign: 'center' }}>
-          <Typography variant="h6">{t(status)}</Typography>
-          {txHash && <Typography>Transaction Hash: {txHash}</Typography>}
-          {contractAddress && status === 'deployed' && (
-            <>
-              <Typography>Contract Address: {contractAddress}</Typography>
-              <Link to="/edit">{t('goToCreatorConsole')}</Link>
-            </>
-          )}
-          {errorMessage && (
-            <>
-              <Typography color="red">{errorMessage}</Typography>
-              <Button onClick={back} variant="contained">
-                {t('backToInput')}
-              </Button>
-            </>
-          )}
-        </Box>
-      )}
+      <MainSpacingLayout>
+        <Paper sx={{ maxWidth: 560, mx: 'auto', p: 3 }}>
+          <Typography align="center" sx={{ lineHeight: 1 }} variant="h4">
+            {t('becomeACreator')}
+          </Typography>
+          <Box sx={{ mt: 2 }}>
+            {status === 'typing' ? (
+              <Stack component="form" spacing={2}>
+                <TextField
+                  {...register('creatorName')}
+                  label={t('creatorName')}
+                  sx={{ width: '100%' }}
+                  variant="standard"
+                />
+                <FormControl sx={{ width: '100%' }} variant="standard">
+                  <InputLabel>{t('receiveToken')}</InputLabel>
+                  <Select {...register('receiveToken')} defaultValue="usdc">
+                    <MenuItem value="weth">ETH(WETH)</MenuItem>
+                    <MenuItem value="usdc">USDC</MenuItem>
+                  </Select>
+                </FormControl>
+                <Button
+                  onClick={onClickCreatePageButtonHandler}
+                  variant="contained"
+                >
+                  {t('create')}
+                </Button>
+              </Stack>
+            ) : (
+              <Stack spacing={3} sx={{ textAlign: 'center' }}>
+                <Typography>{t(status)}</Typography>
+                {txHash && <Typography>Transaction Hash: {txHash}</Typography>}
+                {contractAddress && status === 'deployed' && (
+                  <>
+                    <Typography>Contract Address: {contractAddress}</Typography>
+                    <Link to="/edit">{t('goToCreatorConsole')}</Link>
+                  </>
+                )}
+                {errorMessage && (
+                  <>
+                    <Typography
+                      color="red"
+                      component="pre"
+                      sx={{ textAlign: 'left' }}
+                    >
+                      {errorMessage}
+                    </Typography>
+                    <Button onClick={back} variant="contained">
+                      {t('backToInput')}
+                    </Button>
+                  </>
+                )}
+              </Stack>
+            )}
+          </Box>
+        </Paper>
+      </MainSpacingLayout>
     </Box>
   );
 };
