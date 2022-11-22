@@ -6,7 +6,7 @@ import { useCurrentUser } from './useCurrentUser';
 import {
   getCreatorDocRef,
   getCreatorsCollectionRef,
-} from '@/converters/creators';
+} from '@/converters/creatorConverter';
 
 type UseCreatorOpts = {
   contractAddress?: string;
@@ -14,8 +14,9 @@ type UseCreatorOpts = {
 };
 
 export const useCreator = (opts: UseCreatorOpts = {}) => {
+  const { currentUser } = useCurrentUser();
+
   if (!opts.contractAddress && !opts.creatorAddress) {
-    const { currentUser } = useCurrentUser();
     if (currentUser) {
       opts.creatorAddress = currentUser.uid;
     } else if (currentUser === null) {
