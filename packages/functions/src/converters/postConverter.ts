@@ -9,7 +9,7 @@ export type PostDocument = {
   title: string;
   description: string;
   createdAt: Date;
-  lastChangedAt: Date;
+  updatedAt: Date;
 };
 
 export const postConverter: FirestoreDataConverter<PostDocument> = {
@@ -26,7 +26,7 @@ export const postConverter: FirestoreDataConverter<PostDocument> = {
       contentsType: data.contentsType,
       createdAt: (data.createdAt as Timestamp).toDate(),
       description: data.description,
-      lastChangedAt: (data.createdAt as Timestamp).toDate(),
+      updatedAt: (data.updatedAt as Timestamp).toDate(),
       planId: data.planId,
       title: data.title,
     };
