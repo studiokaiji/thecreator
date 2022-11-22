@@ -23,20 +23,15 @@ export const creatorConverter: FirestoreDataConverter<WithId<CreatorDocData>> =
       data.id = snapshot.id;
       return data as WithId<CreatorDocData>;
     },
-    toFirestore: ({
-      creatorAddress,
-      creatorName,
-      description,
-      pinningPostId,
-    }) => {
-      if (!creatorAddress || !creatorName || !description || !pinningPostId) {
+    toFirestore: (data) => {
+      if (Object.values(data).every((v) => v === undefined)) {
         throw Error('Required values are not specified.');
       }
       return {
-        creatorAddress,
-        creatorName,
-        description,
-        pinningPostId,
+        creatorAddress: data.creatorAddress,
+        creatorName: data.creatorName,
+        description: data.description,
+        pinningPostId: data.pinningPostId,
         updatedAt: serverTimestamp(),
       };
     },

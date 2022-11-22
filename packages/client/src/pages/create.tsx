@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
+import Link from '@mui/material/Link';
 import MenuItem from '@mui/material/MenuItem';
 import Paper from '@mui/material/Paper';
 import Select from '@mui/material/Select';
@@ -13,7 +14,6 @@ import { setDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 
 import { MainSpacingLayout } from '@/components/layout/MainSpacingLayout';
 import { MainLoading } from '@/components/standalone/MainLoading';
@@ -76,6 +76,7 @@ export const CreatePage = () => {
       setTxHash(txRes.hash);
 
       const txReceipt = await txRes.wait();
+
       setStatus('deployed');
 
       const event = txReceipt.events?.filter(
@@ -95,8 +96,9 @@ export const CreatePage = () => {
         id: '',
         pinningPostId: '',
         updatedAt: new Date(),
-      }).catch((e) => console.error(e));
+      }).catch(console.error);
     })().catch((e) => {
+      console.log(e);
       if (e.code === 'ACTION_REJECTED') {
         back();
         return;
@@ -133,7 +135,7 @@ export const CreatePage = () => {
   return (
     <Box sx={{ m: 'auto' }}>
       <MainSpacingLayout>
-        <Paper sx={{ maxWidth: 560, mx: 'auto', p: 3 }}>
+        <Paper sx={{ maxWidth: 600, mx: 'auto', p: 3 }}>
           <Typography align="center" sx={{ lineHeight: 1 }} variant="h4">
             {t('becomeACreator')}
           </Typography>
@@ -163,12 +165,17 @@ export const CreatePage = () => {
             ) : (
               <Stack spacing={3} sx={{ textAlign: 'center' }}>
                 <Typography>{t(status)}</Typography>
-                {txHash && <Typography>Transaction Hash: {txHash}</Typography>}
-                {contractAddress && status === 'deployed' && (
+                {contractAddress && status === 'deployed' ? (
                   <>
                     <Typography>Contract Address: {contractAddress}</Typography>
-                    <Link to="/edit">{t('goToCreatorConsole')}</Link>
+                    <Link href="/edit/profile">{t('goToCreatorConsole')}</Link>
                   </>
+                ) : (
+                  txHash && (
+                    <Typography variant="body2">
+                      Transaction Hash: {txHash}
+                    </Typography>
+                  )
                 )}
                 {errorMessage && (
                   <>
