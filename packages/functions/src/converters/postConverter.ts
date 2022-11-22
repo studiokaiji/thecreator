@@ -8,7 +8,6 @@ export type PostDocument = {
   planId: string;
   title: string;
   description: string;
-  createdAt: Date;
   updatedAt: Date;
 };
 
@@ -24,7 +23,6 @@ export const postConverter: FirestoreDataConverter<PostDocument> = {
     return {
       contentsCount: data.contentsCount,
       contentsType: data.contentsType,
-      createdAt: (data.createdAt as Timestamp).toDate(),
       description: data.description,
       updatedAt: (data.updatedAt as Timestamp).toDate(),
       planId: data.planId,
@@ -32,6 +30,7 @@ export const postConverter: FirestoreDataConverter<PostDocument> = {
     };
   },
   toFirestore: (data) => {
-    return data;
+    const updatedAt = data.updatedAt && Timestamp.fromDate(data.updatedAt);
+    return { ...data, updatedAt };
   },
 };
