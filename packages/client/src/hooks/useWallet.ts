@@ -11,7 +11,7 @@ export const connectors = {
     qrcode: true,
     rpc: {
       [import.meta.env.VITE_CHAIN_ID]: import.meta.env
-        .VITE_POLYGON_MAINNET_WALLET_PROVIDER_RPC_URL,
+        .VITE_WALLET_PROVIDER_RPC_URL,
     },
   }),
 };
