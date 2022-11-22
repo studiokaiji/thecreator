@@ -30,7 +30,7 @@ export const postConverter: FirestoreDataConverter<PostDocument> = {
     };
   },
   toFirestore: (data) => {
-    const updatedAt = data.updatedAt && Timestamp.fromDate(data.updatedAt);
+    const updatedAt = Timestamp.now();
     return { ...data, updatedAt };
   },
 };
