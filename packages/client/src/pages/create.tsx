@@ -10,13 +10,15 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { setDoc } from 'firebase/firestore';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { MainSpacingLayout } from '@/components/layout/MainSpacingLayout';
+import { MainLoading } from '@/components/standalone/MainLoading';
 import { getCreatorDocRef } from '@/converters/creators';
+import { useCreator } from '@/hooks/useCreator';
 import { useOnlyValidNetwork } from '@/hooks/useOnlyValidNetwork';
 import { useWallet } from '@/hooks/useWallet';
 
@@ -43,6 +45,10 @@ export const CreatePage = () => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const { account, library, switchChain } = useWallet();
+
+  const { data, error } = useCreator();
+
+  const [loading, setLoading] = useState(true);
 
   useOnlyValidNetwork();
 
@@ -108,6 +114,21 @@ export const CreatePage = () => {
     setContractAddress('');
     setErrorMessage('');
   };
+
+  useEffect(() => {
+    if (!data && !error) {
+      setLoading(true);
+      return;
+    }
+    if (!data) {
+      setLoading(false);
+      return;
+    }
+  }, [data, error]);
+
+  if (loading) {
+    return <MainLoading />;
+  }
 
   return (
     <Box sx={{ m: 'auto' }}>
