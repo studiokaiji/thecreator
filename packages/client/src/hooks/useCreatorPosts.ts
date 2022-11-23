@@ -1,6 +1,8 @@
 import {
   collection,
   getDocs,
+  limit,
+  orderBy,
   query,
   QueryConstraint,
 } from 'firebase/firestore';
@@ -9,9 +11,9 @@ import useSWR from 'swr';
 import { creatorConverter } from '@/converters/creatorConverter';
 import { db } from '@/firebase';
 
-export const useCreatorPosts = async (
+export const useCreatorPosts = (
   creatorContractAddress: string,
-  queries: QueryConstraint[] = []
+  queries: QueryConstraint[] = [limit(10), orderBy('createdAt', 'desc')]
 ) => {
   const postsRef = collection(
     db,
@@ -20,7 +22,7 @@ export const useCreatorPosts = async (
 
   const fetcher = async () => {
     const docsSnapshot = await getDocs(query(postsRef, ...queries));
-    docsSnapshot.docs
+    docsSnapshot.docs;
   };
 
   return useSWR(postsRef.path, fetcher);
