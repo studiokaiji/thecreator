@@ -1,4 +1,5 @@
 import { Web3Provider } from '@ethersproject/providers';
+import { initializeMeltApp } from '@studiokaiji/meltjs';
 import { useWeb3React } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
@@ -19,11 +20,21 @@ export const connectors = {
 export const useWallet = () => {
   const web3React = useWeb3React<Web3Provider>();
 
-  const activate = (
+  const activate = async (
     connector: keyof typeof connectors,
     onError?: (error: Error) => void,
     throwErrors?: boolean
-  ) => web3React.activate(connectors[connector], onError, throwErrors);
+  ) => {
+    return web3React.activate(connectors[connector], onError, throwErrors);
+  };
+
+  const getMeltApp = () =>
+    initializeMeltApp({
+      ethereum: web3React.library?.provider,
+      provider: {
+        url: import.meta.env.VITE_RPC_ENDPOINT_URL,
+      },
+    });
 
   const switchChain = async () => {
     if (!web3React.library) throw Error('Not connected wallet');
@@ -72,5 +83,5 @@ export const useWallet = () => {
 
   const account = web3React.account?.toLowerCase();
 
-  return { ...web3React, account, activate, switchChain };
+  return { ...web3React, account, activate, getMeltApp, switchChain };
 };
