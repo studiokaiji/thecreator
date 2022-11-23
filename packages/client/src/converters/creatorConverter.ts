@@ -28,6 +28,7 @@ export const creatorConverter: FirestoreDataConverter<WithId<CreatorDocData>> =
         throw Error('Required values are not specified.');
       }
       return {
+        createdAt: Timestamp.fromDate(data.createdAt as Date),
         creatorAddress: data.creatorAddress,
         creatorName: data.creatorName,
         description: data.description,

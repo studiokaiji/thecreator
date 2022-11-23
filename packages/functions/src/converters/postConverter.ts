@@ -2,13 +2,14 @@ import { FirestoreDataConverter, Timestamp } from 'firebase-admin/firestore';
 
 const validContentsTypes = ['audio', 'text', 'images'];
 
-export type PostDocument = {
+export type PostDocument<T extends Date | Timestamp = Date> = {
   contentsType: 'audio' | 'text' | 'images';
   contentsCount: number;
   planId: string;
   title: string;
   description: string;
-  updatedAt: Date;
+  updatedAt: T;
+  createdAt: T;
 };
 
 export const postConverter: FirestoreDataConverter<PostDocument> = {
@@ -27,10 +28,10 @@ export const postConverter: FirestoreDataConverter<PostDocument> = {
       updatedAt: (data.updatedAt as Timestamp).toDate(),
       planId: data.planId,
       title: data.title,
+      createdAt: (data.createdAt as Timestamp).toDate(),
     };
   },
   toFirestore: (data) => {
-    const updatedAt = Timestamp.now();
-    return { ...data, updatedAt };
+    return data;
   },
 };
