@@ -24,11 +24,10 @@ export const creatorConverter: FirestoreDataConverter<WithId<CreatorDocData>> =
       return data as WithId<CreatorDocData>;
     },
     toFirestore: (data) => {
-      if (Object.values(data).every((v) => v === undefined)) {
-        throw Error('Required values are not specified.');
-      }
       return {
-        createdAt: Timestamp.fromDate(data.createdAt as Date),
+        createdAt: data.createdAt
+          ? Timestamp.fromDate(data.createdAt as Date)
+          : undefined,
         creatorAddress: data.creatorAddress,
         creatorName: data.creatorName,
         description: data.description,

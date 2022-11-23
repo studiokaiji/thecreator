@@ -1,6 +1,10 @@
 import { initializeApp } from 'firebase/app';
 import { connectAuthEmulator, getAuth } from 'firebase/auth';
-import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
+import {
+  connectFirestoreEmulator,
+  getFirestore,
+  initializeFirestore,
+} from 'firebase/firestore';
 import { connectFunctionsEmulator, getFunctions } from 'firebase/functions';
 
 const firebaseConfig = {
@@ -17,7 +21,11 @@ export const app = initializeApp(firebaseConfig);
 export const auth = getAuth();
 connectAuthEmulator(auth, import.meta.env.VITE_FIREBASE_AUTH_ENDPOINT);
 
-export const db = getFirestore();
+initializeFirestore(app, {
+  ignoreUndefinedProperties: true,
+});
+export const db = getFirestore(app);
+
 connectFirestoreEmulator(
   db,
   import.meta.env.VITE_FIREBASE_FIRESTORE_HOST,
