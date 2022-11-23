@@ -1,8 +1,10 @@
 import CssBaseline from '@mui/material/CssBaseline';
 import { Web3ReactProvider } from '@web3-react/core';
 import { providers } from 'ethers';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import '@/firebase';
+
+import { NotFound } from './pages/404';
 
 import { NavLayout } from '@/components/layout/NavLayout';
 import { AuthProvider } from '@/contexts/AuthContext';
@@ -28,10 +30,15 @@ function App() {
                 <Route element={<IndexPage />} path="/" />
                 <Route element={<CreatePage />} path="/create" />
                 <Route
+                  element={<Navigate replace to="/edit/profile#posts" />}
+                  path="/edit"
+                />
+                <Route
                   element={<EditCreatorProfilePage />}
                   path="/edit/profile"
                 />
                 <Route element={<SupportersPage />} path="/edit/supporters" />
+                <Route element={<NotFound />} path="/*" />
               </Routes>
             </NavLayout>
           </BrowserRouter>
