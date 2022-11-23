@@ -22,7 +22,7 @@ export const useCreatorPosts = (
 
   const fetcher = async () => {
     const docsSnapshot = await getDocs(query(postsRef, ...queries));
-    docsSnapshot.docs;
+    return docsSnapshot.docs.map((doc) => doc.data);
   };
 
   return useSWR(postsRef.path, fetcher);
