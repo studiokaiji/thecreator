@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next';
 
 import { MainSpacingLayout } from '@/components/layout/MainSpacingLayout';
 import { MainLoading } from '@/components/standalone/MainLoading';
-import { getCreatorDocRef } from '@/converters/creators';
+import { getCreatorDocRef } from '@/converters/creatorConverter';
 import { useCreator } from '@/hooks/useCreator';
 import { useOnlyValidNetwork } from '@/hooks/useOnlyValidNetwork';
 import { useWallet } from '@/hooks/useWallet';
