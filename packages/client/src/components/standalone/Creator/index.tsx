@@ -2,28 +2,21 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
-import { MainLoading } from '../MainLoading';
-
 import { ActionButtons } from './ActionButton';
 import { ProfileImages } from './ProfileImages';
 import { Sections } from './Sections';
 import { Plans } from './plans';
 import { Posts } from './posts';
 
-import { useCreator } from '@/hooks/useCreator';
+import { CreatorDocData } from '#types/firestore/creator';
 import { useWindowSize } from '@/hooks/useWindowSize';
 
 type CreatorProps = {
   editable: boolean;
+  data: WithId<CreatorDocData>;
 };
 
-export const Creator = ({ editable }: CreatorProps) => {
-  const { data, error } = useCreator();
-
-  if (!data && !error) {
-    return <MainLoading />;
-  }
-
+export const Creator = ({ data, editable }: CreatorProps) => {
   const { width } = useWindowSize();
   const minimize = editable ? width < 620 : width < 320;
 
@@ -35,18 +28,18 @@ export const Creator = ({ editable }: CreatorProps) => {
           <ActionButtons editable={editable} minimize={minimize} />
           <Stack spacing={2}>
             <Typography sx={{ fontSize: '2rem' }} variant="h1">
-              {data?.creatorName}
+              {data.creatorName}
             </Typography>
-            <Typography>{data?.description}</Typography>
+            <Typography>{data.description}</Typography>
           </Stack>
         </Stack>
         <Box>
           <Box sx={{ maxWidth: 640, mx: 'auto' }}>
             <Sections
               plansSection={
-                <Plans contractAddress={data?.id || ''} editable={editable} />
+                <Plans contractAddress={data.id || ''} editable={editable} />
               }
-              postsSection={<Posts editable={editable} id={data?.id || ''} />}
+              postsSection={<Posts editable={editable} id={data.id || ''} />}
             />
           </Box>
         </Box>
