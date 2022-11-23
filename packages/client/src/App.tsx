@@ -2,14 +2,15 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { Web3ReactProvider } from '@web3-react/core';
 import { providers } from 'ethers';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import './firebase';
+import '@/firebase';
 
-import { NavLayout } from './components/layout/NavLayout';
-import { AuthProvider } from './contexts/AuthContext';
-import { IndexPage } from './pages';
-import { CreatePage } from './pages/create';
-import { EditCreatorProfilePage } from './pages/edit/profile';
-import { CustomThemeProvider } from './theme';
+import { NavLayout } from '@/components/layout/NavLayout';
+import { AuthProvider } from '@/contexts/AuthContext';
+import { IndexPage } from '@/pages';
+import { CreatePage } from '@/pages/create';
+import { EditCreatorProfilePage } from '@/pages/edit/profile';
+import { SupportersPage } from '@/pages/edit/supporters';
+import { CustomThemeProvider } from '@/theme';
 
 const getLibrary = (provider: any) => {
   return new providers.Web3Provider(provider);
@@ -30,6 +31,7 @@ function App() {
                   element={<EditCreatorProfilePage />}
                   path="/edit/profile"
                 />
+                <Route element={<SupportersPage />} path="/edit/supporters" />
               </Routes>
             </NavLayout>
           </BrowserRouter>
