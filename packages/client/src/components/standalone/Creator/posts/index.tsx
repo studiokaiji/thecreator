@@ -3,7 +3,17 @@ import Stack from '@mui/material/Stack';
 import { AudioPostCard } from './AudioPostCard';
 import { PostCard } from './PostCard';
 
-export const Posts = () => {
+import { useCreatorPosts } from '@/hooks/useCreatorPosts';
+
+type PostsProps = { id: string; editable: boolean };
+
+export const Posts = ({ editable, id }: PostsProps) => {
+  const { data, error } = useCreatorPosts(id);
+
+  if (error) {
+    console.log(error);
+  }
+
   return (
     <Stack spacing={3}>
       <AudioPostCard
