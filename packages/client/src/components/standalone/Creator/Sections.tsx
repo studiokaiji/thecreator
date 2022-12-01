@@ -5,45 +5,50 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { MinimalLink } from '@/components/helpers/MinimalLink';
 
-type SectionsProps = {
-  postsSection: ReactNode;
-  plansSection: ReactNode;
+type Section = {
+  component: ReactNode;
+  i18nKey: string;
+  hash?: string;
 };
 
-export const Sections = ({ plansSection, postsSection }: SectionsProps) => {
+type SectionsProps = {
+  sections: Section[];
+};
+
+export const Sections = ({ sections }: SectionsProps) => {
+  const validHashes = sections.map(
+    ({ hash, i18nKey }) => hash || `#${i18nKey}`
+  );
+
   const { hash } = useLocation();
   const navigate = useNavigate();
 
   const { t } = useTranslation();
 
   useEffect(() => {
-    if (!hash || hash === '#' || (hash !== '#posts' && hash !== '#plans')) {
+    if (!hash || hash === '#' || !validHashes.includes(hash)) {
       return navigate('#posts');
     }
   }, [hash]);
 
+  const selectedSectionIndex = validHashes.findIndex((h) => h === hash);
+
   return (
     <Stack spacing={5}>
       <Stack direction="row" spacing={2} sx={{ fontWeight: 500, mx: 'auto' }}>
-        <MinimalLink
-          sx={{
-            borderBottom: hash === '#posts' ? '2px solid black' : '',
-          }}
-          to="#posts"
-        >
-          {t('posts')}
-        </MinimalLink>
-        <MinimalLink
-          sx={{
-            borderBottom: hash === '#plans' ? '2px solid black' : '',
-          }}
-          to="#plans"
-        >
-          {t('plans')}
-        </MinimalLink>
+        {sections.map((section, i) => (
+          <MinimalLink
+            key={`section-selector-${section.i18nKey}`}
+            sx={{
+              borderBottom: hash === '#posts' ? '2px solid black' : '',
+            }}
+            to={validHashes[i]}
+          >
+            {t(section.i18nKey)}
+          </MinimalLink>
+        ))}
       </Stack>
-      {hash === '#posts' && postsSection}
-      {hash === '#plans' && plansSection}
+      {sections[selectedSectionIndex].component || <div />}
     </Stack>
   );
 };
