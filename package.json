@@ -19,7 +19,6 @@
     "compile:hardhat": "yarn workspace hardhat hardhat compile",
     "test:hardhat": "yarn workspace hardhat hardhat test",
     "deploy:hardhat": "yarn workspace hardhat hardhat deploy",
-    "local-deploy:hardhat": "yarn run deploy:hardhat --network localhost",
     "dev:client": "yarn workspace client run dev",
     "build:client": "yarn workspace clien run build",
     "preview:client": "yarn workspace client run preview",

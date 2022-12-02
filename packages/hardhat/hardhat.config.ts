@@ -4,8 +4,9 @@ import '@nomiclabs/hardhat-ethers';
 import '@nomiclabs/hardhat-waffle';
 import '@unlock-protocol/hardhat-plugin';
 import './tasks/deploy_melt';
-import './tasks/local-setup';
+import './tasks/local-setup_melt';
 import './tasks/deploy';
+import './tasks/local-setup';
 
 const config: HardhatUserConfig = {
   solidity: {
