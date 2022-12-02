@@ -17,5 +17,8 @@
     "ts-node": "^10.9.1",
     "typechain": "^8.1.0",
     "yargs": "^17.6.0"
+  },
+  "dependencies": {
+    "@unlock-protocol/hardhat-plugin": "^0.0.18"
   }
 }

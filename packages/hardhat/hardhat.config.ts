@@ -2,8 +2,10 @@ import { HardhatUserConfig } from 'hardhat/config';
 import '@typechain/hardhat';
 import '@nomiclabs/hardhat-ethers';
 import '@nomiclabs/hardhat-waffle';
-import './tasks/deploy';
+import '@unlock-protocol/hardhat-plugin';
+import './tasks/deploy_melt';
 import './tasks/local-setup';
+import './tasks/deploy';
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -22,6 +24,11 @@ const config: HardhatUserConfig = {
   typechain: {
     outDir: './typechain-types',
     target: 'ethers-v5', // defaults to false
+  },
+  unlock: {
+    12345: {
+      name: 'unlock',
+    },
   },
 };
 
