@@ -4880,6 +4880,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@unlock-protocol/contracts@npm:^0.0.14":
+  version: 0.0.14
+  resolution: "@unlock-protocol/contracts@npm:0.0.14"
+  checksum: 3bd241068f509b15967c1bb7175e8ffaab48b8b92774b84349384fc9c5d548737f717912bba51511e0f0b1cce39cef721022fc1ae15e4c71f0d3244adbb92b90
+  languageName: node
+  linkType: hard
+
 "@unlock-protocol/hardhat-plugin@npm:^0.0.18":
   version: 0.0.18
   resolution: "@unlock-protocol/hardhat-plugin@npm:0.0.18"
@@ -7303,6 +7310,7 @@ __metadata:
     "@studiokaiji/meltjs": 0.1.0-alpha.8
     "@types/react": ^18.0.17
     "@types/react-dom": ^18.0.6
+    "@unlock-protocol/contracts": ^0.0.14
     "@vitejs/plugin-react": ^2.1.0
     "@web3-react/core": ^6.1.9
     "@web3-react/injected-connector": ^6.0.7
