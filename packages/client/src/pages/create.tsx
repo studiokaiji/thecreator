@@ -1,12 +1,7 @@
-import { TheCreatorProductFactory__factory } from '@contracts';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
 import Link from '@mui/material/Link';
-import MenuItem from '@mui/material/MenuItem';
 import Paper from '@mui/material/Paper';
-import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
@@ -22,98 +17,55 @@ import { useCreator } from '@/hooks/useCreator';
 import { useOnlyValidNetwork } from '@/hooks/useOnlyValidNetwork';
 import { useWallet } from '@/hooks/useWallet';
 
-type ReceiveToken = 'weth' | 'usdc';
-
 type CreatePageInputs = {
   creatorName: string;
-  receiveToken: ReceiveToken;
-};
-
-const tokenAddresses: { [token in ReceiveToken]: string } = {
-  usdc: import.meta.env.VITE_USDC_ADDRESS,
-  weth: import.meta.env.VITE_WETH_ADDRESS,
+  description: string;
 };
 
 export const CreatePage = () => {
   const { getValues, register } = useForm<CreatePageInputs>();
 
-  const [txHash, setTxHash] = useState('');
-  const [status, setStatus] = useState<
-    'typing' | 'waitingSendTx' | 'deploying' | 'deployed' | 'failedToSendTx'
-  >('typing');
-  const [contractAddress, setContractAddress] = useState('');
+  const [status, setStatus] = useState<'typing' | 'success' | 'failed'>(
+    'typing'
+  );
   const [errorMessage, setErrorMessage] = useState('');
 
-  const { account, library, switchChain } = useWallet();
+  const { account } = useWallet();
 
-  const { data, error } = useCreator();
+  const { data, error } = useCreator({ creatorAddress: account });
 
   const [loading, setLoading] = useState(true);
 
   useOnlyValidNetwork();
 
-  const onClickCreatePageButtonHandler = () => {
-    if (!library || !account) return;
+  const onClickCreatePageButtonHandler = async () => {
+    if (!account) return;
 
-    const { creatorName, receiveToken } = getValues();
+    const { creatorName, description } = getValues();
 
-    (async () => {
-      setStatus('waitingSendTx');
+    const docRef = getCreatorDocRef(account);
 
-      await switchChain();
-
-      const factoryContract = TheCreatorProductFactory__factory.connect(
-        import.meta.env.VITE_PRODUCT_FACTORY_CONTRACT_ADDRESS,
-        library.getSigner()
-      );
-
-      const txRes = await factoryContract.create(
-        creatorName,
-        'SYMBOL',
-        tokenAddresses[receiveToken]
-      );
-      setStatus('deploying');
-      setTxHash(txRes.hash);
-
-      const txReceipt = await txRes.wait();
-
-      setStatus('deployed');
-
-      const event = txReceipt.events?.filter(
-        ({ event }) => event === 'Deployed'
-      )[0];
-      if (!event || !event.args) throw Error('Invalid event');
-
-      const contractAddress = event.args.product;
-      setContractAddress(contractAddress);
-
-      const docRef = getCreatorDocRef(contractAddress);
-
+    try {
       await setDoc(docRef, {
-        creatorAddress: account,
+        createdAt: new Date(),
         creatorName,
-        description: '',
+        description,
         id: '',
         pinningPostId: '',
         updatedAt: new Date(),
-      }).catch(console.error);
-    })().catch((e) => {
-      console.log(e);
-      if (e.code === 'ACTION_REJECTED') {
-        back();
-        return;
-      }
-      setStatus('failedToSendTx');
-      setErrorMessage(JSON.stringify(e, null, 2));
-    });
+      });
+      setStatus('success');
+    } catch (e) {
+      console.error(e);
+      setStatus('failed');
+      setErrorMessage(String(e));
+    }
   };
 
   const { t } = useTranslation();
 
   const back = () => {
     setStatus('typing');
-    setTxHash('');
-    setContractAddress('');
     setErrorMessage('');
   };
 
@@ -141,20 +93,19 @@ export const CreatePage = () => {
           </Typography>
           <Box sx={{ mt: 2 }}>
             {status === 'typing' ? (
-              <Stack component="form" spacing={2}>
+              <Stack component="form" spacing={1.5}>
                 <TextField
                   {...register('creatorName')}
                   label={t('creatorName')}
-                  sx={{ width: '100%' }}
                   variant="standard"
                 />
-                <FormControl sx={{ width: '100%' }} variant="standard">
-                  <InputLabel>{t('receiveToken')}</InputLabel>
-                  <Select {...register('receiveToken')} defaultValue="usdc">
-                    <MenuItem value="weth">ETH(WETH)</MenuItem>
-                    <MenuItem value="usdc">USDC</MenuItem>
-                  </Select>
-                </FormControl>
+                <TextField
+                  {...register('description')}
+                  multiline
+                  label={t('description')}
+                  rows={3}
+                  variant="standard"
+                />
                 <Button
                   onClick={onClickCreatePageButtonHandler}
                   variant="contained"
@@ -164,20 +115,12 @@ export const CreatePage = () => {
               </Stack>
             ) : (
               <Stack spacing={3} sx={{ textAlign: 'center' }}>
-                <Typography>{t(status)}</Typography>
-                {contractAddress && status === 'deployed' ? (
+                {status === 'success' ? (
                   <>
-                    <Typography>Contract Address: {contractAddress}</Typography>
+                    <Typography variant="h6">{t('success')}</Typography>
                     <Link href="/edit/profile">{t('goToCreatorConsole')}</Link>
                   </>
                 ) : (
-                  txHash && (
-                    <Typography variant="body2">
-                      Transaction Hash: {txHash}
-                    </Typography>
-                  )
-                )}
-                {errorMessage && (
                   <>
                     <Typography
                       color="red"
