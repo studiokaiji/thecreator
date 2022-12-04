@@ -1,1 +1,1 @@
-export type Status = 'typing' | 'success' | 'failed';
+export type Status = 'typing' | 'processing' | 'success' | 'failed';
