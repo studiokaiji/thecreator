@@ -36,10 +36,21 @@ export const Creator = ({ data, editable }: CreatorProps) => {
         <Box>
           <Box sx={{ maxWidth: 640, mx: 'auto' }}>
             <Sections
-              plansSection={
-                <Plans contractAddress={data.id || ''} editable={editable} />
-              }
-              postsSection={<Posts editable={editable} id={data.id || ''} />}
+              sections={[
+                {
+                  component: <Posts editable={editable} id={data.id || ''} />,
+                  i18nKey: 'posts',
+                },
+                {
+                  component: (
+                    <Plans
+                      contractAddress={data.id || ''}
+                      editable={editable}
+                    />
+                  ),
+                  i18nKey: 'plans',
+                },
+              ]}
             />
           </Box>
         </Box>

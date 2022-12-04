@@ -3,6 +3,8 @@ import { ReactNode, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import { MainLoading } from '../MainLoading';
+
 import { MinimalLink } from '@/components/helpers/MinimalLink';
 
 type Section = {
@@ -27,28 +29,32 @@ export const Sections = ({ sections }: SectionsProps) => {
 
   useEffect(() => {
     if (!hash || hash === '#' || !validHashes.includes(hash)) {
-      return navigate('#posts');
+      return navigate(validHashes[0]);
     }
   }, [hash]);
 
   const selectedSectionIndex = validHashes.findIndex((h) => h === hash);
 
-  return (
-    <Stack spacing={5}>
-      <Stack direction="row" spacing={2} sx={{ fontWeight: 500, mx: 'auto' }}>
-        {sections.map((section, i) => (
-          <MinimalLink
-            key={`section-selector-${section.i18nKey}`}
-            sx={{
-              borderBottom: hash === '#posts' ? '2px solid black' : '',
-            }}
-            to={validHashes[i]}
-          >
-            {t(section.i18nKey)}
-          </MinimalLink>
-        ))}
+  if (selectedSectionIndex >= 0) {
+    return (
+      <Stack spacing={5}>
+        <Stack direction="row" spacing={2} sx={{ fontWeight: 500, mx: 'auto' }}>
+          {sections.map((section, i) => (
+            <MinimalLink
+              key={`section-selector-${section.i18nKey}`}
+              sx={{
+                borderBottom: hash === validHashes[i] ? '2px solid black' : '',
+              }}
+              to={validHashes[i]}
+            >
+              {t(section.i18nKey)}
+            </MinimalLink>
+          ))}
+        </Stack>
+        {sections[selectedSectionIndex].component}
       </Stack>
-      {sections[selectedSectionIndex].component || <div />}
-    </Stack>
-  );
+    );
+  }
+
+  return <MainLoading />;
 };
