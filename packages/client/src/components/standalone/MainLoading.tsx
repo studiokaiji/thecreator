@@ -9,6 +9,7 @@ export const MainLoading = () => (
       display: 'flex',
       height: '100vh',
       justifyContent: 'center',
+      textAlign: 'center',
       width: '100%',
     }}
   >
