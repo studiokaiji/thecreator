@@ -48,6 +48,7 @@ export const CreatePage = () => {
     try {
       await setDoc(docRef, {
         createdAt: new Date(),
+        creatorAddress: account,
         creatorName,
         description,
         id: '',
