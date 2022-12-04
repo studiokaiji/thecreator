@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
+import type { Status } from '#types/status';
 import { MainSpacingLayout } from '@/components/layout/MainSpacingLayout';
 import { MainLoading } from '@/components/standalone/MainLoading';
 import { getCreatorDocRef } from '@/converters/creatorConverter';
@@ -25,9 +26,7 @@ type CreatePageInputs = {
 export const CreatePage = () => {
   const { getValues, register } = useForm<CreatePageInputs>();
 
-  const [status, setStatus] = useState<'typing' | 'success' | 'failed'>(
-    'typing'
-  );
+  const [status, setStatus] = useState<Status>('typing');
   const [errorMessage, setErrorMessage] = useState('');
 
   const { account } = useWallet();
