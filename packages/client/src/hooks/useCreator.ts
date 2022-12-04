@@ -1,35 +1,24 @@
 import { getDoc, getDocs, limit, query, where } from 'firebase/firestore';
 import useSWR from 'swr';
 
-import { useCurrentUser } from './useCurrentUser';
-
 import {
   getCreatorDocRef,
   getCreatorsCollectionRef,
 } from '@/converters/creatorConverter';
 
 type UseCreatorOpts = {
-  contractAddress?: string;
+  id?: string;
   creatorAddress?: string;
 };
 
-export const useCreator = (opts: UseCreatorOpts = {}) => {
-  const { currentUser } = useCurrentUser();
-
-  if (!opts.contractAddress && !opts.creatorAddress) {
-    if (currentUser) {
-      opts.creatorAddress = currentUser.uid;
-    } else if (currentUser === null) {
-      throw Error();
+export const useCreator = (opts: UseCreatorOpts) => {
+  const fetcher = async ({ creatorAddress, id }: UseCreatorOpts = {}) => {
+    if (!id && !creatorAddress) {
+      return null;
     }
-  }
 
-  const fetcher = async ({
-    contractAddress,
-    creatorAddress,
-  }: UseCreatorOpts = {}) => {
-    if (contractAddress) {
-      const creatorRef = getCreatorDocRef(contractAddress);
+    if (id) {
+      const creatorRef = getCreatorDocRef(id);
       const snapshot = await getDoc(creatorRef);
       const data = snapshot.data();
       if (!data) {
