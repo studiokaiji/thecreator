@@ -3,7 +3,7 @@ import Fade from '@mui/material/Fade';
 import Modal, { ModalProps } from '@mui/material/Modal';
 
 type CenterModalProps = ModalProps & {
-  width: string | number;
+  width?: string | number;
   maxWidth?: string | number;
   height?: string | number;
   maxHeight?: string | number;
@@ -25,7 +25,7 @@ export const CenterModal = (props: CenterModalProps) => (
           position: 'absolute' as const,
           top: '50%',
           transform: 'translate(-50%, -50%)',
-          width: props.width,
+          width: props.width || 640,
         }}
       >
         {props.children}
