@@ -35,6 +35,8 @@ export const CreatePage = () => {
 
   const [loading, setLoading] = useState(true);
 
+  const { t } = useTranslation();
+
   useOnlyValidNetwork();
 
   const onClickCreatePageButtonHandler = async () => {
@@ -61,8 +63,6 @@ export const CreatePage = () => {
       setErrorMessage(String(e));
     }
   };
-
-  const { t } = useTranslation();
 
   const back = () => {
     setStatus('typing');
