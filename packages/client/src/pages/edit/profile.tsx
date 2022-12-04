@@ -4,9 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { Creator } from '@/components/standalone/Creator';
 import { MainLoading } from '@/components/standalone/MainLoading';
 import { useCreator } from '@/hooks/useCreator';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 export const EditCreatorProfilePage = () => {
-  const { data, error } = useCreator();
+  const { currentUser } = useCurrentUser();
+  const { data, error } = useCreator({ creatorAddress: currentUser?.uid });
 
   const router = useNavigate();
 
