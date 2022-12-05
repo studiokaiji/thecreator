@@ -11,7 +11,7 @@ type PlanCardProps = {
 };
 
 export const PlanCard = ({ description, features, title }: PlanCardProps) => (
-  <Card>
+  <Card sx={{ height: '100%', width: '100%' }}>
     <CardContent sx={{ textAlign: 'center' }}>
       <Typography gutterBottom variant="h6">
         {title}
