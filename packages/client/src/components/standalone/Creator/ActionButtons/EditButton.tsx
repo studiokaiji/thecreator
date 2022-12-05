@@ -15,9 +15,10 @@ import { CenterModal } from '@/components/helpers/CenterModal';
 import { RoundedButton } from '@/components/helpers/RoundedButton';
 import { getCreatorDocRef } from '@/converters/creatorConverter';
 
-type EditModalProps = {
+type EditButtonProps = {
   data: CreatorDocData;
   minimize: boolean;
+  onChangeData: (data: CreatorDocData) => void;
 };
 
 type EditableCreatorDocDataInputs = {
@@ -25,7 +26,11 @@ type EditableCreatorDocDataInputs = {
   description: string;
 };
 
-export const EditButton = ({ data, minimize }: EditModalProps) => {
+export const EditButton = ({
+  data,
+  minimize,
+  onChangeData,
+}: EditButtonProps) => {
   const { getValues, register } = useForm<EditableCreatorDocDataInputs>();
 
   const [status, setStatus] = useState<Status>('typing');
@@ -36,6 +41,8 @@ export const EditButton = ({ data, minimize }: EditModalProps) => {
       const { creatorName, description } = getValues();
       const docRef = getCreatorDocRef(data.id);
       await updateDoc(docRef, { creatorName, description });
+      onChangeData({ ...data, creatorName, description });
+      close();
     } catch (e) {
       console.error(e);
       setStatus('failed');

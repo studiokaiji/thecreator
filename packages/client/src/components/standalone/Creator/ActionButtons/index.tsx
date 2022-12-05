@@ -9,12 +9,14 @@ type ActionButtonsProps = {
   minimize: boolean;
   editable: boolean;
   data: CreatorDocData;
+  onChangeData: (data: CreatorDocData) => void;
 };
 
 export const ActionButtons = ({
   data,
   editable,
   minimize,
+  onChangeData,
 }: ActionButtonsProps) => {
   return (
     <Box
@@ -25,7 +27,13 @@ export const ActionButtons = ({
       }}
     >
       <ShareButton data={data} minimize={minimize} />
-      {editable && <EditButton data={data} minimize={minimize} />}
+      {editable && (
+        <EditButton
+          data={data}
+          minimize={minimize}
+          onChangeData={onChangeData}
+        />
+      )}
     </Box>
   );
 };
