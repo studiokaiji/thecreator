@@ -44,7 +44,7 @@ export const ShareButton = ({
       action: () => {
         navigator.clipboard
           .writeText(url)
-          .then(() => openSnackBar(t('copySuccess'), 'success'));
+          .then(() => openSnackBar(t('copySuccessed'), 'success'));
       },
       displayName: t('copyLink'),
       icon: <LinkIcon />,
