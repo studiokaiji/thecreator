@@ -14,6 +14,7 @@ import { Status } from '#types/status';
 import { CenterModal } from '@/components/helpers/CenterModal';
 import { RoundedButton } from '@/components/helpers/RoundedButton';
 import { getCreatorDocRef } from '@/converters/creatorConverter';
+import { useSnackbar } from '@/hooks/useSnackbar';
 
 type EditButtonProps = {
   data: CreatorDocData;
@@ -35,13 +36,16 @@ export const EditButton = ({
 
   const [status, setStatus] = useState<Status>('typing');
 
+  const { open: openSnackbar } = useSnackbar();
+
   const onClickSaveButtonHandler = async () => {
     try {
       setStatus('processing');
       const { creatorName, description } = getValues();
       const docRef = getCreatorDocRef(data.id);
-      await updateDoc(docRef, { creatorName, description });
       onChangeData({ ...data, creatorName, description });
+      await updateDoc(docRef, { creatorName, description });
+      openSnackbar(t('saveSuccessed'));
       close();
     } catch (e) {
       console.error(e);
