@@ -28,10 +28,11 @@ export const creatorConverter: FirestoreDataConverter<WithId<CreatorDocData>> =
         createdAt: data.createdAt
           ? Timestamp.fromDate(data.createdAt as Date)
           : undefined,
-        creatorAddress: data.creatorAddress,
-        creatorName: data.creatorName,
-        description: data.description,
-        pinningPostId: data.pinningPostId,
+        creatorAddress: data.creatorAddress || '',
+        creatorName: data.creatorName || '',
+        description: data.description || '',
+        pinningPostId: data.pinningPostId || '',
+        planLocks: data.planLocks || [],
         updatedAt: serverTimestamp(),
       };
     },

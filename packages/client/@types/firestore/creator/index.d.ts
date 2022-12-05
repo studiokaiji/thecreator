@@ -6,4 +6,5 @@ export type CreatorDocData = {
   updatedAt: Date;
   createdAt: Date;
   id: string;
+  planLocks: string[];
 };
