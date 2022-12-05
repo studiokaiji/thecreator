@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
-import { ActionButtons } from './ActionButton';
+import { ActionButtons } from './ActionButtons';
 import { ProfileImages } from './ProfileImages';
 import { Sections } from './Sections';
 import { Plans } from './plans';
@@ -13,7 +13,7 @@ import { useWindowSize } from '@/hooks/useWindowSize';
 
 type CreatorProps = {
   editable: boolean;
-  data: WithId<CreatorDocData>;
+  data: CreatorDocData;
 };
 
 export const Creator = ({ data, editable }: CreatorProps) => {
@@ -25,7 +25,7 @@ export const Creator = ({ data, editable }: CreatorProps) => {
       <ProfileImages />
       <Stack spacing={2} sx={{ mx: 'auto', textAlign: 'center' }}>
         <Stack spacing={2} sx={{ m: 3 }}>
-          <ActionButtons editable={editable} minimize={minimize} />
+          <ActionButtons data={data} editable={editable} minimize={minimize} />
           <Stack spacing={2}>
             <Typography sx={{ fontSize: '2rem' }} variant="h1">
               {data.creatorName}
