@@ -21,7 +21,7 @@ type CreateLockOpts = {
 
 const VERSION = 11;
 
-export const useUnlock = (address: string) => {
+export const useUnlock = (address = import.meta.env.VITE_UNLOCK_ADDRESS) => {
   const unlock = useContract(address, UnlockV11.abi);
 
   const { account, library } = useWallet();
