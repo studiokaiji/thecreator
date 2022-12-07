@@ -33,7 +33,10 @@ export const Plans = ({ contractAddress, editable }: PlansProps) => {
       </Grid>
       {editable && (
         <Grid item lg={4} md={6} sx={{ minHeight: 400 }} xs={12}>
-          <AddPlanActionCard minHeight={400} />
+          <AddPlanActionCard
+            currentLengthOfPlans={plans.length}
+            minHeight={400}
+          />
         </Grid>
       )}
     </Grid>

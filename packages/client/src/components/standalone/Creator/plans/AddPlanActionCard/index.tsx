@@ -10,9 +10,13 @@ import { CenterModal } from '@/components/helpers/CenterModal';
 
 type AddPlanActionCardProps = {
   minHeight?: number | string;
+  currentLengthOfPlans: number;
 };
 
-export const AddPlanActionCard = ({ minHeight }: AddPlanActionCardProps) => {
+export const AddPlanActionCard = ({
+  currentLengthOfPlans,
+  minHeight,
+}: AddPlanActionCardProps) => {
   const { t } = useTranslation();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -40,7 +44,10 @@ export const AddPlanActionCard = ({ minHeight }: AddPlanActionCardProps) => {
         </CardActionArea>
       </Card>
       <CenterModal onClose={() => setIsOpen(false)} open={isOpen}>
-        <AddPlanActionForm onAdded={() => setIsOpen(false)} />
+        <AddPlanActionForm
+          currentLengthOfPlans={currentLengthOfPlans}
+          onAdded={() => setIsOpen(false)}
+        />
       </CenterModal>
     </>
   );
