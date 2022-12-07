@@ -8,5 +8,6 @@ export const useContract = (
   customSignerOrProvider?: providers.Provider | Signer
 ) => {
   const { library } = useWallet();
-  return new Contract(address, abi, customSignerOrProvider || library);
+  const signer = customSignerOrProvider || library?.getSigner();
+  return new Contract(address, abi, signer);
 };
