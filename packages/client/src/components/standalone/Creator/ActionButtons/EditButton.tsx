@@ -4,7 +4,6 @@ import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { updateDoc } from 'firebase/firestore';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -13,7 +12,7 @@ import { CreatorDocData } from '#types/firestore/creator';
 import { Status } from '#types/status';
 import { CenterModal } from '@/components/helpers/CenterModal';
 import { RoundedButton } from '@/components/helpers/RoundedButton';
-import { getCreatorDocRef } from '@/converters/creatorConverter';
+import { useCreatorForWrite } from '@/hooks/useCreatorForWrite';
 import { useSnackbar } from '@/hooks/useSnackbar';
 
 type EditButtonProps = {
@@ -38,13 +37,16 @@ export const EditButton = ({
 
   const { open: openSnackbar } = useSnackbar();
 
+  const { updateCreator } = useCreatorForWrite();
+
   const onClickSaveButtonHandler = async () => {
     try {
       setStatus('processing');
       const { creatorName, description } = getValues();
-      const docRef = getCreatorDocRef(data.id);
+
       onChangeData({ ...data, creatorName, description });
-      await updateDoc(docRef, { creatorName, description });
+      await updateCreator(creatorName, description);
+
       openSnackbar(t('saveSuccessed'));
       close();
     } catch (e) {

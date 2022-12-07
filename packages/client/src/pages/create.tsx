@@ -5,7 +5,6 @@ import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { setDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -13,8 +12,8 @@ import { useTranslation } from 'react-i18next';
 import type { Status } from '#types/status';
 import { MainSpacingLayout } from '@/components/layout/MainSpacingLayout';
 import { MainLoading } from '@/components/standalone/MainLoading';
-import { getCreatorDocRef } from '@/converters/creatorConverter';
 import { useCreator } from '@/hooks/useCreator';
+import { useCreatorForWrite } from '@/hooks/useCreatorForWrite';
 import { useOnlyValidNetwork } from '@/hooks/useOnlyValidNetwork';
 import { useWallet } from '@/hooks/useWallet';
 
@@ -39,23 +38,15 @@ export const CreatePage = () => {
 
   useOnlyValidNetwork();
 
+  const { addCreator } = useCreatorForWrite();
+
   const onClickCreatePageButtonHandler = async () => {
     if (!account) return;
 
     const { creatorName, description } = getValues();
 
-    const docRef = getCreatorDocRef(account);
-
     try {
-      await setDoc(docRef, {
-        createdAt: new Date(),
-        creatorAddress: account,
-        creatorName,
-        description,
-        id: '',
-        pinningPostId: '',
-        updatedAt: new Date(),
-      });
+      await addCreator(creatorName, description);
       setStatus('success');
     } catch (e) {
       console.error(e);
