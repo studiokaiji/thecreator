@@ -53,9 +53,13 @@ export const useCreatorForWrite = () => {
     plan: Partial<Omit<CreatorDocDataPlan, 'priceEthPerMonth' | 'currency'>>
   ) => {
     if (!docRef) throw refErr;
-    await updateDoc(docRef, {
-      [`plans.${index}`]: plan,
-    });
+    const baseKey = `plans.${index}`;
+    const keys = Object.keys(plan).map((k) => `${baseKey}.${k}`);
+    const setValues = keys.reduce<{ [key: string]: any }>((prev, key) => {
+      prev[key] = plan[key as keyof typeof plan];
+      return prev;
+    }, {});
+    await updateDoc(docRef, setValues);
   };
 
   return { addCreator, addPlan, docRef, updateCreator, updatePlan };
