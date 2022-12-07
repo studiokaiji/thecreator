@@ -58,20 +58,26 @@ export const Creator = ({ editable, onError }: CreatorProps) => {
             <Typography>{data.description}</Typography>
           </Stack>
         </Stack>
-        <Box>
-          <Box sx={{ maxWidth: 640, mx: 'auto' }}>
+        <Box sx={{ mx: 'auto', width: '100%' }}>
+          <Box sx={{ mx: 4 }}>
             <Sections
               sections={[
                 {
-                  component: <Posts editable={editable} id={data.id || ''} />,
+                  component: (
+                    <Box sx={{ maxWidth: 640, mx: 'auto' }}>
+                      <Posts editable={editable} id={data.id || ''} />,
+                    </Box>
+                  ),
                   i18nKey: 'posts',
                 },
                 {
                   component: (
-                    <Plans
-                      contractAddress={data.id || ''}
-                      editable={editable}
-                    />
+                    <Box sx={{ maxWidth: 1080, mx: 'auto' }}>
+                      <Plans
+                        contractAddress={data.id || ''}
+                        editable={editable}
+                      />
+                    </Box>
                   ),
                   i18nKey: 'plans',
                 },

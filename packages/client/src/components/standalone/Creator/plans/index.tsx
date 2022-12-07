@@ -1,7 +1,10 @@
 import type { Product } from '@contracts';
-import { useEffect, useState } from 'react';
+import { useMediaQuery } from '@mui/material';
+import Grid from '@mui/material/Grid';
+import { useState } from 'react';
 
-import { useCreatorContract } from '@/hooks/useCreatorContract';
+import { AddPlanActionCard } from './AddPlanActionCard';
+import { PlanCard } from './PlanCard';
 
 type PlansProps = {
   contractAddress: string;
@@ -9,14 +12,30 @@ type PlansProps = {
 };
 
 export const Plans = ({ contractAddress, editable }: PlansProps) => {
-  const contract = useCreatorContract(contractAddress);
-
   const [plans, setPlans] = useState<Product.PlanStructOutput[]>([]);
 
-  useEffect(() => {
-    if (!contract) return;
-    contract.getAllPlans().then(setPlans);
-  }, [contract]);
+  const matches: boolean = useMediaQuery('(max-width:899px)');
 
-  return <div></div>;
+  return (
+    <Grid
+      container
+      alignItems="stretch"
+      gap={matches ? 2 : 0}
+      justifyContent="space-between"
+      spacing={matches ? 0 : 2}
+      sx={matches ? { maxWidth: 400, mx: 'auto' } : {}}
+    >
+      <Grid item lg={4} md={6} sx={{ minHeight: 400 }} xs={12}>
+        <PlanCard></PlanCard>
+      </Grid>
+      <Grid item lg={4} md={6} sx={{ minHeight: 400 }} xs={12}>
+        <PlanCard></PlanCard>
+      </Grid>
+      {editable && (
+        <Grid item lg={4} md={6} sx={{ minHeight: 400 }} xs={12}>
+          <AddPlanActionCard minHeight={400} />
+        </Grid>
+      )}
+    </Grid>
+  );
 };

@@ -1,3 +1,4 @@
+import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import { ReactNode, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -37,7 +38,7 @@ export const Sections = ({ sections }: SectionsProps) => {
 
   if (selectedSectionIndex >= 0) {
     return (
-      <Stack spacing={5}>
+      <Stack spacing={5} sx={{ width: '100%' }}>
         <Stack direction="row" spacing={2} sx={{ fontWeight: 500, mx: 'auto' }}>
           {sections.map((section, i) => (
             <MinimalLink
@@ -51,7 +52,7 @@ export const Sections = ({ sections }: SectionsProps) => {
             </MinimalLink>
           ))}
         </Stack>
-        {sections[selectedSectionIndex].component}
+        <Box>{sections[selectedSectionIndex].component}</Box>
       </Stack>
     );
   }
