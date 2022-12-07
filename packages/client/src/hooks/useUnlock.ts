@@ -17,6 +17,8 @@ type CreateLockOpts = {
   request: CreateLockReq;
   onCreateLockTxSend?: (response: providers.TransactionResponse) => void;
   onCreateLockEnded?: (receipt: providers.TransactionReceipt) => void;
+  onFailedToTxSend?: (error: any) => void;
+  onUserRejected?: () => void;
 };
 
 const VERSION = 11;
@@ -29,6 +31,8 @@ export const useUnlock = (address = import.meta.env.VITE_UNLOCK_ADDRESS) => {
   const createLock = async ({
     onCreateLockEnded,
     onCreateLockTxSend,
+    onFailedToTxSend,
+    onUserRejected,
     request: {
       baseToken = constants.AddressZero,
       expirationDurationSeconds = 30 * 60 * 60 * 24,
@@ -51,7 +55,16 @@ export const useUnlock = (address = import.meta.env.VITE_UNLOCK_ADDRESS) => {
       ]
     );
 
-    const tx = unlock.createUpgradeableLockAtVersion(params, VERSION);
+    const tx = await unlock
+      .createUpgradeableLockAtVersion(params, VERSION)
+      .catch((e: any) => {
+        if (e.code === 4001) {
+          onUserRejected && onUserRejected();
+        } else {
+          onFailedToTxSend && onFailedToTxSend(e);
+        }
+        throw e;
+      });
     onCreateLockTxSend && onCreateLockTxSend(tx);
 
     const receipt = await tx.wait();
