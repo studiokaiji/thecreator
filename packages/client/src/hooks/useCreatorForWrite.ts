@@ -1,4 +1,4 @@
-import { arrayUnion, setDoc, updateDoc } from 'firebase/firestore';
+import { setDoc, updateDoc } from 'firebase/firestore';
 import { useMemo } from 'react';
 
 import { useWallet } from './useWallet';
@@ -25,7 +25,7 @@ export const useCreatorForWrite = () => {
       description,
       id: '',
       pinningPostId: '',
-      plans: [],
+      plans: {},
       updatedAt: new Date(),
     });
   };
@@ -38,12 +38,25 @@ export const useCreatorForWrite = () => {
     });
   };
 
-  const addPlan = async (plan: CreatorDocDataPlan) => {
+  const addPlan = async (
+    currentLengthOfPlans: number,
+    plan: CreatorDocDataPlan
+  ) => {
     if (!docRef) throw refErr;
     await updateDoc(docRef, {
-      plans: arrayUnion(plan),
+      [`plans.${currentLengthOfPlans}`]: plan,
     });
   };
 
-  return { addCreator, addPlan, docRef, updateCreator };
+  const updatePlan = async (
+    index: number,
+    plan: Partial<Omit<CreatorDocDataPlan, 'priceEthPerMonth' | 'currency'>>
+  ) => {
+    if (!docRef) throw refErr;
+    await updateDoc(docRef, {
+      [`plans.${index}`]: plan,
+    });
+  };
+
+  return { addCreator, addPlan, docRef, updateCreator, updatePlan };
 };

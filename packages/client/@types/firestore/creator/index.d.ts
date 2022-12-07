@@ -6,7 +6,7 @@ export type CreatorDocData = {
   updatedAt: Date;
   createdAt: Date;
   id: string;
-  plans: CreatorDocDataPlan[];
+  plans: { [key: number]: CreatorDocDataPlan };
 };
 
 export type CreatorDocDataPlan = {
