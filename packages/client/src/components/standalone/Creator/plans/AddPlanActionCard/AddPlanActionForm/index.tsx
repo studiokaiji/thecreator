@@ -18,8 +18,6 @@ import { useTranslation } from 'react-i18next';
 
 import { AddPlanActionFormFeatureTextField } from './AddPlanActionFormFeatureTextField';
 
-import { Status } from '#types/status';
-import { MainLoading } from '@/components/standalone/MainLoading';
 import { currencies, currencyDecimals } from '@/constants';
 import { useCreatorForWrite } from '@/hooks/useCreatorForWrite';
 import { useUnlock } from '@/hooks/useUnlock';
@@ -113,6 +111,7 @@ export const AddPlanActionForm = ({
             priceEthPerMonth,
           });
         },
+        onFailedToTxSend: (e) => setErrorMessage(String(e)),
         onUserRejected: () => setErrorMessage(t('userRejectedRequest')),
         request: {
           lockName: `${name} plan`,
@@ -132,7 +131,6 @@ export const AddPlanActionForm = ({
       setActiveStep(4);
 
       reset();
-      onAdded();
     } catch (e) {
       console.error(e);
     }
@@ -278,18 +276,24 @@ export const AddPlanActionForm = ({
           {errorMessage ? (
             <>
               <HighlightOffIcon color="error" fontSize="large" />
-              <Typography variant="h6">{t('failedToCreatePlan')}</Typography>
-              <Typography color="GrayText">{t(errorMessage)}</Typography>
+              <Typography color="GrayText" component="pre">
+                {t(errorMessage)}
+              </Typography>
             </>
           ) : activeStep < 4 ? (
             <>
-              <CircularProgress />
+              <CircularProgress size="2rem" />
               <Typography>{t('inProgress')}</Typography>
             </>
           ) : (
             <>
               <CheckCircleOutlineIcon color="success" fontSize="large" />
               <Typography>{t('success')}</Typography>
+              <Box>
+                <Button onClick={onAdded} sx={{ mt: 2 }} variant="contained">
+                  {t('close')}
+                </Button>
+              </Box>
             </>
           )}
         </Stack>
