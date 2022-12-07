@@ -6,5 +6,14 @@ export type CreatorDocData = {
   updatedAt: Date;
   createdAt: Date;
   id: string;
-  planLocks: string[];
+  plans: CreatorDocDataPlan[];
+};
+
+export type CreatorDocDataPlan = {
+  lockAddress: string;
+  name: string;
+  description: string;
+  features: string[];
+  pricePerMonth: number;
+  currency: string;
 };
