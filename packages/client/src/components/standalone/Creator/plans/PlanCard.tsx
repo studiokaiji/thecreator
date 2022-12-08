@@ -11,9 +11,10 @@ import { SeeMore } from '@/components/helpers/SeeMore';
 type PlanCardProps = {
   plan: CreatorDocDataPlan;
   editable?: boolean;
+  isSubscribed?: boolean;
 };
 
-export const PlanCard = ({ editable, plan }: PlanCardProps) => {
+export const PlanCard = ({ editable, isSubscribed, plan }: PlanCardProps) => {
   const { currency, description, features, name, priceEthPerMonth } = plan;
   const { t } = useTranslation();
   return (
@@ -76,6 +77,8 @@ export const PlanCard = ({ editable, plan }: PlanCardProps) => {
 
           {editable ? (
             <Button variant="outlined">{t('edit')}</Button>
+          ) : isSubscribed ? (
+            <Button variant="contained">{t('subscribed')}</Button>
           ) : (
             <Button variant="contained">{t('subscribe')}</Button>
           )}
