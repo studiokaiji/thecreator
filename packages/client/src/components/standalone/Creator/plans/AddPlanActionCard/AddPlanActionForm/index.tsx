@@ -111,7 +111,7 @@ export const AddPlanActionForm = ({
             priceEthPerMonth,
           });
         },
-        onFailedToTxSend: (e) => setErrorMessage(String(e)),
+        onFailedToTxSend: (e) => setErrorMessage(JSON.stringify(e, null, 2)),
         onUserRejected: () => setErrorMessage(t('userRejectedRequest')),
         request: {
           lockName: `${name} plan`,
@@ -276,7 +276,11 @@ export const AddPlanActionForm = ({
           {errorMessage ? (
             <>
               <HighlightOffIcon color="error" fontSize="large" />
-              <Typography color="GrayText" component="pre">
+              <Typography
+                color="GrayText"
+                component="pre"
+                sx={{ textAlign: 'left' }}
+              >
                 {t(errorMessage)}
               </Typography>
             </>
