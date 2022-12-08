@@ -36,7 +36,9 @@ export const SeeMore = ({
 
   const childrenHeight = childrenRef.current?.getBoundingClientRect().height;
 
-  const isDisplayButton = childrenHeight && heightOnMinimized <= childrenHeight;
+  const isDisplayButton = !!(
+    childrenHeight && heightOnMinimized <= childrenHeight
+  );
 
   return (
     <Box sx={{ margin: 'auto', position: 'relative', width: '100%' }}>
