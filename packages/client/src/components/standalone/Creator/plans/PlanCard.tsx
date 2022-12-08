@@ -5,21 +5,15 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useTranslation } from 'react-i18next';
 
+import { CreatorDocDataPlan } from '#types/firestore/creator';
+
 type PlanCardProps = {
-  name: string;
-  description: string;
-  features: string[];
-  priceEthPerMonth: number;
-  currency: string;
+  plan: CreatorDocDataPlan;
+  editable?: boolean;
 };
 
-export const PlanCard = ({
-  currency,
-  description,
-  features,
-  name,
-  priceEthPerMonth,
-}: PlanCardProps) => {
+export const PlanCard = ({ editable, plan }: PlanCardProps) => {
+  const { currency, description, features, name, priceEthPerMonth } = plan;
   const { t } = useTranslation();
   return (
     <Card sx={{ height: '100%', p: 1.5, width: '100%' }}>
@@ -53,7 +47,11 @@ export const PlanCard = ({
               / {t('month')}
             </Typography>
           </Typography>
-          <Button variant="contained">{t('subscribe')}</Button>
+          {editable ? (
+            <Button variant="outlined">{t('edit')}</Button>
+          ) : (
+            <Button variant="contained">{t('subscribe')}</Button>
+          )}
         </Stack>
       </CardContent>
     </Card>
