@@ -31,7 +31,7 @@ export const AddPlanActionFormFeatureTextField = ({
         {...register(`features.${index}.feature`, {
           maxLength: {
             message: t('validationErrors.maxLength', '40'),
-            value: 80,
+            value: 40,
           },
         })}
         fullWidth
