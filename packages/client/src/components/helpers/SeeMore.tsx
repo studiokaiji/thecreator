@@ -36,9 +36,7 @@ export const SeeMore = ({
 
   const childrenHeight = childrenRef.current?.getBoundingClientRect().height;
 
-  if (childrenHeight && heightOnMinimized >= childrenHeight) {
-    return <>{children}</>;
-  }
+  const isDisplayButton = childrenHeight && heightOnMinimized <= childrenHeight;
 
   return (
     <Box sx={{ margin: 'auto', position: 'relative', width: '100%' }}>
@@ -47,7 +45,7 @@ export const SeeMore = ({
           background: `linear-gradient(to top,${
             color || theme.palette.background.paper
           } 30%, transparent 100%)`,
-          display: isOpen ? 'none' : 'block',
+          display: isOpen || !isDisplayButton ? 'none' : 'block',
           height: 50,
           position: 'absolute',
           top: heightOnMinimized - 50,
@@ -63,11 +61,13 @@ export const SeeMore = ({
       >
         <Box ref={childrenRef}>{children}</Box>
       </Box>
-      <Box sx={{ textAlign: 'center' }}>
-        <Button onClick={displaySwitch}>
-          {isOpen ? customCloseButtonText : customSeeMoreButtonText}
-        </Button>
-      </Box>
+      {isDisplayButton && (
+        <Box sx={{ textAlign: 'center' }}>
+          <Button onClick={displaySwitch}>
+            {isOpen ? customCloseButtonText : customSeeMoreButtonText}
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 };
