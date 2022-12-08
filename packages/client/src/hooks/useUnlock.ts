@@ -21,7 +21,7 @@ type CreateLockOpts = {
   onUserRejected?: () => void;
 };
 
-const VERSION = 11;
+const VERSION = 12;
 
 export const useUnlock = (address = import.meta.env.VITE_UNLOCK_ADDRESS) => {
   const unlock = useContract(address, UnlockV11.abi);
