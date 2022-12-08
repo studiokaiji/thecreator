@@ -7,7 +7,20 @@ export const useContract = (
   abi: ContractInterface,
   customSignerOrProvider?: providers.Provider | Signer
 ) => {
-  const { library } = useWallet();
-  const signer = customSignerOrProvider || library?.getSigner();
-  return new Contract(address, abi, signer);
+  const { library, switchChain: walletSwitchChain } = useWallet();
+
+  const getContract = () => {
+    const signer = customSignerOrProvider || library?.getSigner();
+    return new Contract(address, abi, signer);
+  };
+
+  let contract: Contract = getContract();
+
+  const switchChain = async () => {
+    await walletSwitchChain();
+    contract = getContract();
+    return contract;
+  };
+
+  return { contract, switchChain };
 };
