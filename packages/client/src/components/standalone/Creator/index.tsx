@@ -12,22 +12,27 @@ import { Plans } from './plans';
 import { Posts } from './posts';
 
 import { useCreator } from '@/hooks/useCreator';
-import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useWindowSize } from '@/hooks/useWindowSize';
 
 type CreatorProps = {
   editable: boolean;
+  id?: string;
+  creatorAddress?: string;
   onError?: (error: any) => void;
 };
 
-export const Creator = ({ editable, onError }: CreatorProps) => {
+export const Creator = ({
+  creatorAddress,
+  editable,
+  id,
+  onError,
+}: CreatorProps) => {
   const { width } = useWindowSize();
   const minimize = editable ? width < 620 : width < 320;
 
-  const { currentUser } = useCurrentUser();
-
   const { data, error, mutate } = useCreator({
-    creatorAddress: currentUser?.uid,
+    creatorAddress: creatorAddress,
+    id: id,
   });
 
   useEffect(() => {

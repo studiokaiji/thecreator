@@ -6,6 +6,7 @@ import '@/firebase';
 
 import { SnackbarProvider } from './contexts/SnackbarContext';
 import { NotFound } from './pages/404';
+import { CreatorPage } from './pages/u/[id]';
 
 import { NavLayout } from '@/components/layout/NavLayout';
 import { AuthProvider } from '@/contexts/AuthContext';
@@ -40,6 +41,7 @@ function App() {
                     path="/edit/profile"
                   />
                   <Route element={<SupportersPage />} path="/edit/supporters" />
+                  <Route element={<CreatorPage />} path="/c/*" />
                   <Route element={<NotFound />} path="/*" />
                 </Routes>
               </NavLayout>
