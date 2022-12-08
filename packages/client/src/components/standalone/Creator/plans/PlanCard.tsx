@@ -16,6 +16,7 @@ type PlanCardProps = {
 export const PlanCard = ({ editable, plan }: PlanCardProps) => {
   const { currency, description, features, name, priceEthPerMonth } = plan;
   const { t } = useTranslation();
+  console.log(features);
   return (
     <Card sx={{ height: '100%', p: 1.5, width: '100%' }}>
       <CardContent
@@ -41,9 +42,10 @@ export const PlanCard = ({ editable, plan }: PlanCardProps) => {
               color="GrayText"
               fontWeight={500}
               lineHeight={1}
+              sx={{ visibility: description ? 'unset' : 'hidden' }}
               variant="body2"
             >
-              {description}
+              {description || 'dummy'}
             </Typography>
           </Stack>
           <Typography gutterBottom variant="h6">
@@ -59,11 +61,15 @@ export const PlanCard = ({ editable, plan }: PlanCardProps) => {
           </Typography>
 
           <SeeMore heightOnMinimized={240}>
-            <Stack component="ul" sx={{ my: 0, px: 2.5, textAlign: 'left' }}>
-              {features.map((feature, i) => (
-                <li key={`feature-${i}`}>{feature}</li>
-              ))}
-            </Stack>
+            {features.length ? (
+              <Stack component="ul" sx={{ my: 0, px: 2.5, textAlign: 'left' }}>
+                {features.map((feature, i) => (
+                  <li key={`feature-${i}`}>{feature}</li>
+                ))}
+              </Stack>
+            ) : (
+              <div />
+            )}
           </SeeMore>
 
           {editable ? (
