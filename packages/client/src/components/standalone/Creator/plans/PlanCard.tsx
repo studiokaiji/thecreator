@@ -19,16 +19,17 @@ export const PlanCard = ({ editable, plan }: PlanCardProps) => {
   console.log(features);
   return (
     <Card sx={{ height: '100%', p: 1.5, width: '100%' }}>
-      <CardContent
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          height: '100%',
-          justifyContent: 'space-between',
-          textAlign: 'center',
-        }}
-      >
-        <Stack spacing={3}>
+      <CardContent sx={{ height: '100%' }}>
+        <Stack
+          spacing={3}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
+            justifyContent: 'space-between',
+            textAlign: 'center',
+          }}
+        >
           <Stack>
             <Typography
               gutterBottom
