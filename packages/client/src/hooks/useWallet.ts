@@ -39,6 +39,10 @@ export const useWallet = () => {
   const switchChain = async () => {
     if (!web3React.library) throw Error('Not connected wallet');
 
+    if (web3React.chainId === Number(import.meta.env.VITE_CHAIN_ID)) {
+      return;
+    }
+
     const hexChainId = `0x${Number(import.meta.env.VITE_CHAIN_ID).toString(
       16
     )}`;
