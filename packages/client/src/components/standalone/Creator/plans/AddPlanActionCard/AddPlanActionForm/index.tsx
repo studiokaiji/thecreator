@@ -182,11 +182,9 @@ export const AddPlanActionForm = ({
                   value: 80,
                 },
               })}
-              multiline
               error={!!errors.description}
               helperText={errors.description?.message}
               label={t('description')}
-              rows={3}
               variant="standard"
             />
           </Stack>
