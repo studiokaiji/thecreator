@@ -46,7 +46,8 @@ export const AddPlanActionCard = ({
       <CenterModal onClose={() => setIsOpen(false)} open={isOpen}>
         <AddPlanActionForm
           currentLengthOfPlans={currentLengthOfPlans}
-          onAdded={() => setIsOpen(false)}
+          onAdded={console.log}
+          onClose={() => setIsOpen(false)}
         />
       </CenterModal>
     </>

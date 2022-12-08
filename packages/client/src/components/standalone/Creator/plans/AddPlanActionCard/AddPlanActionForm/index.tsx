@@ -38,6 +38,7 @@ type Feature = {
 type AddPlanActionFormProps = {
   currentLengthOfPlans: number;
   onAdded: () => void;
+  onClose?: () => void;
 };
 
 const pricePlaceholders: { [key in typeof currencies[number]]: string } = {
@@ -49,6 +50,7 @@ const pricePlaceholders: { [key in typeof currencies[number]]: string } = {
 export const AddPlanActionForm = ({
   currentLengthOfPlans,
   onAdded,
+  onClose,
 }: AddPlanActionFormProps) => {
   const {
     control,
@@ -131,6 +133,7 @@ export const AddPlanActionForm = ({
       setActiveStep(4);
 
       reset();
+      onAdded();
     } catch (e) {
       console.error(e);
     }
@@ -273,28 +276,32 @@ export const AddPlanActionForm = ({
         </Stack>
       ) : (
         <Stack spacing={0.5} sx={{ display: 'block', textAlign: 'center' }}>
-          {errorMessage ? (
-            <>
-              <HighlightOffIcon color="error" fontSize="large" />
-              <Typography
-                color="GrayText"
-                component="pre"
-                sx={{ textAlign: 'left' }}
-              >
-                {t(errorMessage)}
-              </Typography>
-            </>
-          ) : activeStep < 4 ? (
+          {activeStep < 4 && !errorMessage ? (
             <>
               <CircularProgress size="2rem" />
               <Typography>{t('inProgress')}</Typography>
             </>
           ) : (
             <>
-              <CheckCircleOutlineIcon color="success" fontSize="large" />
-              <Typography>{t('success')}</Typography>
+              {errorMessage ? (
+                <>
+                  <HighlightOffIcon color="error" fontSize="large" />
+                  <Typography
+                    color="GrayText"
+                    component="pre"
+                    sx={{ textAlign: 'left' }}
+                  >
+                    {t(errorMessage)}
+                  </Typography>
+                </>
+              ) : (
+                <>
+                  <CheckCircleOutlineIcon color="success" fontSize="large" />
+                  <Typography>{t('success')}</Typography>
+                </>
+              )}
               <Box>
-                <Button onClick={onAdded} sx={{ mt: 2 }} variant="contained">
+                <Button onClick={onClose} sx={{ mt: 2 }} variant="contained">
                   {t('close')}
                 </Button>
               </Box>
