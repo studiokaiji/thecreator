@@ -1,4 +1,4 @@
-import { PublicLockV11, UnlockV11 } from '@unlock-protocol/contracts';
+import { PublicLockV12, UnlockV11 } from '@unlock-protocol/contracts';
 import { BigNumberish, constants, Contract, providers, utils } from 'ethers';
 
 import { useContract } from './useContract';
@@ -24,7 +24,7 @@ type CreateLockOpts = {
 const VERSION = 12;
 
 export const useUnlock = (address = import.meta.env.VITE_UNLOCK_ADDRESS) => {
-  const unlock = useContract(address, UnlockV11.abi);
+  const { contract, switchChain } = useContract(address, UnlockV11.abi);
 
   const { account, library } = useWallet();
 
@@ -55,6 +55,8 @@ export const useUnlock = (address = import.meta.env.VITE_UNLOCK_ADDRESS) => {
       ]
     );
 
+    const unlock = await switchChain();
+
     const tx = await unlock
       .createUpgradeableLockAtVersion(params, VERSION)
       .catch((e: any) => {
@@ -71,10 +73,10 @@ export const useUnlock = (address = import.meta.env.VITE_UNLOCK_ADDRESS) => {
     onCreateLockEnded && onCreateLockEnded(receipt);
 
     const lockAddress = receipt.logs[0].address;
-    const lock = new Contract(lockAddress, PublicLockV11.abi, library);
+    const lock = new Contract(lockAddress, PublicLockV12.abi, library);
 
     return lock;
   };
 
-  return { contract: unlock, createLock };
+  return { contract, createLock };
 };

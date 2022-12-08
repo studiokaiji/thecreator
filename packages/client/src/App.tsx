@@ -16,7 +16,7 @@ import { SupportersPage } from '@/pages/edit/supporters';
 import { CustomThemeProvider } from '@/theme';
 
 const getLibrary = (provider: any) => {
-  return new providers.Web3Provider(provider);
+  return new providers.Web3Provider(provider, 'any');
 };
 
 function App() {
