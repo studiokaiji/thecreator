@@ -59,7 +59,7 @@ export const PlanCard = ({ editable, plan }: PlanCardProps) => {
           </Typography>
 
           <SeeMore heightOnMinimized={240}>
-            <Stack component="ul" sx={{ px: 2.5, textAlign: 'left' }}>
+            <Stack component="ul" sx={{ my: 0, px: 2.5, textAlign: 'left' }}>
               {features.map((feature, i) => (
                 <li key={`feature-${i}`}>{feature}</li>
               ))}
