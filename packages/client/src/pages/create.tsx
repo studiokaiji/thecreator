@@ -3,29 +3,18 @@ import Button from '@mui/material/Button';
 import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import type { Status } from '#types/status';
 import { MainSpacingLayout } from '@/components/layout/MainSpacingLayout';
+import { CreatorProfileEditForm } from '@/components/standalone/CreatorProfileEditForm';
 import { MainLoading } from '@/components/standalone/MainLoading';
 import { useCreator } from '@/hooks/useCreator';
-import { useCreatorForWrite } from '@/hooks/useCreatorForWrite';
-import { useOnlyValidNetwork } from '@/hooks/useOnlyValidNetwork';
 import { useWallet } from '@/hooks/useWallet';
 
-type CreatePageInputs = {
-  creatorName: string;
-  description: string;
-};
-
 export const CreatePage = () => {
-  const { getValues, register } = useForm<CreatePageInputs>();
-
-  const [status, setStatus] = useState<Status>('typing');
+  const [typing, setTyping] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
 
   const { account } = useWallet();
@@ -36,27 +25,8 @@ export const CreatePage = () => {
 
   const { t } = useTranslation();
 
-  useOnlyValidNetwork();
-
-  const { addCreator } = useCreatorForWrite();
-
-  const onClickCreatePageButtonHandler = async () => {
-    if (!account) return;
-
-    const { creatorName, description } = getValues();
-
-    try {
-      await addCreator(creatorName, description);
-      setStatus('success');
-    } catch (e) {
-      console.error(e);
-      setStatus('failed');
-      setErrorMessage(String(e));
-    }
-  };
-
   const back = () => {
-    setStatus('typing');
+    setTyping(false);
     setErrorMessage('');
   };
 
@@ -83,35 +53,14 @@ export const CreatePage = () => {
             {t('becomeACreator')}
           </Typography>
           <Box sx={{ mt: 2 }}>
-            {status === 'typing' ? (
-              <Stack component="form" spacing={1.5}>
-                <TextField
-                  {...register('creatorName')}
-                  label={t('creatorName')}
-                  variant="standard"
-                />
-                <TextField
-                  {...register('description')}
-                  multiline
-                  label={t('description')}
-                  rows={3}
-                  variant="standard"
-                />
-                <Button
-                  onClick={onClickCreatePageButtonHandler}
-                  variant="contained"
-                >
-                  {t('create')}
-                </Button>
-              </Stack>
+            {typing ? (
+              <CreatorProfileEditForm
+                onEnd={() => setTyping(false)}
+                onError={(e) => setErrorMessage(JSON.stringify(e, null, 2))}
+              />
             ) : (
               <Stack spacing={3} sx={{ textAlign: 'center' }}>
-                {status === 'success' ? (
-                  <>
-                    <Typography variant="h6">{t('success')}</Typography>
-                    <Link href="/edit/profile">{t('goToCreatorConsole')}</Link>
-                  </>
-                ) : (
+                {errorMessage ? (
                   <>
                     <Typography
                       color="red"
@@ -123,6 +72,11 @@ export const CreatePage = () => {
                     <Button onClick={back} variant="contained">
                       {t('backToInput')}
                     </Button>
+                  </>
+                ) : (
+                  <>
+                    <Typography variant="h6">{t('success')}</Typography>
+                    <Link href="/edit/profile">{t('goToCreatorConsole')}</Link>
                   </>
                 )}
               </Stack>
