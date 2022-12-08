@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography';
 import { useTranslation } from 'react-i18next';
 
 import { CreatorDocDataPlan } from '#types/firestore/creator';
+import { SeeMore } from '@/components/helpers/SeeMore';
 
 type PlanCardProps = {
   plan: CreatorDocDataPlan;
@@ -57,11 +58,13 @@ export const PlanCard = ({ editable, plan }: PlanCardProps) => {
             </Typography>
           </Typography>
 
-          <Stack component="ul" sx={{ px: 2.5, textAlign: 'left' }}>
-            {features.map((feature, i) => (
-              <li key={`feature-${i}`}>{feature}</li>
-            ))}
-          </Stack>
+          <SeeMore heightOnMinimized={300}>
+            <Stack component="ul" sx={{ px: 2.5, textAlign: 'left' }}>
+              {features.map((feature, i) => (
+                <li key={`feature-${i}`}>{feature}</li>
+              ))}
+            </Stack>
+          </SeeMore>
 
           {editable ? (
             <Button variant="outlined">{t('edit')}</Button>
