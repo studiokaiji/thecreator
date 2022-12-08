@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import { PropsWithChildren, useState } from 'react';
+import { PropsWithChildren, useRef, useState } from 'react';
 
 type SeeMoreProps = {
   heightOnMinimized: number;
@@ -32,6 +32,14 @@ export const SeeMore = ({
     setIsOpen(!isOpen);
   };
 
+  const childrenRef = useRef<HTMLDivElement>(null);
+
+  const childrenHeight = childrenRef.current?.getBoundingClientRect().height;
+
+  if (childrenHeight && heightOnMinimized >= childrenHeight) {
+    return <>{children}</>;
+  }
+
   return (
     <Box sx={{ margin: 'auto', position: 'relative', width: '100%' }}>
       <Box
@@ -39,12 +47,13 @@ export const SeeMore = ({
           background: `linear-gradient(to top,${
             color || theme.palette.background.paper
           } 30%, transparent 100%)`,
+          display: isOpen ? 'none' : 'block',
           height: 50,
           position: 'absolute',
           top: heightOnMinimized - 50,
           width: '100%',
         })}
-      ></Box>
+      />
       <Box
         sx={{
           maxHeight: isOpen ? 'auto' : heightOnMinimized,
@@ -52,7 +61,7 @@ export const SeeMore = ({
           width: '100%',
         }}
       >
-        {children}
+        <Box ref={childrenRef}>{children}</Box>
       </Box>
       <Box sx={{ textAlign: 'center' }}>
         <Button onClick={displaySwitch}>
