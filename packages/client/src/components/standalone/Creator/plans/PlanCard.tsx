@@ -27,7 +27,7 @@ export const PlanCard = ({ editable, plan }: PlanCardProps) => {
           textAlign: 'center',
         }}
       >
-        <Stack spacing={2.5}>
+        <Stack spacing={3}>
           <Stack>
             <Typography
               gutterBottom
