@@ -178,8 +178,8 @@ export const AddPlanActionForm = ({
             <TextField
               {...register('description', {
                 maxLength: {
-                  message: valT('maxLength', { maxLength: '1000' }),
-                  value: 1000,
+                  message: valT('maxLength', { maxLength: '80' }),
+                  value: 80,
                 },
               })}
               multiline
