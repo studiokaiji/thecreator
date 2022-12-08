@@ -185,7 +185,7 @@ export const UserWallet = ({
             sx={{ width: '100%' }}
           >
             <WalletIcon htmlColor="gray" />
-            {checking ? (
+            {checking && !currentUser ? (
               <Stack sx={{ width: '100%' }}>
                 <Skeleton sx={{ fontSize: '1rem' }} variant="text" />
                 <Skeleton sx={{ fontSize: '0.875rem' }} variant="text" />
