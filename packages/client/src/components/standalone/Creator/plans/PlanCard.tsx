@@ -26,27 +26,43 @@ export const PlanCard = ({ editable, plan }: PlanCardProps) => {
           textAlign: 'center',
         }}
       >
-        <Stack>
-          <Typography gutterBottom variant="h5">
-            {name}
-          </Typography>
-          <Typography color="GrayText" variant="body2">
-            {description}
-          </Typography>
-        </Stack>
-        <Stack component="ul" sx={{ px: 2.5, py: 1.5, textAlign: 'left' }}>
-          {features.map((feature, i) => (
-            <li key={`feature-${i}`}>{feature}</li>
-          ))}
-        </Stack>
-        <Stack spacing={1.5}>
+        <Stack spacing={2.5}>
+          <Stack>
+            <Typography
+              gutterBottom
+              fontWeight={500}
+              lineHeight={1}
+              variant="h5"
+            >
+              {name}
+            </Typography>
+            <Typography
+              color="GrayText"
+              fontWeight={500}
+              lineHeight={1}
+              variant="body2"
+            >
+              {description}
+            </Typography>
+          </Stack>
           <Typography gutterBottom variant="h6">
             {priceEthPerMonth} {currency}
-            <Typography color="GrayText" sx={{ display: 'inline' }}>
+            <Typography
+              color="GrayText"
+              fontWeight={500}
+              sx={{ display: 'inline' }}
+            >
               {' '}
               / {t('month')}
             </Typography>
           </Typography>
+
+          <Stack component="ul" sx={{ px: 2.5, textAlign: 'left' }}>
+            {features.map((feature, i) => (
+              <li key={`feature-${i}`}>{feature}</li>
+            ))}
+          </Stack>
+
           {editable ? (
             <Button variant="outlined">{t('edit')}</Button>
           ) : (
