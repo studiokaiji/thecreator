@@ -16,7 +16,6 @@ type PlanCardProps = {
 export const PlanCard = ({ editable, plan }: PlanCardProps) => {
   const { currency, description, features, name, priceEthPerMonth } = plan;
   const { t } = useTranslation();
-  console.log(features);
   return (
     <Card sx={{ height: '100%', p: 1.5, width: '100%' }}>
       <CardContent sx={{ height: '100%' }}>
@@ -30,36 +29,38 @@ export const PlanCard = ({ editable, plan }: PlanCardProps) => {
             textAlign: 'center',
           }}
         >
-          <Stack>
-            <Typography
-              gutterBottom
-              fontWeight={500}
-              lineHeight={1}
-              variant="h5"
-            >
-              {name}
-            </Typography>
-            <Typography
-              color="GrayText"
-              fontWeight={500}
-              lineHeight={1}
-              sx={{ visibility: description ? 'unset' : 'hidden' }}
-              variant="body2"
-            >
-              {description || 'dummy'}
+          <Stack spacing={3}>
+            <Stack>
+              <Typography
+                gutterBottom
+                fontWeight={500}
+                lineHeight={1}
+                variant="h5"
+              >
+                {name}
+              </Typography>
+              <Typography
+                color="GrayText"
+                fontWeight={500}
+                lineHeight={1}
+                sx={{ visibility: description ? 'unset' : 'hidden' }}
+                variant="body2"
+              >
+                {description || 'dummy'}
+              </Typography>
+            </Stack>
+            <Typography gutterBottom variant="h6">
+              {priceEthPerMonth} {currency}
+              <Typography
+                color="GrayText"
+                fontWeight={500}
+                sx={{ display: 'inline' }}
+              >
+                {' '}
+                / {t('month')}
+              </Typography>
             </Typography>
           </Stack>
-          <Typography gutterBottom variant="h6">
-            {priceEthPerMonth} {currency}
-            <Typography
-              color="GrayText"
-              fontWeight={500}
-              sx={{ display: 'inline' }}
-            >
-              {' '}
-              / {t('month')}
-            </Typography>
-          </Typography>
 
           <SeeMore heightOnMinimized={240}>
             {features.length ? (
