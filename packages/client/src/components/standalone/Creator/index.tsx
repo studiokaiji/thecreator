@@ -73,10 +73,7 @@ export const Creator = ({ editable, onError }: CreatorProps) => {
                 {
                   component: (
                     <Box sx={{ maxWidth: 1080, mx: 'auto' }}>
-                      <Plans
-                        contractAddress={data.id || ''}
-                        editable={editable}
-                      />
+                      <Plans editable={editable} plans={data.plans} />
                     </Box>
                   ),
                   i18nKey: 'plans',
