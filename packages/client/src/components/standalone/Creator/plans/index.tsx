@@ -74,24 +74,16 @@ export const Plans = ({ editable, plans }: PlansProps) => {
       container
       alignItems="stretch"
       gap={matches ? 2 : 0}
-      justifyContent="space-between"
       spacing={matches ? 0 : 2}
       sx={matches ? { maxWidth: 400, mx: 'auto' } : {}}
     >
       {sortedPlans.map((plan, i) => (
-        <Grid
-          key={`plans-${i}`}
-          item
-          lg={4}
-          md={6}
-          sx={{ minHeight: 400 }}
-          xs={12}
-        >
-          <PlanCard {...plan} />
+        <Grid key={`plans-${i}`} item lg={4} md={6} xs={12}>
+          <PlanCard editable={editable} plan={plan} />
         </Grid>
       ))}
       {editable && (
-        <Grid item lg={4} md={6} sx={{ minHeight: 400 }} xs={12}>
+        <Grid item lg={4} md={6} xs={12}>
           <AddPlanActionCard
             currentLengthOfPlans={Object.keys(plans).length}
             minHeight={400}

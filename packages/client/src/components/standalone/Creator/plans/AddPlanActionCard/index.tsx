@@ -27,6 +27,7 @@ export const AddPlanActionCard = ({
         elevation={0}
         sx={{
           background: 'transparent',
+          height: '100%',
         }}
       >
         <CardActionArea
@@ -35,6 +36,7 @@ export const AddPlanActionCard = ({
             alignItems: 'center',
             border: '1px gray dotted',
             display: 'flex',
+            height: '100%',
             justifyContent: 'center',
             minHeight,
             width: '100%',
