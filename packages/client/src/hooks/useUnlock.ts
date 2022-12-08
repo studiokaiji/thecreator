@@ -1,4 +1,4 @@
-import { PublicLockV12, UnlockV11 } from '@unlock-protocol/contracts';
+import { PublicLockV11, UnlockV11 } from '@unlock-protocol/contracts';
 import { BigNumberish, constants, Contract, providers, utils } from 'ethers';
 
 import { useContract } from './useContract';
@@ -21,7 +21,7 @@ type CreateLockOpts = {
   onUserRejected?: () => void;
 };
 
-const VERSION = 12;
+const VERSION = 11;
 
 export const useUnlock = (address = import.meta.env.VITE_UNLOCK_ADDRESS) => {
   const { contract, switchChain } = useContract(address, UnlockV11.abi);
@@ -73,7 +73,7 @@ export const useUnlock = (address = import.meta.env.VITE_UNLOCK_ADDRESS) => {
     onCreateLockEnded && onCreateLockEnded(receipt);
 
     const lockAddress = receipt.logs[0].address;
-    const lock = new Contract(lockAddress, PublicLockV12.abi, library);
+    const lock = new Contract(lockAddress, PublicLockV11.abi, library);
 
     return lock;
   };
