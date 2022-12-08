@@ -107,7 +107,9 @@ export const AddPlanActionForm = ({
           await addPlanToDB(currentLengthOfPlans, {
             currency,
             description,
-            features: features.map(({ feature }) => feature),
+            features: features
+              .filter(({ feature }) => feature)
+              .map(({ feature }) => feature),
             lockAddress: res.hash,
             name,
             priceEthPerMonth,
