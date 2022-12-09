@@ -5,6 +5,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { BigNumber } from 'ethers';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 import { CreatorDocDataPlan } from '#types/firestore/creator';
 import { SeeMore } from '@/components/helpers/SeeMore';
@@ -14,14 +15,15 @@ type PlanCardProps = {
   plan: CreatorDocDataPlan;
   editable?: boolean;
   expirationTimestamp?: BigNumber;
+  subscribeUrl: string;
 };
 
 export const PlanCard = ({
   editable,
   expirationTimestamp,
-  plan,
+  plan: { currency, description, features, name, priceEthPerMonth },
+  subscribeUrl,
 }: PlanCardProps) => {
-  const { currency, description, features, name, priceEthPerMonth } = plan;
   const { t } = useTranslation();
   return (
     <Card sx={{ height: '100%', p: 1.5, width: '100%' }}>
@@ -92,7 +94,9 @@ export const PlanCard = ({
               </Typography>
             </Stack>
           ) : (
-            <Button variant="contained">{t('subscribe')}</Button>
+            <Button component={Link} to={subscribeUrl} variant="contained">
+              {t('subscribe')}
+            </Button>
           )}
         </Stack>
       </CardContent>
