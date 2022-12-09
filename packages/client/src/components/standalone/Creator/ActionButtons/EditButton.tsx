@@ -43,6 +43,7 @@ export const EditButton = ({
       )}
       <CenterModal onClose={close} open={isOpen} width={minimize ? 380 : 560}>
         <CreatorProfileEditForm
+          isEditSection
           data={data}
           onChangeData={onChangeData}
           onEnd={close}

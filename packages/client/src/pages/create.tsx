@@ -55,6 +55,7 @@ export const CreatePage = () => {
           <Box sx={{ mt: 2 }}>
             {typing ? (
               <CreatorProfileEditForm
+                isEditSection={false}
                 onEnd={() => setTyping(false)}
                 onError={(e) => setErrorMessage(JSON.stringify(e, null, 2))}
               />

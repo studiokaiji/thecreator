@@ -21,10 +21,12 @@ type CreatorProfileEditFormProps = {
   onChangeData?: (data: CreatorDocData) => void;
   onError?: (e: any) => void;
   onEnd: () => void;
+  isEditSection: boolean;
 };
 
 export const CreatorProfileEditForm = ({
   data,
+  isEditSection,
   onChangeData,
   onEnd,
   onError,
@@ -69,7 +71,7 @@ export const CreatorProfileEditForm = ({
 
   return (
     <Stack component="form" spacing={1.5}>
-      <Typography variant="h5">{t('edit')}</Typography>
+      {isEditSection && <Typography variant="h5">{t('edit')}</Typography>}
       <TextField
         {...register('creatorName', {
           maxLength: {
@@ -101,7 +103,7 @@ export const CreatorProfileEditForm = ({
         onClick={onClickSaveButtonHandler}
         variant="contained"
       >
-        {t('save')}
+        {isEditSection ? t('save') : t('add')}
       </Button>
       {status === 'failed' && (
         <Typography color={'red'}>{t('failed')}</Typography>
