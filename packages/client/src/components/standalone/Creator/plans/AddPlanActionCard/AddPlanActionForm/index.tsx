@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next';
 
 import { AddPlanActionFormFeatureTextField } from './AddPlanActionFormFeatureTextField';
 
+import type { CreatorDocDataPlan } from '#types/firestore/creator';
 import { currencies, currencyDecimals } from '@/constants';
 import { useCreatorForWrite } from '@/hooks/useCreatorForWrite';
 import { useUnlock } from '@/hooks/useUnlock';
@@ -37,7 +38,7 @@ type Feature = {
 
 type AddPlanActionFormProps = {
   currentLengthOfPlans: number;
-  onAdded: () => void;
+  onAdded: (data: CreatorDocDataPlan) => void;
   onClose?: () => void;
 };
 
@@ -100,20 +101,23 @@ export const AddPlanActionForm = ({
       getValues();
 
     try {
+      const data = {
+        currency,
+        description,
+        features: features
+          .filter(({ feature }) => feature)
+          .map(({ feature }) => feature),
+        lockAddress: '',
+        name,
+        priceEthPerMonth,
+      };
+
       const contract = await createLock({
         onCreateLockEnded: () => setActiveStep(3),
         onCreateLockTxSend: async (res) => {
+          data.lockAddress = res.hash;
           setActiveStep(2);
-          await addPlanToDB(currentLengthOfPlans, {
-            currency,
-            description,
-            features: features
-              .filter(({ feature }) => feature)
-              .map(({ feature }) => feature),
-            lockAddress: res.hash,
-            name,
-            priceEthPerMonth,
-          });
+          await addPlanToDB(currentLengthOfPlans, data);
         },
         onFailedToTxSend: (e) => setErrorMessage(JSON.stringify(e, null, 2)),
         onUserRejected: () => setErrorMessage(t('userRejectedRequest')),
@@ -135,7 +139,8 @@ export const AddPlanActionForm = ({
       setActiveStep(4);
 
       reset();
-      onAdded();
+
+      onAdded({ ...data, lockAddress: contract.address });
     } catch (e) {
       console.error(e);
     }

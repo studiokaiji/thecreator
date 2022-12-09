@@ -10,6 +10,7 @@ import { CreatorDocDataPlan } from '#types/firestore/creator';
 type PlansProps = {
   editable: boolean;
   plans: { [key: number]: CreatorDocDataPlan };
+  onChangePlan: (index: number, plan: CreatorDocDataPlan) => void;
 };
 
 const currencyPriorityOrder = ['USDC', 'WETH', 'MATIC'];
@@ -65,12 +66,14 @@ const sortPlans = (plans: { [key: number]: CreatorDocDataPlan }) => {
   return sortedPlans;
 };
 
-export const Plans = ({ editable, plans }: PlansProps) => {
+export const Plans = ({ editable, onChangePlan, plans }: PlansProps) => {
   const matches: boolean = useMediaQuery('(max-width:899px)');
 
   const { pathname } = useLocation();
 
   const sortedPlans = sortPlans(plans);
+
+  const plansLength = Object.keys(plans).length;
 
   return (
     <Grid
@@ -93,8 +96,9 @@ export const Plans = ({ editable, plans }: PlansProps) => {
       {editable && (
         <Grid item lg={4} md={6} xs={12}>
           <AddPlanActionCard
-            currentLengthOfPlans={Object.keys(plans).length}
+            currentLengthOfPlans={plansLength}
             minHeight={400}
+            onAdded={(plan) => onChangePlan(plansLength, plan)}
           />
         </Grid>
       )}

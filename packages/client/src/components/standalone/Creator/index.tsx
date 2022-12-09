@@ -11,6 +11,7 @@ import { Sections } from './Sections';
 import { Plans } from './plans';
 import { Posts } from './posts';
 
+import { CreatorDocDataPlan } from '#types/firestore/creator';
 import { useCreator } from '@/hooks/useCreator';
 import { useWindowSize } from '@/hooks/useWindowSize';
 
@@ -45,6 +46,12 @@ export const Creator = ({
     return <MainLoading />;
   }
 
+  const onChangePlanHandler = (index: number, plan: CreatorDocDataPlan) => {
+    const currentData = { ...data };
+    currentData.plans[index] = plan;
+    mutate(currentData);
+  };
+
   return (
     <Box>
       <ProfileImages />
@@ -78,7 +85,11 @@ export const Creator = ({
                 {
                   component: (
                     <Box sx={{ maxWidth: 1080, mx: 'auto' }}>
-                      <Plans editable={editable} plans={data.plans} />
+                      <Plans
+                        editable={editable}
+                        onChangePlan={onChangePlanHandler}
+                        plans={data.plans}
+                      />
                     </Box>
                   ),
                   i18nKey: 'plans',
