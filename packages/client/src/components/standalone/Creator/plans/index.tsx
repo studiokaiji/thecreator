@@ -74,6 +74,7 @@ export const Plans = ({ editable, plans }: PlansProps) => {
       container
       alignItems="stretch"
       gap={matches ? 2 : 0}
+      justifyContent="center"
       spacing={matches ? 0 : 2}
       sx={matches ? { maxWidth: 400, mx: 'auto' } : {}}
     >
