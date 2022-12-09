@@ -33,7 +33,7 @@ type PurchaseOpts = Partial<{
 export const usePublicLock = (address: string) => {
   const { account, library } = useWallet();
 
-  const lock = useContract(address, PublicLockV11.abi);
+  const { contract: lock } = useContract(address, PublicLockV11.abi);
 
   const purchase = async ({
     onApproved,
