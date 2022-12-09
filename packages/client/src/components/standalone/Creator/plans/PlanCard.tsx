@@ -3,18 +3,24 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { BigNumber } from 'ethers';
 import { useTranslation } from 'react-i18next';
 
 import { CreatorDocDataPlan } from '#types/firestore/creator';
 import { SeeMore } from '@/components/helpers/SeeMore';
+import { blockTimestampToDate } from '@/utils/block-timestamp-to-date';
 
 type PlanCardProps = {
   plan: CreatorDocDataPlan;
   editable?: boolean;
-  isSubscribed?: boolean;
+  expirationTimestamp?: BigNumber;
 };
 
-export const PlanCard = ({ editable, isSubscribed, plan }: PlanCardProps) => {
+export const PlanCard = ({
+  editable,
+  expirationTimestamp,
+  plan,
+}: PlanCardProps) => {
   const { currency, description, features, name, priceEthPerMonth } = plan;
   const { t } = useTranslation();
   return (
@@ -77,8 +83,14 @@ export const PlanCard = ({ editable, isSubscribed, plan }: PlanCardProps) => {
 
           {editable ? (
             <Button variant="outlined">{t('edit')}</Button>
-          ) : isSubscribed ? (
-            <Button variant="contained">{t('subscribed')}</Button>
+          ) : expirationTimestamp ? (
+            <Stack spacing={1}>
+              <Button variant="contained">{t('extendThePeriod')}</Button>
+              <Button variant="outlined">{t('settings')}</Button>
+              <Typography color="GrayText" variant="subtitle2">
+                {blockTimestampToDate(expirationTimestamp).toLocaleString()}
+              </Typography>
+            </Stack>
           ) : (
             <Button variant="contained">{t('subscribe')}</Button>
           )}
