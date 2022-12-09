@@ -1,5 +1,6 @@
 import { useMediaQuery } from '@mui/material';
 import Grid from '@mui/material/Grid';
+import { useLocation } from 'react-router-dom';
 
 import { AddPlanActionCard } from './AddPlanActionCard';
 import { PlanCard } from './PlanCard';
@@ -67,6 +68,8 @@ const sortPlans = (plans: { [key: number]: CreatorDocDataPlan }) => {
 export const Plans = ({ editable, plans }: PlansProps) => {
   const matches: boolean = useMediaQuery('(max-width:899px)');
 
+  const { pathname } = useLocation();
+
   const sortedPlans = sortPlans(plans);
 
   return (
@@ -80,7 +83,11 @@ export const Plans = ({ editable, plans }: PlansProps) => {
     >
       {sortedPlans.map((plan, i) => (
         <Grid key={`plans-${i}`} item lg={4} md={6} xs={12}>
-          <PlanCard editable={editable} plan={plan} />
+          <PlanCard
+            editable={editable}
+            plan={plan}
+            subscribeUrl={`${pathname}subscribe/${plan.lockAddress}`}
+          />
         </Grid>
       ))}
       {editable && (
