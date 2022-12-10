@@ -8,7 +8,6 @@ import {
 } from 'ethers';
 
 import { useContract } from './useContract';
-import { useMulticall } from './useMulticall';
 import { useOnlyValidNetwork } from './useOnlyValidNetwork';
 import { useWallet } from './useWallet';
 
@@ -34,8 +33,6 @@ export const usePublicLock = (address: string) => {
   const { contract: lock } = useContract(address, PublicLockV11.abi);
 
   const { account, library } = useWallet();
-
-  const { aggregate } = useMulticall();
 
   useOnlyValidNetwork();
 
@@ -119,10 +116,6 @@ export const usePublicLock = (address: string) => {
     return lock.keyPrice();
   };
 
-  const getExpiration = async (): Promise<BigNumber> => {
-    return lock.expirationDuration();
-  };
-
   const getPaymentTokenAddress = async (): Promise<string> => {
     return lock.tokenAddress();
   };
@@ -131,40 +124,10 @@ export const usePublicLock = (address: string) => {
     return lock.isValidKey(tokenId);
   };
 
-  const getToken = async (tokenId: BigNumberish) => {
-    const inputs = [
-      'isValidKey',
-      'keyExpirationTimestampFor',
-      'keyManagerOf',
-      'ownerOf',
-    ];
-
-    const params = inputs.map((key) => {
-      const callData = lock.interface.encodeFunctionData(key, [tokenId]);
-      return { callData, target: address };
-    });
-
-    const { returnData } = await aggregate(params);
-
-    const res = inputs.map((key, i) => {
-      const data = lock.interface.decodeFunctionResult(key, returnData[i])[0];
-      return data as {
-        isValidKey: boolean;
-        keyExpirationTimestampFor: BigNumber;
-        keyManagerOf: string;
-        ownerOf: string;
-      };
-    });
-
-    return res;
-  };
-
   return {
     contract: lock,
-    getExpiration,
     getKeyPrice,
     getPaymentTokenAddress,
-    getToken,
     isValidKey,
     purchase,
   };
