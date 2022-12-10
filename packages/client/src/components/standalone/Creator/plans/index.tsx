@@ -89,7 +89,7 @@ export const Plans = ({ editable, onChangePlan, plans }: PlansProps) => {
           <PlanCard
             editable={editable}
             plan={plan}
-            subscribeUrl={`${pathname}subscribe/${plan.lockAddress}`}
+            subscribeUrl={`${pathname}/subscribe/${plan.lockAddress}`}
           />
         </Grid>
       ))}
