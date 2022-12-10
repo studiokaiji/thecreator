@@ -15,14 +15,16 @@ type PlanCardProps = {
   plan: CreatorDocDataPlan;
   editable?: boolean;
   expirationTimestamp?: BigNumber;
-  subscribeUrl: string;
+  subscribeUrl?: string;
+  hiddenButton?: boolean;
 };
 
 export const PlanCard = ({
   editable,
   expirationTimestamp,
+  hiddenButton,
   plan: { currency, description, features, name, priceEthPerMonth },
-  subscribeUrl,
+  subscribeUrl = '',
 }: PlanCardProps) => {
   const { t } = useTranslation();
   return (
@@ -83,20 +85,24 @@ export const PlanCard = ({
             )}
           </SeeMore>
 
-          {editable ? (
-            <Button variant="outlined">{t('edit')}</Button>
-          ) : expirationTimestamp ? (
-            <Stack spacing={1}>
-              <Button variant="contained">{t('extendThePeriod')}</Button>
-              <Button variant="outlined">{t('settings')}</Button>
-              <Typography color="GrayText" variant="subtitle2">
-                {blockTimestampToDate(expirationTimestamp).toLocaleString()}
-              </Typography>
-            </Stack>
-          ) : (
-            <Button component={Link} to={subscribeUrl} variant="contained">
-              {t('subscribe')}
-            </Button>
+          {!hiddenButton && (
+            <>
+              {editable ? (
+                <Button variant="outlined">{t('edit')}</Button>
+              ) : expirationTimestamp ? (
+                <Stack spacing={1}>
+                  <Button variant="contained">{t('extendThePeriod')}</Button>
+                  <Button variant="outlined">{t('settings')}</Button>
+                  <Typography color="GrayText" variant="subtitle2">
+                    {blockTimestampToDate(expirationTimestamp).toLocaleString()}
+                  </Typography>
+                </Stack>
+              ) : (
+                <Button component={Link} to={subscribeUrl} variant="contained">
+                  {t('subscribe')}
+                </Button>
+              )}
+            </>
           )}
         </Stack>
       </CardContent>
