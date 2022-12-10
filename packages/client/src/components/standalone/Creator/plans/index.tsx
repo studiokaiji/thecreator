@@ -18,13 +18,15 @@ const currencyPriorityOrder = ['USDC', 'WETH', 'MATIC'];
 const sortPlans = (plans: { [key: number]: CreatorDocDataPlan }) => {
   const planIndexesByCurrencies: { [currency: string]: number[] } = {};
 
-  Object.values(plans).forEach((plan, i) => {
-    if (planIndexesByCurrencies[plan.currency]) {
-      planIndexesByCurrencies[plan.currency].push(i);
-    } else {
-      planIndexesByCurrencies[plan.currency] = [i];
-    }
-  });
+  Object.values(plans)
+    .filter((plan) => plan && plan.lockAddress)
+    .forEach((plan, i) => {
+      if (planIndexesByCurrencies[plan.currency]) {
+        planIndexesByCurrencies[plan.currency].push(i);
+      } else {
+        planIndexesByCurrencies[plan.currency] = [i];
+      }
+    });
 
   const sortedExistsCurrenciesInPlans = Object.keys(
     planIndexesByCurrencies
@@ -61,10 +63,7 @@ const sortPlans = (plans: { [key: number]: CreatorDocDataPlan }) => {
     })
     .flat();
 
-  const sortedPlans = sortedIndexes
-    .map((i) => plans[i])
-    .filter(({ lockAddress }) => lockAddress);
-
+  const sortedPlans = sortedIndexes.map((i) => plans[i]);
   return sortedPlans;
 };
 
