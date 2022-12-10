@@ -1,5 +1,7 @@
 import EditIcon from '@mui/icons-material/EditOutlined';
 import IconButton from '@mui/material/IconButton';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -42,12 +44,15 @@ export const EditButton = ({
         </RoundedButton>
       )}
       <CenterModal onClose={close} open={isOpen} width={minimize ? 380 : 560}>
-        <CreatorProfileEditForm
-          isEditSection
-          data={data}
-          onChangeData={onChangeData}
-          onEnd={close}
-        />
+        <Stack spacing={2}>
+          <Typography variant="h5">{t('edit')}</Typography>
+          <CreatorProfileEditForm
+            data={data}
+            onChangeData={onChangeData}
+            onEnd={close}
+            saveButtonChild={t('save')}
+          />
+        </Stack>
       </CenterModal>
     </>
   );

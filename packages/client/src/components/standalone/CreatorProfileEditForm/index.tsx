@@ -2,7 +2,7 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
@@ -21,15 +21,15 @@ type CreatorProfileEditFormProps = {
   onChangeData?: (data: CreatorDocData) => void;
   onError?: (e: any) => void;
   onEnd: () => void;
-  isEditSection: boolean;
+  saveButtonChild: ReactNode;
 };
 
 export const CreatorProfileEditForm = ({
   data,
-  isEditSection,
   onChangeData,
   onEnd,
   onError,
+  saveButtonChild,
 }: CreatorProfileEditFormProps) => {
   const {
     formState: { errors, isValid },
@@ -71,7 +71,6 @@ export const CreatorProfileEditForm = ({
 
   return (
     <Stack component="form" spacing={1.5}>
-      {isEditSection && <Typography variant="h5">{t('edit')}</Typography>}
       <TextField
         {...register('creatorName', {
           maxLength: {
@@ -103,7 +102,7 @@ export const CreatorProfileEditForm = ({
         onClick={onClickSaveButtonHandler}
         variant="contained"
       >
-        {isEditSection ? t('save') : t('add')}
+        {saveButtonChild}
       </Button>
       {status === 'failed' && (
         <Typography color={'red'}>{t('failed')}</Typography>

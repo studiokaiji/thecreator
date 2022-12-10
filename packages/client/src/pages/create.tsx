@@ -55,9 +55,9 @@ export const CreatePage = () => {
           <Box sx={{ mt: 2 }}>
             {typing ? (
               <CreatorProfileEditForm
-                isEditSection={false}
                 onEnd={() => setTyping(false)}
                 onError={(e) => setErrorMessage(JSON.stringify(e, null, 2))}
+                saveButtonChild={t('create')}
               />
             ) : (
               <Stack spacing={3} sx={{ textAlign: 'center' }}>
