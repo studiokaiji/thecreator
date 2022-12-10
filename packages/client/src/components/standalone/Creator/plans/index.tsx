@@ -61,7 +61,9 @@ const sortPlans = (plans: { [key: number]: CreatorDocDataPlan }) => {
     })
     .flat();
 
-  const sortedPlans = sortedIndexes.map((i) => plans[i]);
+  const sortedPlans = sortedIndexes
+    .map((i) => plans[i])
+    .filter(({ lockAddress }) => lockAddress);
 
   return sortedPlans;
 };
@@ -70,6 +72,10 @@ export const Plans = ({ editable, onChangePlan, plans }: PlansProps) => {
   const matches: boolean = useMediaQuery('(max-width:899px)');
 
   const { pathname } = useLocation();
+
+  const path = pathname.match('/.*/$')
+    ? pathname.replace(/\/+$/, '')
+    : pathname;
 
   const sortedPlans = sortPlans(plans);
 
@@ -89,7 +95,7 @@ export const Plans = ({ editable, onChangePlan, plans }: PlansProps) => {
           <PlanCard
             editable={editable}
             plan={plan}
-            subscribeUrl={`${pathname}/subscribe/${plan.lockAddress}`}
+            subscribeUrl={`${path}/subscribe/${plan.lockAddress}`}
           />
         </Grid>
       ))}
