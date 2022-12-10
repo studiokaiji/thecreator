@@ -8,11 +8,11 @@ import {
 } from 'ethers';
 
 import { useContract } from './useContract';
+import { useMulticall } from './useMulticall';
+import { useOnlyValidNetwork } from './useOnlyValidNetwork';
 import { useWallet } from './useWallet';
 
 import { ERC20 } from '@/abis';
-import { rpcProvider } from '@/rpc-provider';
-import { aggregate } from '@/utils/multicall';
 
 type PurchaseReq = {
   amount: BigNumberish;
@@ -31,14 +31,13 @@ type PurchaseOpts = Partial<{
 }>;
 
 export const usePublicLock = (address: string) => {
-  const { contract, switchChain } = useContract(address, PublicLockV11.abi);
+  const { contract: lock } = useContract(address, PublicLockV11.abi);
 
   const { account, library } = useWallet();
 
-  const switchChainOnlySigner = async () => {
-    if (!contract.signer) return contract;
-    return switchChain();
-  };
+  const { aggregate } = useMulticall();
+
+  useOnlyValidNetwork();
 
   const purchase = async ({
     onApproved,
@@ -51,8 +50,6 @@ export const usePublicLock = (address: string) => {
     if (!account || !library) {
       return;
     }
-
-    const lock = await switchChainOnlySigner();
 
     if (requests.length < 1) {
       requests.push({});
@@ -119,23 +116,22 @@ export const usePublicLock = (address: string) => {
   };
 
   const getKeyPrice = async (): Promise<BigNumber> => {
-    const lock = await switchChainOnlySigner();
     return lock.keyPrice();
   };
 
+  const getExpiration = async (): Promise<BigNumber> => {
+    return lock.expirationDuration();
+  };
+
   const getPaymentTokenAddress = async (): Promise<string> => {
-    const lock = await switchChainOnlySigner();
     return lock.tokenAddress();
   };
 
   const isValidKey = async (tokenId: BigNumberish): Promise<BigNumber> => {
-    const lock = await switchChainOnlySigner();
     return lock.isValidKey(tokenId);
   };
 
   const getToken = async (tokenId: BigNumberish) => {
-    const lock = await switchChainOnlySigner();
-
     const inputs = [
       'isValidKey',
       'keyExpirationTimestampFor',
@@ -148,7 +144,7 @@ export const usePublicLock = (address: string) => {
       return { callData, target: address };
     });
 
-    const { returnData } = await aggregate(params, library || rpcProvider);
+    const { returnData } = await aggregate(params);
 
     const res = inputs.map((key, i) => {
       const data = lock.interface.decodeFunctionResult(key, returnData[i])[0];
@@ -164,7 +160,8 @@ export const usePublicLock = (address: string) => {
   };
 
   return {
-    contract,
+    contract: lock,
+    getExpiration,
     getKeyPrice,
     getPaymentTokenAddress,
     getToken,
