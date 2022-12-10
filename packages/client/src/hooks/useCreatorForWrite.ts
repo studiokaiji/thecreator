@@ -54,12 +54,12 @@ export const useCreatorForWrite = () => {
   ) => {
     if (!docRef) throw refErr;
     const baseKey = `plans.${index}`;
-    const keys = Object.keys(plan).map((k) => `${baseKey}.${k}`);
-    const setValues = keys.reduce<{ [key: string]: any }>((prev, key) => {
-      prev[key] = plan[key as keyof typeof plan];
+    const keys = Object.keys(plan);
+    const setValue = keys.reduce<{ [key: string]: any }>((prev, key) => {
+      prev[`${baseKey}.${key}`] = plan[key as keyof typeof plan];
       return prev;
     }, {});
-    await updateDoc(docRef, setValues);
+    await updateDoc(docRef, { ...setValue });
   };
 
   return { addCreator, addPlan, docRef, updateCreator, updatePlan };
