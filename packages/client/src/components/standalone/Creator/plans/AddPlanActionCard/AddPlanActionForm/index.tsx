@@ -11,7 +11,7 @@ import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { BigNumberish, utils } from 'ethers';
+import { BigNumberish, constants, utils } from 'ethers';
 import { useCallback, useState } from 'react';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -113,6 +113,13 @@ export const AddPlanActionForm = ({
         txHash: '',
       };
 
+      const baseToken =
+        currency === 'USDC'
+          ? import.meta.env.VITE_USDC_ADDRESS
+          : currency === 'WETH'
+          ? import.meta.env.VITE_USDC_ADDRESS
+          : constants.AddressZero;
+
       const contract = await createLock({
         onCreateLockEnded: () => setActiveStep(3),
         onCreateLockTxSend: async (res) => {
@@ -123,6 +130,7 @@ export const AddPlanActionForm = ({
         onFailedToTxSend: (e) => setErrorMessage(JSON.stringify(e, null, 2)),
         onUserRejected: () => setErrorMessage(t('userRejectedRequest')),
         request: {
+          baseToken,
           lockName: `${name} plan`,
           price: utils.parseUnits(
             priceEthPerMonth.toString(),
@@ -133,7 +141,6 @@ export const AddPlanActionForm = ({
 
       await updatePlan(currentLengthOfPlans, {
         lockAddress: contract.address,
-        txHash: '',
       }).catch(() => {
         console.error('Database assign error.');
       });
