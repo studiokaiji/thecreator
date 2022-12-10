@@ -114,8 +114,7 @@ export const AddPlanActionForm = ({
 
       const contract = await createLock({
         onCreateLockEnded: () => setActiveStep(3),
-        onCreateLockTxSend: async (res) => {
-          data.lockAddress = res.hash;
+        onCreateLockTxSend: async () => {
           setActiveStep(2);
           await addPlanToDB(currentLengthOfPlans, data);
         },
