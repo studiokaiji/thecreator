@@ -16,4 +16,5 @@ export type CreatorDocDataPlan = {
   features: string[];
   priceEthPerMonth: number;
   currency: string;
+  txHash: string;
 };

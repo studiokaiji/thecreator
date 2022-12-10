@@ -110,12 +110,14 @@ export const AddPlanActionForm = ({
         lockAddress: '',
         name,
         priceEthPerMonth,
+        txHash: '',
       };
 
       const contract = await createLock({
         onCreateLockEnded: () => setActiveStep(3),
-        onCreateLockTxSend: async () => {
+        onCreateLockTxSend: async (res) => {
           setActiveStep(2);
+          data.txHash = res.hash;
           await addPlanToDB(currentLengthOfPlans, data);
         },
         onFailedToTxSend: (e) => setErrorMessage(JSON.stringify(e, null, 2)),
@@ -131,6 +133,7 @@ export const AddPlanActionForm = ({
 
       await updatePlan(currentLengthOfPlans, {
         lockAddress: contract.address,
+        txHash: '',
       }).catch(() => {
         console.error('Database assign error.');
       });
@@ -141,6 +144,7 @@ export const AddPlanActionForm = ({
 
       onAdded({ ...data, lockAddress: contract.address });
     } catch (e) {
+      setErrorMessage(JSON.stringify(e, null, 2));
       console.error(e);
     }
   };
