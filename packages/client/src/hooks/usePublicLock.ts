@@ -31,9 +31,14 @@ type PurchaseOpts = Partial<{
 }>;
 
 export const usePublicLock = (address: string) => {
+  const { contract, switchChain } = useContract(address, PublicLockV11.abi);
+
   const { account, library } = useWallet();
 
-  const { contract: lock } = useContract(address, PublicLockV11.abi);
+  const switchChainOnlySigner = async () => {
+    if (!contract.signer) return contract;
+    return switchChain();
+  };
 
   const purchase = async ({
     onApproved,
@@ -42,7 +47,13 @@ export const usePublicLock = (address: string) => {
     onPurchaseTxSend,
     requests = [],
     tokenAddress,
-  }: PurchaseOpts) => {
+  }: PurchaseOpts = {}) => {
+    if (!account || !library) {
+      return;
+    }
+
+    const lock = await switchChainOnlySigner();
+
     if (requests.length < 1) {
       requests.push({});
     }
@@ -54,6 +65,7 @@ export const usePublicLock = (address: string) => {
         if (!req.amount) {
           if (!keyPrice) {
             keyPrice = await getKeyPrice();
+            console.log(keyPrice);
           }
           req.amount = keyPrice;
         }
@@ -66,28 +78,29 @@ export const usePublicLock = (address: string) => {
       })
     );
 
-    const args = validRequests.reduce<BigNumberish[][]>((prev, req, i) => {
-      prev[i][0] = req.amount;
-      prev[i][1] = req.to;
-      prev[i][2] = req.udtReceiver;
-      prev[i][3] = req.keyManager;
-      prev[i][4] = [];
-      return prev;
-    }, []);
+    const args = validRequests.reduce<BigNumberish[][]>(
+      (prev, req, i) => {
+        prev[0][i] = req.amount;
+        prev[1][i] = req.to;
+        prev[2][i] = req.udtReceiver;
+        prev[3][i] = req.keyManager;
+        // prev[4][i] = [];
+        return prev;
+      },
+      [[], [], [], [], []]
+    );
 
     let value = BigNumber.from(0);
 
     tokenAddress ??= await getPaymentTokenAddress();
 
-    if (tokenAddress === constants.AddressZero) {
-      // calculate value from amounts
-      value = args.reduce<BigNumber>(
-        (prev, n) => prev.add(BigNumber.from(n[0])),
-        BigNumber.from(0)
-      );
-    } else {
-      // ERC20
-      const erc20 = new Contract(tokenAddress, ERC20, library);
+    value = args[0].reduce<BigNumber>((prev, n) => {
+      if (n) prev = prev.add(n);
+      return prev;
+    }, BigNumber.from(0));
+
+    if (tokenAddress !== constants.AddressZero) {
+      const erc20 = new Contract(tokenAddress, ERC20, library?.getSigner());
 
       const approveRes = await erc20.approve(address, value);
       onApproveTxSend && onApproveTxSend(approveRes);
@@ -105,19 +118,24 @@ export const usePublicLock = (address: string) => {
     return purchaseReceipt;
   };
 
-  const getKeyPrice = (): Promise<BigNumber> => {
+  const getKeyPrice = async (): Promise<BigNumber> => {
+    const lock = await switchChainOnlySigner();
     return lock.keyPrice();
   };
 
-  const getPaymentTokenAddress = (): Promise<string> => {
+  const getPaymentTokenAddress = async (): Promise<string> => {
+    const lock = await switchChainOnlySigner();
     return lock.tokenAddress();
   };
 
-  const isValidKey = (tokenId: BigNumberish): Promise<BigNumber> => {
+  const isValidKey = async (tokenId: BigNumberish): Promise<BigNumber> => {
+    const lock = await switchChainOnlySigner();
     return lock.isValidKey(tokenId);
   };
 
   const getToken = async (tokenId: BigNumberish) => {
+    const lock = await switchChainOnlySigner();
+
     const inputs = [
       'isValidKey',
       'keyExpirationTimestampFor',
@@ -146,7 +164,7 @@ export const usePublicLock = (address: string) => {
   };
 
   return {
-    contract: lock,
+    contract,
     getKeyPrice,
     getPaymentTokenAddress,
     getToken,
