@@ -49,9 +49,9 @@ const lockInputKeys = [
 const checkPlans = async (docPlans: CreatorPlanDoc[]) => {
   if (docPlans.length < 1) return [];
 
-  const contracts = docPlans.map(
-    ({ lockAddress }) => new Contract(lockAddress, PublicLockV11.abi)
-  );
+  const contracts = docPlans
+    .filter(({ lockAddress }) => lockAddress)
+    .map(({ lockAddress }) => new Contract(lockAddress, PublicLockV11.abi));
 
   const lockInputs: Input[] = [];
   contracts.forEach((contract) => {
