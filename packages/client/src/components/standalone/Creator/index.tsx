@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import { MainLoading } from '../MainLoading';
 
@@ -13,6 +13,7 @@ import { Posts } from './posts';
 
 import { CreatorDocDataPlan } from '#types/firestore/creator';
 import { useCreator } from '@/hooks/useCreator';
+import { usePlans } from '@/hooks/usePlans';
 import { useWindowSize } from '@/hooks/useWindowSize';
 
 type CreatorProps = {
@@ -35,22 +36,26 @@ export const Creator = ({
     creatorAddress: creatorAddress,
     id: id,
   });
-
   useEffect(() => {
     if (error && onError) {
       onError(error);
     }
   }, [error]);
 
-  if (!data) {
+  const { loading, plans } = usePlans(data?.plans || {});
+
+  if (!data || loading || !plans) {
     return <MainLoading />;
   }
 
-  const onChangePlanHandler = (index: number, plan: CreatorDocDataPlan) => {
-    const currentData = { ...data };
-    currentData.plans[index] = plan;
-    mutate(currentData);
-  };
+  const onChangePlanHandler = useCallback(
+    (index: number, plan: CreatorDocDataPlan) => {
+      const currentPlans: CreatorDocDataPlan[] = [...(plans || [])];
+      currentPlans[index] = plan;
+      mutate({ ...data, plans: currentPlans });
+    },
+    []
+  );
 
   return (
     <Box>
@@ -88,7 +93,7 @@ export const Creator = ({
                       <Plans
                         editable={editable}
                         onChangePlan={onChangePlanHandler}
-                        plans={data.plans}
+                        plans={plans}
                       />
                     </Box>
                   ),

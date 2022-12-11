@@ -6,65 +6,12 @@ import { AddPlanActionCard } from './AddPlanActionCard';
 import { PlanCard } from './PlanCard';
 
 import { CreatorDocDataPlan } from '#types/firestore/creator';
+import { Plan } from '@/hooks/usePlans';
 
 type PlansProps = {
   editable: boolean;
-  plans: { [key: number]: CreatorDocDataPlan };
+  plans: Plan[];
   onChangePlan: (index: number, plan: CreatorDocDataPlan) => void;
-};
-
-const currencyPriorityOrder = ['USDC', 'WETH', 'MATIC'];
-
-const sortPlans = (plans: { [key: number]: CreatorDocDataPlan }) => {
-  const planIndexesByCurrencies: { [currency: string]: number[] } = {};
-
-  Object.values(plans)
-    .filter((plan) => plan && plan.lockAddress)
-    .forEach((plan, i) => {
-      if (planIndexesByCurrencies[plan.currency]) {
-        planIndexesByCurrencies[plan.currency].push(i);
-      } else {
-        planIndexesByCurrencies[plan.currency] = [i];
-      }
-    });
-
-  const sortedExistsCurrenciesInPlans = Object.keys(
-    planIndexesByCurrencies
-  ).sort((first, second) => {
-    const firstIndex = currencyPriorityOrder.indexOf(first);
-    const secondIndex = currencyPriorityOrder.indexOf(second);
-
-    if (firstIndex === -1 || secondIndex === -1 || firstIndex < secondIndex) {
-      return 1;
-    }
-    if (firstIndex > secondIndex) {
-      return -1;
-    }
-    return 0;
-  });
-
-  const sortedIndexes = sortedExistsCurrenciesInPlans
-    .map((currency) => {
-      const sortedIndexesByCurrencies = planIndexesByCurrencies[currency].sort(
-        (firstIndex, secondIndex) => {
-          const firstPlan = plans[firstIndex];
-          const secondPlan = plans[secondIndex];
-
-          if (firstPlan.priceEthPerMonth < secondPlan.priceEthPerMonth) {
-            return 1;
-          }
-          if (firstPlan.priceEthPerMonth > secondPlan.priceEthPerMonth) {
-            return 1;
-          }
-          return 0;
-        }
-      );
-      return sortedIndexesByCurrencies;
-    })
-    .flat();
-
-  const sortedPlans = sortedIndexes.map((i) => plans[i]);
-  return sortedPlans;
 };
 
 export const Plans = ({ editable, onChangePlan, plans }: PlansProps) => {
@@ -76,9 +23,7 @@ export const Plans = ({ editable, onChangePlan, plans }: PlansProps) => {
     ? pathname.replace(/\/+$/, '')
     : pathname;
 
-  const sortedPlans = sortPlans(plans);
-
-  const plansLength = Object.keys(plans).length;
+  const plansLength = plans.length;
 
   return (
     <Grid
@@ -89,7 +34,7 @@ export const Plans = ({ editable, onChangePlan, plans }: PlansProps) => {
       spacing={matches ? 0 : 2}
       sx={matches ? { maxWidth: 400, mx: 'auto' } : {}}
     >
-      {sortedPlans.map((plan, i) => (
+      {plans.map((plan, i) => (
         <Grid key={`plans-${i}`} item lg={4} md={6} xs={12}>
           <PlanCard
             editable={editable}
