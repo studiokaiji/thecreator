@@ -47,7 +47,10 @@ export const Creator = ({
   return (
     <Stack>
       <ProfileImages />
-      <Stack spacing={2} sx={{ mx: 'auto', textAlign: 'center' }}>
+      <Stack
+        spacing={2}
+        sx={{ mx: 'auto', textAlign: 'center', width: '100%' }}
+      >
         <Stack spacing={2} sx={{ m: 3 }}>
           <ActionButtons
             data={data}
