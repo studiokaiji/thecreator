@@ -45,7 +45,7 @@ export const Creator = ({
   }
 
   return (
-    <Box>
+    <Stack>
       <ProfileImages />
       <Stack spacing={2} sx={{ mx: 'auto', textAlign: 'center' }}>
         <Stack spacing={2} sx={{ m: 3 }}>
@@ -87,6 +87,6 @@ export const Creator = ({
           </Box>
         </Box>
       </Stack>
-    </Box>
+    </Stack>
   );
 };

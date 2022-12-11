@@ -19,7 +19,7 @@ export const EditCreatorProfilePage = () => {
 
   return (
     <Suspense fallback={<MainLoading />}>
-      <Box sx={{ minHeight: '101vh' }}>
+      <Box sx={{ mb: 4, minHeight: '101vh' }}>
         <Creator
           editable
           creatorAddress={currentUser?.uid}
