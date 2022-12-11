@@ -3,7 +3,6 @@ import { useMemo } from 'react';
 
 import { useWallet } from './useWallet';
 
-import { CreatorDocDataPlan } from '#types/firestore/creator';
 import { getCreatorDocRef } from '@/converters/creatorConverter';
 
 const refErr = Error('Creator document reference does not exist.');
@@ -38,29 +37,5 @@ export const useCreatorForWrite = () => {
     });
   };
 
-  const addPlan = async (
-    currentLengthOfPlans: number,
-    plan: CreatorDocDataPlan
-  ) => {
-    if (!docRef) throw refErr;
-    await updateDoc(docRef, {
-      [`plans.${currentLengthOfPlans}`]: plan,
-    });
-  };
-
-  const updatePlan = async (
-    index: number,
-    plan: Partial<Omit<CreatorDocDataPlan, 'priceEthPerMonth' | 'currency'>>
-  ) => {
-    if (!docRef) throw refErr;
-    const baseKey = `plans.${index}`;
-    const keys = Object.keys(plan);
-    const setValue = keys.reduce<{ [key: string]: any }>((prev, key) => {
-      prev[`${baseKey}.${key}`] = plan[key as keyof typeof plan];
-      return prev;
-    }, {});
-    await updateDoc(docRef, { ...setValue });
-  };
-
-  return { addCreator, addPlan, docRef, updateCreator, updatePlan };
+  return { addCreator, docRef, updateCreator };
 };

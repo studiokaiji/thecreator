@@ -6,17 +6,15 @@ import { useTranslation } from 'react-i18next';
 
 import { AddPlanActionForm } from './AddPlanActionForm';
 
-import type { CreatorDocDataPlan } from '#types/firestore/creator';
 import { CenterModal } from '@/components/helpers/CenterModal';
+import { Plan } from '@/utils/get-plans-from-chain';
 
 type AddPlanActionCardProps = {
   minHeight?: number | string;
-  currentLengthOfPlans: number;
-  onAdded: (data: CreatorDocDataPlan) => void;
+  onAdded: (data: Plan) => void;
 };
 
 export const AddPlanActionCard = ({
-  currentLengthOfPlans,
   minHeight,
   onAdded,
 }: AddPlanActionCardProps) => {
@@ -49,11 +47,7 @@ export const AddPlanActionCard = ({
         </CardActionArea>
       </Card>
       <CenterModal onClose={() => setIsOpen(false)} open={isOpen}>
-        <AddPlanActionForm
-          currentLengthOfPlans={currentLengthOfPlans}
-          onAdded={onAdded}
-          onClose={() => setIsOpen(false)}
-        />
+        <AddPlanActionForm onAdded={onAdded} onClose={() => setIsOpen(false)} />
       </CenterModal>
     </>
   );

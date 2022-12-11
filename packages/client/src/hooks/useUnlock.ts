@@ -13,7 +13,7 @@ type CreateLockReq = {
   lockName: string;
 };
 
-type CreateLockOpts = {
+export type CreateLockOpts = {
   request: CreateLockReq;
   onCreateLockTxSend?: (response: providers.TransactionResponse) => void;
   onCreateLockEnded?: (receipt: providers.TransactionReceipt) => void;

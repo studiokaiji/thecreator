@@ -6,7 +6,7 @@ import {
   getCreatorsCollectionRef,
 } from '@/converters/creatorConverter';
 
-type UseCreatorOpts = {
+export type UseCreatorOpts = {
   id?: string;
   creatorAddress?: string;
 };

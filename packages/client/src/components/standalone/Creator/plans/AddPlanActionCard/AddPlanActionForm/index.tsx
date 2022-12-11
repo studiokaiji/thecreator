@@ -11,17 +11,16 @@ import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { BigNumberish, constants, utils } from 'ethers';
+import { BigNumberish, utils } from 'ethers';
 import { useCallback, useState } from 'react';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { AddPlanActionFormFeatureTextField } from './AddPlanActionFormFeatureTextField';
 
-import type { CreatorDocDataPlan } from '#types/firestore/creator';
 import { currencies, currencyDecimals } from '@/constants';
-import { useCreatorForWrite } from '@/hooks/useCreatorForWrite';
-import { useUnlock } from '@/hooks/useUnlock';
+import { useCreatorPlanForWrite } from '@/hooks/useCreatorPlanForWrite';
+import { Plan } from '@/utils/get-plans-from-chain';
 
 export type AddPlanActionFormValues = {
   currency: typeof currencies[number];
@@ -37,8 +36,7 @@ type Feature = {
 };
 
 type AddPlanActionFormProps = {
-  currentLengthOfPlans: number;
-  onAdded: (data: CreatorDocDataPlan) => void;
+  onAdded: (data: Plan) => void;
   onClose?: () => void;
 };
 
@@ -49,7 +47,6 @@ const pricePlaceholders: { [key in typeof currencies[number]]: string } = {
 };
 
 export const AddPlanActionForm = ({
-  currentLengthOfPlans,
   onAdded,
   onClose,
 }: AddPlanActionFormProps) => {
@@ -80,8 +77,6 @@ export const AddPlanActionForm = ({
 
   const { t } = useTranslation();
 
-  const { createLock } = useUnlock();
-
   const steps = [
     t('enterThePlanInfo'),
     t('sendingTx'),
@@ -92,64 +87,48 @@ export const AddPlanActionForm = ({
   const [errorMessage, setErrorMessage] = useState('');
   const [activeStep, setActiveStep] = useState(0);
 
-  const { addPlan: addPlanToDB, updatePlan } = useCreatorForWrite();
+  const { addPlan } = useCreatorPlanForWrite();
 
-  const addPlan = async () => {
-    setActiveStep(1);
-
-    const { currency, description, features, name, priceEthPerMonth } =
-      getValues();
-
+  const onClickAddNewPlanHandler = async () => {
     try {
+      setActiveStep(1);
+
+      const { currency, description, features, name, priceEthPerMonth } =
+        getValues();
+
+      const keyPrice = utils.parseUnits(
+        priceEthPerMonth.toString(),
+        currencyDecimals[currency]
+      );
+
       const data = {
         currency,
         description,
         features: features
           .filter(({ feature }) => feature)
           .map(({ feature }) => feature),
+        keyPrice,
         lockAddress: '',
         name,
-        priceEthPerMonth,
-        txHash: '',
       };
 
-      const baseToken =
-        currency === 'USDC'
-          ? import.meta.env.VITE_USDC_ADDRESS
-          : currency === 'WETH'
-          ? import.meta.env.VITE_USDC_ADDRESS
-          : constants.AddressZero;
-
-      const contract = await createLock({
+      const { data: plan } = await addPlan(data, {
         onCreateLockEnded: () => setActiveStep(3),
-        onCreateLockTxSend: async (res) => {
-          setActiveStep(2);
-          data.txHash = res.hash;
-          await addPlanToDB(currentLengthOfPlans, data);
-        },
+        onCreateLockTxSend: () => setActiveStep(2),
         onFailedToTxSend: (e) => setErrorMessage(JSON.stringify(e, null, 2)),
         onUserRejected: () => setErrorMessage(t('userRejectedRequest')),
-        request: {
-          baseToken,
-          lockName: `${name} plan`,
-          price: utils.parseUnits(
-            priceEthPerMonth.toString(),
-            currencyDecimals[currency]
-          ),
-        },
-      });
-
-      await updatePlan(currentLengthOfPlans, {
-        lockAddress: contract.address,
-      }).catch(() => {
-        console.error('Database assign error.');
       });
 
       setActiveStep(4);
 
       reset();
 
-      onAdded({ ...data, lockAddress: contract.address });
+      onAdded({
+        ...plan,
+        currency,
+        keyPrice,
+        ok: true,
+      });
     } catch (e) {
       setErrorMessage(JSON.stringify(e, null, 2));
       console.error(e);
@@ -285,7 +264,11 @@ export const AddPlanActionForm = ({
             </Box>
           </Stack>
 
-          <Button disabled={!isValid} onClick={addPlan} variant="contained">
+          <Button
+            disabled={!isValid}
+            onClick={onClickAddNewPlanHandler}
+            variant="contained"
+          >
             {t('addNewPlan')}
           </Button>
         </Stack>

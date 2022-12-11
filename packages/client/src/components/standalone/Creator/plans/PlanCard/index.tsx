@@ -3,16 +3,17 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { BigNumber } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import { CreatorDocDataPlan } from '#types/firestore/creator';
 import { SeeMore } from '@/components/helpers/SeeMore';
+import { currencyDecimals } from '@/constants';
 import { blockTimestampToDate } from '@/utils/block-timestamp-to-date';
+import { Plan } from '@/utils/get-plans-from-chain';
 
 type PlanCardProps = {
-  plan: CreatorDocDataPlan;
+  plan: Plan<true>;
   editable?: boolean;
   expirationTimestamp?: BigNumber;
   subscribeUrl?: string;
@@ -23,10 +24,13 @@ export const PlanCard = ({
   editable,
   expirationTimestamp,
   hiddenButton,
-  plan: { currency, description, features, name, priceEthPerMonth },
+  plan: { currency, description, features, keyPrice, name },
   subscribeUrl = '',
 }: PlanCardProps) => {
   const { t } = useTranslation();
+
+  const priceEth = utils.formatUnits(keyPrice, currencyDecimals[currency]);
+
   return (
     <Card sx={{ height: '100%', p: 1.5, width: '100%' }}>
       <CardContent sx={{ height: '100%' }}>
@@ -61,7 +65,7 @@ export const PlanCard = ({
               </Typography>
             </Stack>
             <Typography gutterBottom variant="h6">
-              {priceEthPerMonth} {currency}
+              {priceEth} {currency}
               <Typography
                 color="GrayText"
                 fontWeight={500}
