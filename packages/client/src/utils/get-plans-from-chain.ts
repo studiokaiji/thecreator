@@ -132,10 +132,10 @@ const sortPlans = <T extends boolean>(plans: Plan<T>[]) => {
     const secondIndex = tokenPriorityOrder.indexOf(second);
 
     if (firstIndex === -1 || secondIndex === -1 || firstIndex < secondIndex) {
-      return 1;
+      return -1;
     }
     if (firstIndex > secondIndex) {
-      return -1;
+      return 1;
     }
     return 0;
   });
@@ -148,7 +148,7 @@ const sortPlans = <T extends boolean>(plans: Plan<T>[]) => {
           const secondPlan = plans[secondIndex];
 
           if (firstPlan.keyPrice < secondPlan.keyPrice) {
-            return 1;
+            return -1;
           }
           if (firstPlan.keyPrice > secondPlan.keyPrice) {
             return 1;
