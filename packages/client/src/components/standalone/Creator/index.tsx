@@ -69,7 +69,7 @@ export const Creator = ({
                 {
                   component: (
                     <Box sx={{ maxWidth: 640, mx: 'auto' }}>
-                      <Posts editable={editable} id={data.id || ''} />,
+                      <Posts editable={editable} id={data.id || ''} />
                     </Box>
                   ),
                   i18nKey: 'posts',
