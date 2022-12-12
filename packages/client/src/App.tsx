@@ -7,7 +7,7 @@ import '@/firebase';
 import { SnackbarProvider } from './contexts/SnackbarContext';
 import { NotFound } from './pages/404';
 import { CreatorPage } from './pages/u/[id]';
-import { SubscribePage } from './pages/u/[id]/subscribe/[lockAddress]';
+import { SubscribePage } from './pages/u/[id]/subscribe/[planId]';
 
 import { NavLayout } from '@/components/layout/NavLayout';
 import { AuthProvider } from '@/contexts/AuthContext';
@@ -42,14 +42,13 @@ function App() {
                     path="/edit/profile"
                   />
                   <Route element={<SupportersPage />} path="/edit/supporters" />
-                  <Route path="c">
+                  <Route path="/c">
+                    <Route index element={<NotFound />} />
                     <Route path=":id">
                       <Route index element={<CreatorPage />} />
                       <Route path="subscribe">
-                        <Route
-                          element={<SubscribePage />}
-                          path=":planId"
-                        />
+                        <Route index element={<NotFound />} />
+                        <Route element={<SubscribePage />} path=":planId" />
                       </Route>
                     </Route>
                   </Route>
