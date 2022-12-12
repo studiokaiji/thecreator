@@ -36,4 +36,4 @@ export const getCreatorPlansCollectionRef = (id: string) =>
   collection(db, 'creators', id, 'plans').withConverter(creatorPlanConverter);
 
 export const getCreatorPlanDocRef = (id: string, planId: string) =>
-  doc(db, 'creators', id, planId).withConverter(creatorPlanConverter);
+  doc(db, 'creators', id, 'plans', planId).withConverter(creatorPlanConverter);
