@@ -73,11 +73,11 @@ export const usePublicLock = (address = constants.AddressZero) => {
 
     const args = validRequests.reduce<BigNumberish[][]>(
       (prev, req, i) => {
-        prev[0][i] = req.amount;
+        prev[0][i] = BigNumber.from(req.amount);
         prev[1][i] = req.to;
         prev[2][i] = req.udtReceiver;
         prev[3][i] = req.keyManager;
-        // prev[4][i] = [];
+        prev[4][i] = [];
         return prev;
       },
       [[], [], [], [], []]
