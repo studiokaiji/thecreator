@@ -1,3 +1,4 @@
+import Box from '@mui/material/Box';
 import { Suspense, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
@@ -17,11 +18,13 @@ export const CreatorPage = () => {
 
   return (
     <Suspense fallback={<MainLoading />}>
-      <Creator
-        editable={false}
-        id={id}
-        onError={(e) => setError(e.toString())}
-      />
+      <Box sx={{ mb: 4 }}>
+        <Creator
+          editable={false}
+          id={id}
+          onError={(e) => setError(e.toString())}
+        />
+      </Box>
     </Suspense>
   );
 };
