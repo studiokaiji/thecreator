@@ -59,7 +59,6 @@ export const usePublicLock = (address = constants.AddressZero) => {
         if (!req.amount) {
           if (!keyPrice) {
             keyPrice = await getKeyPrice();
-            console.log(keyPrice);
           }
           req.amount = keyPrice;
         }
