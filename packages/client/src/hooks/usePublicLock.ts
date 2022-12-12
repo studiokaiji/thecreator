@@ -29,7 +29,7 @@ type PurchaseOpts = Partial<{
   onPurchased: (receipt: providers.TransactionReceipt) => void;
 }>;
 
-export const usePublicLock = (address: string) => {
+export const usePublicLock = (address = constants.AddressZero) => {
   const { contract: lock } = useContract(address, PublicLockV11.abi);
 
   const { account, library } = useWallet();
