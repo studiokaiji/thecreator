@@ -26,5 +26,9 @@ task('local-setup').setAction(async (_, { ethers, run }) => {
 
   await run('deploy');
 
+  const multicallFactory = await ethers.getContractFactory('Multicall');
+  const multicallConract = await (await multicallFactory.deploy()).deployed();
+  console.log('Multicall > deployed to:', multicallConract.address);
+
   console.log('End local-setup');
 });
