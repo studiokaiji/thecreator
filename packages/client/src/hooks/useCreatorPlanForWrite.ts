@@ -21,11 +21,11 @@ export const useCreatorPlanForWrite = () => {
   }, [account]);
 
   const addPlan = async (
-    plan: Omit<Plan, 'ok' | 'currency' | 'txHash'> & {
+    plan: Omit<Plan, 'ok' | 'currency' | 'txHash' | 'id'> & {
       currency: typeof currencies[number];
     },
     opts: Omit<CreateLockOpts, 'request'> = {}
-  ): Promise<{ contract: Contract; data: CreatorPlanDoc }> => {
+  ): Promise<{ contract: Contract; data: WithId<CreatorPlanDoc> }> => {
     if (!colRef) throw Error('Collection ref does not exist.');
 
     const baseToken =

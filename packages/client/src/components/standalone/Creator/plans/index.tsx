@@ -51,15 +51,16 @@ export const Plans = ({ creatorId, editable, onError }: PlansProps) => {
         spacing={matches ? 0 : 2}
         sx={matches ? { maxWidth: 400, mx: 'auto' } : {}}
       >
-        {data?.map((plan, i) => (
-          <Grid key={`plans-${i}`} item lg={4} md={6} xs={12}>
-            <PlanCard
-              editable={editable}
-              plan={plan}
-              subscribeUrl={`${path}/subscribe/${plan.lockAddress}`}
-            />
-          </Grid>
-        ))}
+        {data &&
+          data.map((plan, i) => (
+            <Grid key={`plans-${i}`} item lg={4} md={6} xs={12}>
+              <PlanCard
+                editable={editable}
+                plan={plan}
+                subscribeUrl={`${path}/subscribe/${plan.id}`}
+              />
+            </Grid>
+          ))}
         {editable && (
           <Grid item lg={4} md={6} xs={12}>
             <AddPlanActionCard minHeight={400} onAdded={onChangePlan} />

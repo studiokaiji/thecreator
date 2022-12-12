@@ -8,7 +8,7 @@ import { currencies } from '@/constants';
 import { rpcProvider } from '@/rpc-provider';
 
 export const getPlansFromChain = async <T extends boolean = true>(
-  docPlans: CreatorPlanDoc[],
+  docPlans: WithId<CreatorPlanDoc>[],
   excludeInvalidPlans: T
 ): Promise<Plan<T>[]> => {
   const checkResults = await checkPlans(docPlans);
@@ -37,8 +37,9 @@ type PlanCheckResult<T extends boolean> = {
   ok: boolean;
 };
 
-export type Plan<T extends boolean = true> = CreatorPlanDoc &
-  PlanCheckResult<T>;
+export type Plan<T extends boolean = true> = WithId<
+  CreatorPlanDoc & PlanCheckResult<T>
+>;
 
 const lockInputKeys = [
   'tokenAddress',
@@ -46,7 +47,7 @@ const lockInputKeys = [
   'expirationDuration',
 ] as const;
 
-const checkPlans = async (docPlans: CreatorPlanDoc[]) => {
+const checkPlans = async (docPlans: WithId<CreatorPlanDoc>[]) => {
   if (docPlans.length < 1) return [];
 
   const contracts = docPlans
