@@ -11,16 +11,17 @@ import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { BigNumberish, utils } from 'ethers';
+import type { BigNumberish } from 'ethers';
 import { useCallback, useState } from 'react';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { AddPlanActionFormFeatureTextField } from './AddPlanActionFormFeatureTextField';
 
-import { currencies, currencyDecimals } from '@/constants';
+import { currencies } from '@/constants';
 import { useCreatorPlanForWrite } from '@/hooks/useCreatorPlanForWrite';
 import { Plan } from '@/utils/get-plans-from-chain';
+import { parseWeiUnits } from '@/utils/wei-units-converter';
 
 export type AddPlanActionFormValues = {
   currency: typeof currencies[number];
@@ -96,10 +97,7 @@ export const AddPlanActionForm = ({
       const { currency, description, features, name, priceEthPerMonth } =
         getValues();
 
-      const keyPrice = utils.parseUnits(
-        priceEthPerMonth.toString(),
-        currencyDecimals[currency]
-      );
+      const keyPrice = parseWeiUnits(priceEthPerMonth.toString(), currency);
 
       const data = {
         currency,

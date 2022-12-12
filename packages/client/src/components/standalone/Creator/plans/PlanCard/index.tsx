@@ -3,14 +3,14 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { BigNumber, utils } from 'ethers';
+import { BigNumber } from 'ethers';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { SeeMore } from '@/components/helpers/SeeMore';
-import { currencyDecimals } from '@/constants';
 import { blockTimestampToDate } from '@/utils/block-timestamp-to-date';
 import { Plan } from '@/utils/get-plans-from-chain';
+import { formatWeiUnits } from '@/utils/wei-units-converter';
 
 type PlanCardProps = {
   plan: Plan<true>;
@@ -29,7 +29,7 @@ export const PlanCard = ({
 }: PlanCardProps) => {
   const { t } = useTranslation();
 
-  const priceEth = utils.formatUnits(keyPrice, currencyDecimals[currency]);
+  const priceEth = formatWeiUnits(keyPrice, currency);
 
   return (
     <Card sx={{ height: '100%', p: 1.5, width: '100%' }}>
