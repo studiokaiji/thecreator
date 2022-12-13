@@ -4,8 +4,10 @@ import useSWR from 'swr';
 import { getCreatorPlansCollectionRef } from '@/converters/creatorPlanConverter';
 import { getPlansFromChain } from '@/utils/get-plans-from-chain';
 
-export const useCreatorPlans = (creatorId: string) => {
-  const fetcher = async (docId: string) => {
+export const useCreatorPlans = (creatorId?: string) => {
+  const fetcher = async (docId?: string) => {
+    if (!docId) return null;
+
     const colRef = getCreatorPlansCollectionRef(docId);
     const snapshot = await getDocs(colRef);
 
