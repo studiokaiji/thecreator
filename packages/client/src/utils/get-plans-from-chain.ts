@@ -3,7 +3,8 @@ import { BigNumber, constants, Contract } from 'ethers';
 
 import { aggregate } from './multicall';
 
-import { CreatorPlanDoc } from '#types/firestore/creator/plan';
+import type { CreatorPlanDoc } from '#types/firestore/creator/plan';
+import type { MulticallInput } from '#types/multicall/MultiCallInput';
 import { currencies } from '@/constants';
 import { rpcProvider } from '@/rpc-provider';
 
@@ -26,8 +27,6 @@ export const getPlansFromChain = async <T extends boolean = true>(
 
   return sorted as Plan<T>[];
 };
-
-type Input = { target: string; callData: string };
 
 type CurrencyWithUnknown = typeof currencies[number] | 'Unknown';
 
@@ -54,7 +53,7 @@ const checkPlans = async (docPlans: WithId<CreatorPlanDoc>[]) => {
     .filter(({ lockAddress }) => lockAddress)
     .map(({ lockAddress }) => new Contract(lockAddress, PublicLockV11.abi));
 
-  const lockInputs: Input[] = [];
+  const lockInputs: MulticallInput[] = [];
   contracts.forEach((contract) => {
     lockInputKeys.forEach((k) => {
       const target = contract.address;
