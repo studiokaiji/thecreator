@@ -1,14 +1,13 @@
 import Box from '@mui/material/Box';
-import { Suspense, useMemo, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Suspense, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import { Creator } from '@/components/standalone/Creator';
 import { MainLoading } from '@/components/standalone/MainLoading';
 import { NotFound } from '@/pages/404';
 
 export const CreatorPage = () => {
-  const { pathname } = useLocation();
-  const id = useMemo(() => pathname.split('/')[2], [pathname]);
+  const { id } = useParams();
 
   const [error, setError] = useState('');
 
