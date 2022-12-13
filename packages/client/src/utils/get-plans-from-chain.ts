@@ -1,5 +1,5 @@
 import { PublicLockV11 } from '@unlock-protocol/contracts';
-import { BigNumber, constants, Contract } from 'ethers';
+import { BigNumber, BytesLike, constants, Contract } from 'ethers';
 
 import { aggregate } from './multicall';
 
@@ -66,7 +66,7 @@ const checkPlans = async (docPlans: WithId<CreatorPlanDoc>[]) => {
 
   const checkResults: PlanCheckResult<false>[] = [];
 
-  (lockData as any[]).forEach((d, i) => {
+  (lockData as BytesLike[]).forEach((d, i) => {
     const lockIndex = Math.floor(i / lockInputKeys.length);
     const keyIndex = i % lockInputKeys.length;
     const key = lockInputKeys[keyIndex];
