@@ -18,6 +18,7 @@
   "deploying": "Deploying",
   "description": "Description",
   "edit": "Edit",
+  "editPlan": "Edit Plan",
   "enterThePlanInfo": "Enter the plan info",
   "expirationDate": "Expiration Date",
   "expirationDateNote": "Since this value is a prediction, it may differ from the actual expiration date.",

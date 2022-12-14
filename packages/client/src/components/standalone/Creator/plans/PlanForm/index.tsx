@@ -11,19 +11,19 @@ import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import type { BigNumberish } from 'ethers';
-import { useCallback, useState } from 'react';
+import { BigNumber, BigNumberish } from 'ethers';
+import { ReactNode, useCallback, useState } from 'react';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { AddPlanActionFormFeatureTextField } from './AddPlanActionFormFeatureTextField';
+import { FeatureTextField } from './FeatureTextField';
 
 import { currencies } from '@/constants';
 import { useCreatorPlanForWrite } from '@/hooks/useCreatorPlanForWrite';
 import { Plan } from '@/utils/get-plans-from-chain';
 import { parseWeiUnits } from '@/utils/wei-units-converter';
 
-export type AddPlanActionFormValues = {
+export type PlanFormValues = {
   currency: typeof currencies[number];
   priceEthPerMonth: number;
   name: string;
@@ -36,9 +36,12 @@ type Feature = {
   feature: string;
 };
 
-type AddPlanActionFormProps = {
-  onAdded: (data: Plan) => void;
+type PlanFormProps = {
+  onDone: (data: Plan) => void;
   onClose?: () => void;
+  title: string;
+  buttonChild: ReactNode;
+  defaultValues?: Partial<PlanFormValues>;
 };
 
 const pricePlaceholders: { [key in typeof currencies[number]]: string } = {
@@ -47,18 +50,27 @@ const pricePlaceholders: { [key in typeof currencies[number]]: string } = {
   WETH: '0.01',
 };
 
-export const AddPlanActionForm = ({
-  onAdded,
+export const PlanForm = ({
+  buttonChild,
+  defaultValues = {},
   onClose,
-}: AddPlanActionFormProps) => {
+  onDone,
+  title,
+}: PlanFormProps) => {
+  defaultValues.currency ??= 'USDC';
+
+  if (!defaultValues.features || defaultValues.features.length < 1) {
+    defaultValues.features = [{ feature: '' }];
+  }
+
   const {
     control,
     formState: { errors, isValid },
     getValues,
     register,
     reset,
-  } = useForm<AddPlanActionFormValues>({
-    defaultValues: { currency: 'USDC', features: [{ feature: '' }] },
+  } = useForm<PlanFormValues>({
+    defaultValues,
     mode: 'onChange',
   });
 
@@ -90,14 +102,21 @@ export const AddPlanActionForm = ({
 
   const { addPlan } = useCreatorPlanForWrite();
 
-  const onClickAddNewPlanHandler = async () => {
+  const onDoneHandler = async () => {
     try {
       setActiveStep(1);
 
-      const { currency, description, features, name, priceEthPerMonth } =
-        getValues();
+      const {
+        currency,
+        description,
+        features,
+        maxNumberOfMembers,
+        name,
+        priceEthPerMonth,
+      } = getValues();
 
       const keyPrice = parseWeiUnits(priceEthPerMonth.toString(), currency);
+      const maxNumberOfKeys = BigNumber.from(maxNumberOfMembers);
 
       const data = {
         currency,
@@ -107,6 +126,7 @@ export const AddPlanActionForm = ({
           .map(({ feature }) => feature),
         keyPrice,
         lockAddress: '',
+        maxNumberOfKeys,
         name,
       };
 
@@ -121,10 +141,11 @@ export const AddPlanActionForm = ({
 
       reset();
 
-      onAdded({
+      onDone({
         ...plan,
         currency,
         keyPrice,
+        maxNumberOfKeys,
         ok: true,
       });
     } catch (e) {
@@ -137,7 +158,7 @@ export const AddPlanActionForm = ({
 
   return (
     <Stack spacing={5}>
-      <Typography variant="h4">{t('addNewPlan')}</Typography>
+      <Typography variant="h4">{title}</Typography>
       <Stepper
         alternativeLabel
         activeStep={activeStep}
@@ -242,7 +263,7 @@ export const AddPlanActionForm = ({
             <Divider>{t('features')}</Divider>
             <Stack spacing={1}>
               {fields.map((field, i) => (
-                <AddPlanActionFormFeatureTextField
+                <FeatureTextField
                   key={field.id}
                   errorMessage={errors.features && errors.features[i]?.message}
                   index={i}
@@ -264,10 +285,10 @@ export const AddPlanActionForm = ({
 
           <Button
             disabled={!isValid}
-            onClick={onClickAddNewPlanHandler}
+            onClick={onDoneHandler}
             variant="contained"
           >
-            {t('addNewPlan')}
+            {buttonChild}
           </Button>
         </Stack>
       ) : (

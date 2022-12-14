@@ -1,13 +1,18 @@
 import { CircularProgress, useMediaQuery } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import { Suspense } from 'react';
+import { constants } from 'ethers';
+import { Suspense, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 
 import { AddPlanActionCard } from './AddPlanActionCard';
 import { PlanCard } from './PlanCard';
+import { PlanForm, PlanFormValues } from './PlanForm';
 
+import { CenterModal } from '@/components/helpers/CenterModal';
 import { useCreatorPlans } from '@/hooks/useCreatorPlans';
 import { Plan } from '@/utils/get-plans-from-chain';
+import { formatWeiUnits } from '@/utils/wei-units-converter';
 
 type PlansProps = {
   editable: boolean;
@@ -26,9 +31,16 @@ export const Plans = ({ creatorId, editable, onError }: PlansProps) => {
 
   const { data, error, mutate } = useCreatorPlans(creatorId);
 
-  const onChangePlan = (plan: Omit<Plan<true>, 'lockAddress'>) => {
+  const onChangePlan = (
+    isAdd: boolean,
+    plan: Omit<Plan<true>, 'lockAddress'>
+  ) => {
     mutate([...(data || []), { ...plan, lockAddress: '' }]);
   };
+
+  const [editingPlanIndex, setEditingPlanIndex] = useState(-1);
+
+  const { t } = useTranslation();
 
   if (!data && error) {
     onError && onError();
@@ -41,8 +53,42 @@ export const Plans = ({ creatorId, editable, onError }: PlansProps) => {
     );
   }
 
+  const defaultValues = useMemo(() => {
+    const plan = data?.[editingPlanIndex];
+    if (!plan) return {};
+
+    const features = plan.features.map((feature) => ({
+      feature,
+    }));
+
+    const values: Partial<PlanFormValues> = {
+      ...plan,
+      features,
+      maxNumberOfMembers: plan.maxNumberOfKeys.gte(constants.MaxUint256)
+        ? undefined
+        : plan.maxNumberOfKeys,
+      priceEthPerMonth: Number(formatWeiUnits(plan.keyPrice, plan.currency)),
+    };
+
+    return values;
+  }, [editingPlanIndex]);
+
   return (
     <Suspense fallback={<CircularProgress />}>
+      {editingPlanIndex > -1 && (
+        <CenterModal
+          onClose={() => setEditingPlanIndex(-1)}
+          open={editingPlanIndex > -1}
+        >
+          <PlanForm
+            buttonChild={t('save')}
+            defaultValues={defaultValues}
+            onClose={() => setEditingPlanIndex(-1)}
+            onDone={(plan) => onChangePlan(false, plan)}
+            title={t('editPlan')}
+          />
+        </CenterModal>
+      )}
       <Grid
         container
         alignItems="stretch"
@@ -56,6 +102,7 @@ export const Plans = ({ creatorId, editable, onError }: PlansProps) => {
             <Grid key={`plans-${i}`} item lg={4} md={6} xs={12}>
               <PlanCard
                 editable={editable}
+                onClickEditButton={() => setEditingPlanIndex(i)}
                 plan={plan}
                 subscribeUrl={`${path}/subscribe/${plan.id}`}
               />
@@ -63,7 +110,10 @@ export const Plans = ({ creatorId, editable, onError }: PlansProps) => {
           ))}
         {editable && (
           <Grid item lg={4} md={6} xs={12}>
-            <AddPlanActionCard minHeight={400} onAdded={onChangePlan} />
+            <AddPlanActionCard
+              minHeight={400}
+              onAdded={(plan) => onChangePlan(true, plan)}
+            />
           </Grid>
         )}
       </Grid>

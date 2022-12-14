@@ -18,12 +18,14 @@ type PlanCardProps = {
   expirationTimestamp?: BigNumber;
   subscribeUrl?: string;
   hiddenButton?: boolean;
+  onClickEditButton?: () => void;
 };
 
 export const PlanCard = ({
   editable,
   expirationTimestamp,
   hiddenButton,
+  onClickEditButton,
   plan: { currency, description, features, keyPrice, name },
   subscribeUrl = '',
 }: PlanCardProps) => {
@@ -92,7 +94,9 @@ export const PlanCard = ({
           {!hiddenButton && (
             <>
               {editable ? (
-                <Button variant="outlined">{t('edit')}</Button>
+                <Button onClick={onClickEditButton} variant="outlined">
+                  {t('edit')}
+                </Button>
               ) : expirationTimestamp ? (
                 <Stack spacing={1}>
                   <Button variant="contained">{t('extendThePeriod')}</Button>

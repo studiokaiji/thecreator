@@ -5,21 +5,21 @@ import TextField from '@mui/material/TextField';
 import { UseFormRegister } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { AddPlanActionFormValues } from '.';
+import { PlanFormValues } from '.';
 
-type AddPlanActionFormFeatureTextFieldProps = {
-  register: UseFormRegister<AddPlanActionFormValues>;
+type FeatureTextFieldProps = {
+  register: UseFormRegister<PlanFormValues>;
   index: number;
   onRemove: () => void;
   errorMessage?: string;
 };
 
-export const AddPlanActionFormFeatureTextField = ({
+export const FeatureTextField = ({
   errorMessage,
   index,
   onRemove,
   register,
-}: AddPlanActionFormFeatureTextFieldProps) => {
+}: FeatureTextFieldProps) => {
   const { t } = useTranslation();
 
   return (

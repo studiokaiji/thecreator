@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { AddPlanActionForm } from './AddPlanActionForm';
+import { PlanForm } from '../PlanForm';
 
 import { CenterModal } from '@/components/helpers/CenterModal';
 import { Plan } from '@/utils/get-plans-from-chain';
@@ -47,7 +47,12 @@ export const AddPlanActionCard = ({
         </CardActionArea>
       </Card>
       <CenterModal onClose={() => setIsOpen(false)} open={isOpen}>
-        <AddPlanActionForm onAdded={onAdded} onClose={() => setIsOpen(false)} />
+        <PlanForm
+          buttonChild={t('addNewPlan')}
+          onClose={() => setIsOpen(false)}
+          onDone={onAdded}
+          title={t('addNewPlan')}
+        />
       </CenterModal>
     </>
   );

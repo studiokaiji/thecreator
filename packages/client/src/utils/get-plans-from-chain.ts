@@ -4,7 +4,7 @@ import { BigNumber, BytesLike, constants, Contract } from 'ethers';
 import { aggregate } from './multicall';
 
 import type { CreatorPlanDoc } from '#types/firestore/creator/plan';
-import type { MulticallInput } from '#types/multicall/MultiCallInput';
+import type { MulticallInput } from '#types/multicall/MulticallInput';
 import { currencies } from '@/constants';
 import { rpcProvider } from '@/rpc-provider';
 
@@ -34,6 +34,7 @@ type PlanCheckResult<T extends boolean> = {
   currency: T extends true ? typeof currencies[number] : CurrencyWithUnknown;
   keyPrice: BigNumber;
   ok: boolean;
+  maxNumberOfKeys: BigNumber;
 };
 
 export type Plan<T extends boolean = true> = WithId<
@@ -44,6 +45,7 @@ const lockInputKeys = [
   'tokenAddress',
   'keyPrice',
   'expirationDuration',
+  'maxNumberOfKeys',
 ] as const;
 
 const checkPlans = async (docPlans: WithId<CreatorPlanDoc>[]) => {
@@ -75,6 +77,7 @@ const checkPlans = async (docPlans: WithId<CreatorPlanDoc>[]) => {
       checkResults[lockIndex] = {
         currency: 'Unknown',
         keyPrice: BigNumber.from(0),
+        maxNumberOfKeys: BigNumber.from(0),
         ok: false,
       };
     }
@@ -106,6 +109,8 @@ const checkPlans = async (docPlans: WithId<CreatorPlanDoc>[]) => {
       checkResults[lockIndex].keyPrice = data;
     } else if (key === 'expirationDuration') {
       checkResults[lockIndex].ok = data.eq(30 * 24 * 60 * 60);
+    } else if (key === 'maxNumberOfKeys') {
+      checkResults[lockIndex].maxNumberOfKeys = data;
     }
   });
 
