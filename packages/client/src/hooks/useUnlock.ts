@@ -9,7 +9,7 @@ type CreateLockReq = {
   tokenAddress?: string;
   expirationDurationSeconds?: BigNumberish;
   maxNumberOfKeys?: BigNumberish;
-  price: BigNumberish;
+  keyPrice: BigNumberish;
   lockName: string;
 };
 
@@ -35,10 +35,10 @@ export const useUnlock = (address = import.meta.env.VITE_UNLOCK_ADDRESS) => {
     onUserRejected,
     request: {
       expirationDurationSeconds = 30 * 60 * 60 * 24,
+      keyPrice,
       lockCreator = account,
       lockName,
       maxNumberOfKeys = constants.MaxUint256,
-      price,
       tokenAddress = constants.AddressZero,
     },
   }: CreateLockOpts) => {
@@ -49,7 +49,7 @@ export const useUnlock = (address = import.meta.env.VITE_UNLOCK_ADDRESS) => {
         lockCreator,
         expirationDurationSeconds,
         tokenAddress,
-        price,
+        keyPrice,
         maxNumberOfKeys,
         lockName,
       ]
