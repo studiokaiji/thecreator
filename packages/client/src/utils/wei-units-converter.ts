@@ -4,10 +4,14 @@ import { currencies, currencyDecimals } from '@/constants';
 
 export const formatWeiUnits = (
   wei: BigNumberish,
-  currency: typeof currencies[number]
+  currency: typeof currencies[number],
+  floor = 5
 ) => {
   const unit = currencyDecimals[currency];
-  return utils.formatUnits(wei, unit);
+  const formatted = Number(utils.formatUnits(wei, unit));
+  const fl = 10 ** floor;
+  const floored = Math.floor(formatted * fl) / fl;
+  return floored;
 };
 
 export const parseWeiUnits = (
