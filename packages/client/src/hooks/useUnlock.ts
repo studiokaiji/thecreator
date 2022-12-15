@@ -6,7 +6,7 @@ import { useWallet } from './useWallet';
 
 type CreateLockReq = {
   lockCreator?: string;
-  baseToken?: string;
+  tokenAddress?: string;
   expirationDurationSeconds?: BigNumberish;
   maxNumberOfKeys?: BigNumberish;
   price: BigNumberish;
@@ -34,12 +34,12 @@ export const useUnlock = (address = import.meta.env.VITE_UNLOCK_ADDRESS) => {
     onFailedToTxSend,
     onUserRejected,
     request: {
-      baseToken = constants.AddressZero,
       expirationDurationSeconds = 30 * 60 * 60 * 24,
       lockCreator = account,
       lockName,
       maxNumberOfKeys = constants.MaxUint256,
       price,
+      tokenAddress = constants.AddressZero,
     },
   }: CreateLockOpts) => {
     const iface = new utils.Interface(PublicLockV11.abi);
@@ -48,7 +48,7 @@ export const useUnlock = (address = import.meta.env.VITE_UNLOCK_ADDRESS) => {
       [
         lockCreator,
         expirationDurationSeconds,
-        baseToken,
+        tokenAddress,
         price,
         maxNumberOfKeys,
         lockName,
