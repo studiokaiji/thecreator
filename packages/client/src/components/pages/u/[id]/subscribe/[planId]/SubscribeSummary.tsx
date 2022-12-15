@@ -7,6 +7,7 @@ import useSWR from 'swr';
 
 import { rpcProvider } from '@/rpc-provider';
 import { blockTimestampToDate } from '@/utils/block-timestamp-to-date';
+import { tokenAddressToCurrency } from '@/utils/currency-converter';
 import { Plan } from '@/utils/get-plans-from-chain';
 import { formatWeiUnits } from '@/utils/wei-units-converter';
 
@@ -27,7 +28,7 @@ const expirationDateFetcher = async (duration: number) => {
 export const SubscribeSummary = ({
   expirationDuration = 30 * 24 * 60 * 60,
   onClickConfirmButton,
-  plan: { currency, keyPrice, name },
+  plan: { keyPrice, name, tokenAddress },
 }: SubscribeSummaryProps) => {
   const { t } = useTranslation();
 
@@ -38,6 +39,8 @@ export const SubscribeSummary = ({
       refreshInterval: 60 * 1000,
     }
   );
+
+  const currency = tokenAddressToCurrency(tokenAddress);
 
   const formattedPrice = formatWeiUnits(keyPrice, currency);
 

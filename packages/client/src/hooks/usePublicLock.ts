@@ -29,6 +29,11 @@ type PurchaseOpts = Partial<{
   onPurchased: (receipt: providers.TransactionReceipt) => void;
 }>;
 
+export type UpdateOpts<T = unknown> = Partial<{
+  onTxSend: (response: providers.TransactionResponse) => void;
+  onTxConfirmed: (receipt: providers.TransactionReceipt) => void;
+}> & { value: T };
+
 export const usePublicLock = (address = constants.AddressZero) => {
   const { contract: lock } = useContract(address, PublicLockV11.abi);
 
@@ -123,11 +128,37 @@ export const usePublicLock = (address = constants.AddressZero) => {
     return lock.isValidKey(tokenId);
   };
 
+  const updateKeyPricing = async ({
+    onTxConfirmed,
+    onTxSend,
+    value: { keyPrice, tokenAddress },
+  }: UpdateOpts<{ keyPrice: BigNumberish; tokenAddress: string }>) => {
+    const res = await lock.updateKeyPricing(keyPrice, tokenAddress);
+    onTxSend && onTxSend(res);
+
+    const receipt = await res.wait();
+    onTxConfirmed && onTxConfirmed(receipt);
+  };
+
+  const updateMaxNumberOfKeys = async ({
+    onTxConfirmed,
+    onTxSend,
+    value,
+  }: UpdateOpts<BigNumberish>) => {
+    const res = await lock.setMaxNumberOfKeys(value);
+    onTxSend && onTxSend(res);
+
+    const receipt = await res.wait();
+    onTxConfirmed && onTxConfirmed(receipt);
+  };
+
   return {
     contract: lock,
     getKeyPrice,
     getPaymentTokenAddress,
     isValidKey,
     purchase,
+    updateKeyPricing,
+    updateMaxNumberOfKeys,
   };
 };

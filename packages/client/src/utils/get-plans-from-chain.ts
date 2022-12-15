@@ -5,18 +5,17 @@ import { aggregate } from './multicall';
 
 import type { CreatorPlanDoc } from '#types/firestore/creator/plan';
 import type { MulticallInput } from '#types/multicall/MulticallInput';
-import { currencies } from '@/constants';
 import { rpcProvider } from '@/rpc-provider';
 
-export const getPlansFromChain = async <T extends boolean = true>(
+export const getPlansFromChain = async (
   docPlans: WithId<CreatorPlanDoc>[],
-  excludeInvalidPlans: T
-): Promise<Plan<T>[]> => {
+  excludeInvalidPlans: boolean
+): Promise<Plan[]> => {
   const checkResults = await checkPlans(docPlans);
 
   const filtered = excludeInvalidPlans
     ? checkResults.filter((result) => result.ok)
-    : (checkResults as unknown as PlanCheckResult<true>[]);
+    : (checkResults as unknown as PlanCheckResult[]);
 
   const plans = filtered.map((result, i) => ({
     ...docPlans[i],
@@ -25,21 +24,17 @@ export const getPlansFromChain = async <T extends boolean = true>(
 
   const sorted = sortPlans(plans);
 
-  return sorted as Plan<T>[];
+  return sorted as Plan[];
 };
 
-type CurrencyWithUnknown = typeof currencies[number] | 'Unknown';
-
-type PlanCheckResult<T extends boolean> = {
-  currency: T extends true ? typeof currencies[number] : CurrencyWithUnknown;
+type PlanCheckResult = {
+  tokenAddress: string;
   keyPrice: BigNumber;
   ok: boolean;
   maxNumberOfKeys: BigNumber;
 };
 
-export type Plan<T extends boolean = true> = WithId<
-  CreatorPlanDoc & PlanCheckResult<T>
->;
+export type Plan = WithId<CreatorPlanDoc & PlanCheckResult>;
 
 const lockInputKeys = [
   'tokenAddress',
@@ -66,7 +61,7 @@ const checkPlans = async (docPlans: WithId<CreatorPlanDoc>[]) => {
 
   const { returnData: lockData } = await aggregate(lockInputs, rpcProvider);
 
-  const checkResults: PlanCheckResult<false>[] = [];
+  const checkResults: PlanCheckResult[] = [];
 
   (lockData as BytesLike[]).forEach((d, i) => {
     const lockIndex = Math.floor(i / lockInputKeys.length);
@@ -75,10 +70,10 @@ const checkPlans = async (docPlans: WithId<CreatorPlanDoc>[]) => {
 
     if (!checkResults[lockIndex]) {
       checkResults[lockIndex] = {
-        currency: 'Unknown',
         keyPrice: BigNumber.from(0),
         maxNumberOfKeys: BigNumber.from(0),
         ok: false,
+        tokenAddress: constants.AddressZero,
       };
     }
 
@@ -89,20 +84,12 @@ const checkPlans = async (docPlans: WithId<CreatorPlanDoc>[]) => {
     )[0];
 
     if (key === 'tokenAddress') {
-      const currency = (() => {
-        switch (data) {
-          case constants.AddressZero:
-            return 'MATIC';
-          case import.meta.env.VITE_USDC_ADDRESS:
-            return 'USDC';
-          case import.meta.env.WETH_USDC_ADDRESS:
-            return 'WETH';
-          default:
-            return 'Unknown';
-        }
-      })();
-      checkResults[lockIndex].currency = currency;
-      if (currency === 'Unknown') {
+      checkResults[lockIndex].tokenAddress = data;
+      if (
+        data !== import.meta.env.VITE_USDC_ADDRESS &&
+        data !== import.meta.env.VITE_WETH_ADDRESS &&
+        data !== constants.AddressZero
+      ) {
         checkResults[lockIndex].ok = false;
       }
     } else if (key === 'keyPrice') {
@@ -117,21 +104,25 @@ const checkPlans = async (docPlans: WithId<CreatorPlanDoc>[]) => {
   return checkResults;
 };
 
-const tokenPriorityOrder = ['USDC', 'WETH', 'MATIC'];
+const tokenPriorityOrder = [
+  import.meta.env.VITE_USDC_ADDRESS,
+  import.meta.env.VITE_WETH_ADDRESS,
+  constants.AddressZero,
+];
 
-const sortPlans = <T extends boolean>(plans: Plan<T>[]) => {
-  const planIndexesByCurrencies: { [currency: string]: number[] } = {};
+const sortPlans = (plans: Plan[]) => {
+  const planIndexesByTokens: { [token: string]: number[] } = {};
 
   plans.forEach((plan, i) => {
-    if (planIndexesByCurrencies[plan.currency]) {
-      planIndexesByCurrencies[plan.currency].push(i);
+    if (planIndexesByTokens[plan.tokenAddress]) {
+      planIndexesByTokens[plan.tokenAddress].push(i);
     } else {
-      planIndexesByCurrencies[plan.currency] = [i];
+      planIndexesByTokens[plan.tokenAddress] = [i];
     }
   });
 
   const sortedExistsCurrenciesInPlans = Object.keys(
-    planIndexesByCurrencies
+    planIndexesByTokens
   ).sort((first, second) => {
     const firstIndex = tokenPriorityOrder.indexOf(first);
     const secondIndex = tokenPriorityOrder.indexOf(second);
@@ -147,7 +138,7 @@ const sortPlans = <T extends boolean>(plans: Plan<T>[]) => {
 
   const sortedIndexes = sortedExistsCurrenciesInPlans
     .map((currency) => {
-      const sortedIndexesByCurrencies = planIndexesByCurrencies[currency].sort(
+      const sortedIndexesByCurrencies = planIndexesByTokens[currency].sort(
         (firstIndex, secondIndex) => {
           const firstPlan = plans[firstIndex];
           const secondPlan = plans[secondIndex];

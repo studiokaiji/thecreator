@@ -11,7 +11,7 @@ import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { BigNumber, BigNumberish } from 'ethers';
+import { BigNumber, BigNumberish, constants } from 'ethers';
 import { ReactNode, useCallback, useState } from 'react';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -20,6 +20,7 @@ import { FeatureTextField } from './FeatureTextField';
 
 import { currencies } from '@/constants';
 import { useCreatorPlanForWrite } from '@/hooks/useCreatorPlanForWrite';
+import { currencyToTokenAddress } from '@/utils/currency-converter';
 import { Plan } from '@/utils/get-plans-from-chain';
 import { parseWeiUnits } from '@/utils/wei-units-converter';
 
@@ -41,7 +42,9 @@ type PlanFormProps = {
   onClose?: () => void;
   title: string;
   buttonChild: ReactNode;
-  defaultValues?: Partial<PlanFormValues>;
+  defaultValues?: Partial<PlanFormValues> & { id: string };
+  update?: boolean;
+  publicLockAddress?: string;
 };
 
 const pricePlaceholders: { [key in typeof currencies[number]]: string } = {
@@ -52,10 +55,12 @@ const pricePlaceholders: { [key in typeof currencies[number]]: string } = {
 
 export const PlanForm = ({
   buttonChild,
-  defaultValues = {},
+  defaultValues = { id: '' },
   onClose,
   onDone,
+  publicLockAddress,
   title,
+  update,
 }: PlanFormProps) => {
   defaultValues.currency ??= 'USDC';
 
@@ -100,7 +105,7 @@ export const PlanForm = ({
   const [errorMessage, setErrorMessage] = useState('');
   const [activeStep, setActiveStep] = useState(0);
 
-  const { addPlan } = useCreatorPlanForWrite();
+  const { addPlan, updatePlan } = useCreatorPlanForWrite(publicLockAddress);
 
   const onDoneHandler = async () => {
     try {
@@ -116,7 +121,15 @@ export const PlanForm = ({
       } = getValues();
 
       const keyPrice = parseWeiUnits(priceEthPerMonth.toString(), currency);
-      const maxNumberOfKeys = BigNumber.from(maxNumberOfMembers);
+      const maxNumberOfKeys = (() => {
+        try {
+          return BigNumber.from(maxNumberOfMembers);
+        } catch {
+          return constants.MaxUint256;
+        }
+      })();
+
+      const tokenAddress = currencyToTokenAddress(currency);
 
       const data = {
         currency,
@@ -128,26 +141,76 @@ export const PlanForm = ({
         lockAddress: '',
         maxNumberOfKeys,
         name,
+        tokenAddress,
       };
 
-      const { data: plan } = await addPlan(data, {
-        onCreateLockEnded: () => setActiveStep(3),
-        onCreateLockTxSend: () => setActiveStep(2),
-        onFailedToTxSend: (e) => setErrorMessage(JSON.stringify(e, null, 2)),
-        onUserRejected: () => setErrorMessage(t('userRejectedRequest')),
-      });
+      if (update) {
+        const sendedTxs = new Set();
+        const confirmedTxs = new Set();
 
-      setActiveStep(4);
+        const onSendTxHandler = (type: string) => {
+          sendedTxs.add(type);
+          if (sendedTxs.size >= 2) {
+            setActiveStep(2);
+          }
+        };
 
-      reset();
+        const onConfirmedTxHandler = (type: string) => {
+          confirmedTxs.add(type);
+          if (confirmedTxs.size >= 2) {
+            setActiveStep(3);
+          }
+        };
 
-      onDone({
-        ...plan,
-        currency,
-        keyPrice,
-        maxNumberOfKeys,
-        ok: true,
-      });
+        const defaultValuesData = {
+          ...defaultValues,
+          features:
+            defaultValues.features
+              ?.filter(({ feature }) => feature)
+              .map(({ feature }) => feature) || [],
+        };
+
+        const updatableData = { ...data, id: defaultValuesData.id };
+        if (!updatableData.id) {
+          throw Error('If you want to update, need id');
+        }
+
+        await updatePlan(defaultValuesData, updatableData, {
+          onTxConfirmed: onConfirmedTxHandler,
+          onTxSend: onSendTxHandler,
+        });
+
+        setActiveStep(4);
+
+        reset();
+
+        onDone({
+          ...updatableData,
+          keyPrice,
+          maxNumberOfKeys,
+          ok: true,
+          txHash: '',
+        });
+      } else {
+        const { data: plan } = await addPlan(data, {
+          onCreateLockEnded: () => setActiveStep(3),
+          onCreateLockTxSend: () => setActiveStep(2),
+          onFailedToTxSend: (e) => setErrorMessage(JSON.stringify(e, null, 2)),
+          onUserRejected: () => setErrorMessage(t('userRejectedRequest')),
+        });
+
+        setActiveStep(4);
+
+        reset();
+
+        onDone({
+          ...plan,
+          keyPrice,
+          maxNumberOfKeys,
+          ok: true,
+          tokenAddress,
+        });
+      }
     } catch (e) {
       setErrorMessage(JSON.stringify(e, null, 2));
       console.error(e);

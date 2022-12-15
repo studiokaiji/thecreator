@@ -4,7 +4,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { constants } from 'ethers';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -52,12 +51,7 @@ export const SubscribePage = () => {
             amount: plan?.keyPrice,
           },
         ],
-        tokenAddress:
-          plan?.currency === 'USDC'
-            ? import.meta.env.VITE_USDC_ADDRESS
-            : plan?.currency === 'WETH'
-            ? import.meta.env.VITE_WETH_ADDRESS
-            : constants.AddressZero,
+        tokenAddress: plan?.tokenAddress,
       });
       setStatus('complete');
     } catch (e) {
