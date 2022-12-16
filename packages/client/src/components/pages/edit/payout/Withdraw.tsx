@@ -9,7 +9,7 @@ import { ChangeEvent, ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Table } from '@/components/helpers/Table';
-import { PlanWithBalance } from '@/hooks/usePlanWithBalanceList';
+import { PlanWithBalance } from '@/hooks/useCreatorPlansBalanceList';
 import { tokenAddressToCurrency } from '@/utils/currency-converter';
 import { formatWeiUnits } from '@/utils/wei-units-converter';
 
@@ -20,22 +20,22 @@ const getStrBalances = (balance: BigNumber, tokenAddress: string) => {
 };
 
 type WithdrawTableProps = {
-  plans?: PlanWithBalance[];
+  planWithBalanceList?: PlanWithBalance[];
 };
 
-export const Withdraw = ({ plans }: WithdrawTableProps) => {
+export const Withdraw = ({ planWithBalanceList }: WithdrawTableProps) => {
   const [tableData, setTableData] = useState<ReactNode[][]>();
   const [checkedCells, setCheckedCells] = useState<boolean[]>([]);
 
   useEffect(() => {
-    if (!plans || plans.length < 1) return;
+    if (!planWithBalanceList || planWithBalanceList.length < 1) return;
 
     if (!checkedCells.length) {
-      setCheckedCells(plans.map(() => false));
+      setCheckedCells(planWithBalanceList.map(() => false));
     }
 
     setTableData(
-      plans.map((plan, i) => {
+      planWithBalanceList.map((plan, i) => {
         return [
           <Checkbox
             key={`payout-plan-checkbox-${i}`}

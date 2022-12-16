@@ -3,9 +3,6 @@ import useSWR from 'swr';
 
 import { MulticallInput } from '../../@types/multicall/MulticallInput';
 
-import { useCreatorPlans } from './useCreatorPlans';
-import { useWallet } from './useWallet';
-
 import { ERC20 } from '@/abis';
 import { Plan } from '@/utils/get-plans-from-chain';
 import { aggregate } from '@/utils/multicall';
@@ -18,14 +15,8 @@ const balanceOfFragment = 'balanceOf';
 
 export type PlanWithBalance = Plan & { balance: BigNumber };
 
-export const usePlanWithBalanceList = () => {
-  const { account } = useWallet();
-
-  const plansSWR = useCreatorPlans(account);
-
-  const balancesOfAllPlans = async (
-    plans: Plan[]
-  ): Promise<PlanWithBalance[]> => {
+export const useCreatorPlansBalanceList = (basePlans?: Plan[]) => {
+  const balancesOfAllPlans = async (plans: Plan[]): Promise<BigNumber[]> => {
     if (!plans || plans.length < 1) return [];
 
     const promises: Promise<unknown>[] = [];
@@ -66,23 +57,23 @@ export const usePlanWithBalanceList = () => {
     let nativeCurrentIndex = 0;
     let erc20CurrentIndex = 0;
 
-    const planWithBalanceList = plans.map((plan) => {
+    const balances = plans.map((plan) => {
       const isNative = plan.tokenAddress === constants.AddressZero;
       if (isNative) {
         const balance = nativeBalances[nativeCurrentIndex];
         nativeCurrentIndex++;
-        return { ...plan, balance };
+        return balance;
       } else {
         const balance = erc20Balances[erc20CurrentIndex];
         erc20CurrentIndex++;
-        return { ...plan, balance };
+        return balance;
       }
     });
 
-    return planWithBalanceList;
+    return balances;
   };
 
-  return useSWR([plansSWR.data], balancesOfAllPlans, {
+  return useSWR([basePlans], balancesOfAllPlans, {
     revalidateOnFocus: false,
   });
 };
