@@ -6,7 +6,7 @@ import { getPlansFromChain } from '@/utils/get-plans-from-chain';
 
 export const useCreatorPlans = (creatorId?: string) => {
   const fetcher = async (docId?: string) => {
-    if (!docId) return null;
+    if (!docId) return undefined;
 
     const colRef = getCreatorPlansCollectionRef(docId);
     const snapshot = await getDocs(colRef);
