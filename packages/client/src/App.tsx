@@ -6,6 +6,7 @@ import '@/firebase';
 
 import { SnackbarProvider } from './contexts/SnackbarContext';
 import { NotFound } from './pages/404';
+import { PayoutPage } from './pages/edit/payout';
 import { CreatorPage } from './pages/u/[id]';
 import { SubscribePage } from './pages/u/[id]/subscribe/[planId]';
 
@@ -33,14 +34,17 @@ function App() {
                 <Routes>
                   <Route element={<IndexPage />} path="/" />
                   <Route element={<CreatePage />} path="/create" />
-                  <Route
-                    element={<Navigate replace to="/edit/profile#posts" />}
-                    path="/edit"
-                  />
-                  <Route
-                    element={<EditCreatorProfilePage />}
-                    path="/edit/profile"
-                  />
+                  <Route path="/edit">
+                    <Route
+                      index
+                      element={<Navigate replace to="profile#posts" />}
+                    />
+                    <Route
+                      element={<EditCreatorProfilePage />}
+                      path="profile"
+                    />
+                    <Route element={<PayoutPage />} path="payout" />
+                  </Route>
                   <Route element={<SupportersPage />} path="/edit/supporters" />
                   <Route path="/c">
                     <Route index element={<NotFound />} />

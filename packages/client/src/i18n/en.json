@@ -1,7 +1,9 @@
 {
   "addNewPlan": "Add New Plan",
+  "address": "Address",
   "audio": "Audio",
   "backToInput": "Back to input",
+  "balance": "Balance",
   "becomeACreator": "Become a Creator",
   "close": "Close",
   "complete": "Complete",
@@ -69,5 +71,7 @@
   "video": "Video",
   "waitingConfirmation": "Waiting confirmation",
   "waitingSendTx": "Waiting for transaction to be sent",
-  "walletSelectMessage": "Select a wallet to connect."
+  "walletSelectMessage": "Select a wallet to connect.",
+  "withdraw": "Withdraw",
+  "recentPayments": "Recent Payments"
 }
