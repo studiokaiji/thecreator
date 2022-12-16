@@ -1,8 +1,8 @@
 import { BigNumber, BytesLike, constants, providers, utils } from 'ethers';
-import { useEffect } from 'react';
 import useSWR from 'swr';
 
-import { MulticallInput } from './../../@types/multicall/MulticallInput.d';
+import { MulticallInput } from '../../@types/multicall/MulticallInput';
+
 import { useCreatorPlans } from './useCreatorPlans';
 import { useWallet } from './useWallet';
 
@@ -18,14 +18,10 @@ const balanceOfFragment = 'balanceOf';
 
 export type PlanWithBalance = Plan & { balance: BigNumber };
 
-export const usePayout = () => {
+export const usePlanWithBalanceList = () => {
   const { account } = useWallet();
 
   const plansSWR = useCreatorPlans(account);
-
-  useEffect(() => {
-    console.log(plansSWR.data);
-  }, [plansSWR.data]);
 
   const balancesOfAllPlans = async (
     plans: Plan[]
@@ -82,8 +78,6 @@ export const usePayout = () => {
         return { ...plan, balance };
       }
     });
-
-    console.log('hi');
 
     return planWithBalanceList;
   };

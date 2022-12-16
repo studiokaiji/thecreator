@@ -5,10 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { MainSpacingLayout } from '@/components/layout/MainSpacingLayout';
 import { Withdraw } from '@/components/pages/edit/payout/Withdraw';
 import { MainLoading } from '@/components/standalone/MainLoading';
-import { usePayout } from '@/hooks/usePayout';
+import { usePlanWithBalanceList } from '@/hooks/usePlanWithBalanceList';
 
 export const PayoutPage = () => {
-  const { data: plans, error } = usePayout();
+  const { data: plans, error } = usePlanWithBalanceList();
 
   const { t } = useTranslation();
 

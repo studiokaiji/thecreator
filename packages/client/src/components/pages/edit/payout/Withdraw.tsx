@@ -9,7 +9,7 @@ import { ChangeEvent, ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Table } from '@/components/helpers/Table';
-import { PlanWithBalance } from '@/hooks/usePayout';
+import { PlanWithBalance } from '@/hooks/usePlanWithBalanceList';
 import { tokenAddressToCurrency } from '@/utils/currency-converter';
 import { formatWeiUnits } from '@/utils/wei-units-converter';
 
