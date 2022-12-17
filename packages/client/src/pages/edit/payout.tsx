@@ -22,12 +22,12 @@ export const PayoutPage = () => {
 
   const { t } = useTranslation();
 
-  if (!planWithBalanceList && !error) {
-    return <MainLoading />;
-  }
-
   if (error) {
     return <pre>{error}</pre>;
+  }
+
+  if (!planWithBalanceList) {
+    return <MainLoading />;
   }
 
   return (
@@ -35,7 +35,6 @@ export const PayoutPage = () => {
       <Stack spacing={6}>
         <Typography variant="h1">{t('payout')}</Typography>
         <Withdraw planWithBalanceList={planWithBalanceList} />
-        <Typography variant="h4">{t('recentPayments')}</Typography>
       </Stack>
     </MainSpacingLayout>
   );
