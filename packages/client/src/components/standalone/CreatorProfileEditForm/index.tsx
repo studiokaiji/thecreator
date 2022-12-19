@@ -53,7 +53,7 @@ export const CreatorProfileEditForm = ({
 
       if (data) {
         onChangeData && onChangeData({ ...data, creatorName, description });
-        await updateCreator(creatorName, description);
+        await updateCreator({ creatorName, description });
       } else {
         await addCreator(creatorName, description);
       }

@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 
 import { useWallet } from './useWallet';
 
+import { CreatorDocData } from '#types/firestore/creator';
 import { getCreatorDocRef } from '@/converters/creatorConverter';
 
 const refErr = Error('Creator document reference does not exist.');
@@ -32,11 +33,20 @@ export const useCreatorForWrite = () => {
     });
   };
 
-  const updateCreator = async (creatorName?: string, description?: string) => {
+  const updateCreator = async ({
+    creatorName,
+    description,
+    pinningPostId,
+    settings,
+  }: Partial<
+    Omit<CreatorDocData, 'id' | 'creatorAddress' | 'updatedAt' | 'createdAt'>
+  >) => {
     if (!docRef || !account) throw refErr;
     await updateDoc(docRef, {
       creatorName,
       description,
+      pinningPostId,
+      settings,
     });
   };
 
