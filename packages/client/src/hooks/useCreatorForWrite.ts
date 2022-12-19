@@ -24,7 +24,6 @@ export const useCreatorForWrite = () => {
       description,
       id: '',
       pinningPostId: '',
-      plans: {},
       updatedAt: new Date(),
     });
   };
