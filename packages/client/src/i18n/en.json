@@ -21,6 +21,7 @@
   "description": "Description",
   "edit": "Edit",
   "editPlan": "Edit Plan",
+  "enable": "Enable",
   "enterThePlanInfo": "Enter the plan info",
   "expirationDate": "Expiration Date",
   "expirationDateNote": "Since this value is a prediction, it may differ from the actual expiration date.",
@@ -38,6 +39,9 @@
   "month": "Month",
   "name": "Name",
   "notConnectedWallet": "Not Connected Wallet",
+  "nsfwAccount": "NSFW Account",
+  "nsfwAccountSettingsCaution": "Once enabled, it cannot be changed again.",
+  "page": "Page",
   "payout": "Payout",
   "plan": "Plan",
   "plans": "Plans",
@@ -46,7 +50,9 @@
   "price": "Price",
   "pricePerMonth": "Price / month",
   "profile": "Profile",
+  "publishPage": "Publish page",
   "receiveToken": "Receive Token",
+  "recentPayments": "Recent Payments",
   "save": "Save",
   "saveSuccessed": "Save Successed.",
   "sendingTx": "Sending transaction",
@@ -72,6 +78,5 @@
   "waitingConfirmation": "Waiting confirmation",
   "waitingSendTx": "Waiting for transaction to be sent",
   "walletSelectMessage": "Select a wallet to connect.",
-  "withdraw": "Withdraw",
-  "recentPayments": "Recent Payments"
+  "withdraw": "Withdraw"
 }
