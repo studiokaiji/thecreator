@@ -32,6 +32,7 @@ export const creatorConverter: FirestoreDataConverter<WithId<CreatorDocData>> =
         creatorName: data.creatorName || '',
         description: data.description || '',
         pinningPostId: data.pinningPostId || '',
+        settings: data.settings || { isNSFW: false, isPublish: true },
         updatedAt: serverTimestamp(),
       };
     },

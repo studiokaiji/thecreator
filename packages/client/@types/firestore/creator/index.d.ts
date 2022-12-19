@@ -6,4 +6,10 @@ export type CreatorDocData = {
   updatedAt: Date;
   createdAt: Date;
   id: string;
+  settings: CreatorDocSettings;
+};
+
+export type CreatorDocSettings = {
+  isNSFW: boolean;
+  isPublish: boolean;
 };

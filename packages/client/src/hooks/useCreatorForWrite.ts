@@ -24,6 +24,10 @@ export const useCreatorForWrite = () => {
       description,
       id: '',
       pinningPostId: '',
+      settings: {
+        isNSFW: false,
+        isPublish: true,
+      },
       updatedAt: new Date(),
     });
   };
