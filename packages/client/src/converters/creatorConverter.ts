@@ -27,7 +27,7 @@ export const creatorConverter: FirestoreDataConverter<WithId<CreatorDocData>> =
       return {
         createdAt: data.createdAt
           ? Timestamp.fromDate(data.createdAt as Date)
-          : undefined,
+          : serverTimestamp(),
         creatorAddress: data.creatorAddress || '',
         creatorName: data.creatorName || '',
         description: data.description || '',
