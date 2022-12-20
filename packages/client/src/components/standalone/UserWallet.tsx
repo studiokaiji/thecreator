@@ -1,8 +1,9 @@
-import WalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
-import GroupIcon from '@mui/icons-material/Group';
-import LoyaltyIcon from '@mui/icons-material/Loyalty';
-import SettingsIcon from '@mui/icons-material/Settings';
+import WalletIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
+import AccountCircleIcon from '@mui/icons-material/AccountCircleOutlined';
+import AppRegistrationIcon from '@mui/icons-material/AppRegistrationOutlined';
+import GroupIcon from '@mui/icons-material/GroupOutlined';
+import LoyaltyIcon from '@mui/icons-material/LoyaltyOutlined';
+import SettingsIcon from '@mui/icons-material/SettingsOutlined';
 import { PopoverOrigin } from '@mui/material';
 import Box from '@mui/material/Box';
 import ButtonBase from '@mui/material/ButtonBase';
@@ -59,21 +60,26 @@ const UserWalletMenuBody = ({
   } = {
     connected: [
       {
+        icon: <AccountCircleIcon />,
+        text: t('mypage'),
+        to: '/mypage',
+      },
+      {
         icon: <GroupIcon />,
         text: t('supportingCreators'),
-        to: '/supporing-creators',
+        to: '/mypage#supporing-creators',
       },
       {
         icon: <SettingsIcon />,
         text: t('settings'),
-        to: '/settings',
+        to: '/mypage#settings',
       },
       'Creator',
       isCreator
         ? {
             icon: <AppRegistrationIcon />,
             text: t('creatorConsole'),
-            to: '/edit/profile',
+            to: '/edit/profile#posts',
           }
         : {
             icon: <LoyaltyIcon />,

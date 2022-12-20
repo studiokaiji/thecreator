@@ -8,6 +8,7 @@ import { SnackbarProvider } from './contexts/SnackbarContext';
 import { NotFound } from './pages/404';
 import { PayoutPage } from './pages/edit/payout';
 import { SettingsPage } from './pages/edit/settings';
+import { MyPage } from './pages/mypage';
 import { CreatorPage } from './pages/u/[id]';
 import { SubscribePage } from './pages/u/[id]/subscribe/[planId]';
 
@@ -57,6 +58,9 @@ function App() {
                         <Route element={<SubscribePage />} path=":planId" />
                       </Route>
                     </Route>
+                  </Route>
+                  <Route path="/mypage">
+                    <Route index element={<MyPage />} />
                   </Route>
                   <Route element={<NotFound />} path="/*" />
                 </Routes>
