@@ -5,7 +5,6 @@ export type CreatorDocData = {
   pinningPostId: string;
   updatedAt: Date;
   createdAt: Date;
-  id: string;
   settings: CreatorDocSettings;
 };
 
