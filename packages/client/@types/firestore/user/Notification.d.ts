@@ -10,3 +10,9 @@ export type NotificationDocData = {
   createdAt: Date;
   customMessage?: string;
 };
+
+export type NotificationSettings = {
+  supportedCreatorNewPost: boolean;
+  subscripionExpired: boolean;
+  oneWeekBeforeExpiration: boolean;
+};
