@@ -13,11 +13,12 @@ type TableProps = {
   headRows: ReactNode[];
   data: ReactNode[][];
   sx?: SxProps<Theme>;
+  elevation?: number;
 };
 
-export const Table = ({ data, headRows, sx }: TableProps) => {
+export const Table = ({ data, elevation, headRows, sx }: TableProps) => {
   return (
-    <TableContainer component={Paper} sx={sx}>
+    <TableContainer component={Paper} elevation={elevation} sx={sx}>
       <MUITable>
         <TableHead>
           <TableRow>
