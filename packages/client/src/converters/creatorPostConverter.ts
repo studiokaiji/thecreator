@@ -1,10 +1,13 @@
 import {
+  collection,
+  doc,
   FirestoreDataConverter,
   serverTimestamp,
   Timestamp,
 } from 'firebase/firestore';
 
 import type { CreatorPostDocData } from '#types/firestore/creator/post';
+import { db } from '@/firebase';
 
 export const creatorPostConverter: FirestoreDataConverter<
   WithId<CreatorPostDocData>
@@ -21,3 +24,9 @@ export const creatorPostConverter: FirestoreDataConverter<
     return { ...data, updatedAt };
   },
 };
+
+export const getCreatorPostsCollectionRef = (id: string) =>
+  collection(db, 'creators', id).withConverter(creatorPostConverter);
+
+export const getCreatorPostDocRef = (id: string, postId: string) =>
+  doc(db, 'creators', id, 'posts', postId).withConverter(creatorPostConverter);
