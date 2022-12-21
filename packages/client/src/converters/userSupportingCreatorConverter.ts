@@ -34,9 +34,14 @@ export const userSupportingCreatorConverter: FirestoreDataConverter<
 };
 
 export const getUserSupportingCreatorsCollectionRef = (id: string) =>
-  collection(db, 'users', id, 'supportingCreators');
+  collection(db, 'users', id, 'supportingCreators').withConverter(
+    userSupportingCreatorConverter
+  );
 
 export const getUserSupportingCreatorDocRef = (
   id: string,
   notificationId: string
-) => doc(db, 'users', id, 'supportingCreators', notificationId);
+) =>
+  doc(db, 'users', id, 'supportingCreators', notificationId).withConverter(
+    userSupportingCreatorConverter
+  );

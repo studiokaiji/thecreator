@@ -20,6 +20,8 @@ export const userConverter: FirestoreDataConverter<WithId<UserDocData>> = {
   },
 };
 
-export const getUsersCollectionRef = () => collection(db, 'users');
+export const getUsersCollectionRef = () =>
+  collection(db, 'users').withConverter(userConverter);
 
-export const getUserDocRef = (id: string) => doc(db, 'users', id);
+export const getUserDocRef = (id: string) =>
+  doc(db, 'users', id).withConverter(userConverter);

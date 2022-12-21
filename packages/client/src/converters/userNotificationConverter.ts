@@ -33,11 +33,15 @@ export const userNotificationConverter: FirestoreDataConverter<
   },
 };
 
-
 export const getUserNotificationsCollectionRef = (id: string) =>
-  collection(db, 'users', id, 'notifications');
+  collection(db, 'users', id, 'notifications').withConverter(
+    userNotificationConverter
+  );
 
 export const getUserNotificationsDocRef = (
   id: string,
   notificationId: string
-) => doc(db, 'users', id, 'notifications', notificationId);
+) =>
+  doc(db, 'users', id, 'notifications', notificationId).withConverter(
+    userNotificationConverter
+  );
