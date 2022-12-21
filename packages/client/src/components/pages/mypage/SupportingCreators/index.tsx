@@ -84,7 +84,7 @@ export const SupportingCreators = () => {
         ) : (
           <IconWithMessage
             icon={PersonOffOutlinedIcon}
-            message={'Following Creator Does not Exist'}
+            message={t('supportingCreatorDoesNotExist')}
           />
         )
       ) : (
