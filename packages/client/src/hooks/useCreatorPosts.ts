@@ -25,5 +25,7 @@ export const useCreatorPosts = (
     return docsSnapshot.docs.map((doc) => doc.data);
   };
 
-  return useSWR(postsRef.path, fetcher);
+  return useSWR(postsRef.path, fetcher, {
+    revalidateOnFocus: false,
+  });
 };
