@@ -1,12 +1,12 @@
 import type { NotificationSettings } from './Notification';
 
-export type FollowingCreatorDocData = {
-  plan: FollowingCreatorDocDataPlan;
+export type SupportingCreatorDocData = {
+  plan: SupportingCreatorDocDataPlan;
   notificationSettings: NotificationSettings;
-  followedAt: Date;
+  supportedAt: Date;
 };
 
-export type FollowingCreatorDocDataPlan = {
+export type SupportingCreatorDocDataPlan = {
   name: string;
   lockAddress: string;
   expiringAt: Date;
