@@ -9,5 +9,4 @@ export type SupportingCreatorDocData = {
 export type SupportingCreatorDocDataPlan = {
   name: string;
   lockAddress: string;
-  expiringAt: Date;
 };

@@ -16,7 +16,6 @@ export const userSupportingCreatorConverter: FirestoreDataConverter<
     const data = snapshot.data(opts);
     data.id = snapshot.id;
     data.supportedAt = data.supportedAt.toDate();
-    data.plan.expiringAt = data.plan.expiringAt.toDate();
     return data as WithId<SupportingCreatorDocData>;
   },
   toFirestore: ({ notificationSettings, plan, supportedAt }) => {
