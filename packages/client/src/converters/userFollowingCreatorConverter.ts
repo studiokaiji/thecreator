@@ -1,9 +1,15 @@
 import { Timestamp } from 'firebase-admin/firestore';
-import { FirestoreDataConverter, serverTimestamp } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  FirestoreDataConverter,
+  serverTimestamp,
+} from 'firebase/firestore';
 
 import type { FollowingCreatorDocData } from '#types/firestore/user/FollowingCreator';
+import { db } from '@/firebase';
 
-export const userNotificationConverter: FirestoreDataConverter<
+export const userFollowingCreatorConverter: FirestoreDataConverter<
   WithId<FollowingCreatorDocData>
 > = {
   fromFirestore: (snapshot, opts) => {
@@ -26,3 +32,11 @@ export const userNotificationConverter: FirestoreDataConverter<
     };
   },
 };
+
+export const getUserFollowingCreatorsCollectionRef = (id: string) =>
+  collection(db, 'users', id, 'followingCreators');
+
+export const getUserFollowingCreatorDocRef = (
+  id: string,
+  notificationId: string
+) => doc(db, 'users', id, 'followingCreators', notificationId);

@@ -1,10 +1,13 @@
 import {
+  collection,
+  doc,
   FirestoreDataConverter,
   serverTimestamp,
   Timestamp,
 } from 'firebase/firestore';
 
 import type { NotificationDocData } from '#types/firestore/user/Notification';
+import { db } from '@/firebase';
 
 export const userNotificationConverter: FirestoreDataConverter<
   WithId<NotificationDocData>
@@ -29,3 +32,12 @@ export const userNotificationConverter: FirestoreDataConverter<
     };
   },
 };
+
+
+export const getUserNotificationsCollectionRef = (id: string) =>
+  collection(db, 'users', id, 'notifications');
+
+export const getUserNotificationsDocRef = (
+  id: string,
+  notificationId: string
+) => doc(db, 'users', id, 'notifications', notificationId);
