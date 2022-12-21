@@ -1,3 +1,4 @@
+import PersonOffOutlinedIcon from '@mui/icons-material/PersonOffOutlined';
 import Checkbox from '@mui/material/Checkbox';
 import CircularProgress from '@mui/material/CircularProgress';
 import Stack from '@mui/material/Stack';
@@ -6,6 +7,7 @@ import { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Table } from '@/components/helpers/Table';
+import { IconWithMessage } from '@/components/standalone/IconWithMessage';
 import { useSupportingCreators } from '@/hooks/useSupportingCreators';
 import { useUserPublicLockKeys } from '@/hooks/useUserPublicLockKeys';
 import { blockTimestampToDate } from '@/utils/block-timestamp-to-date';
@@ -41,10 +43,6 @@ export const SupportingCreators = () => {
     return <pre>{errMessage}</pre>;
   }
 
-  if (!supportingCreators) {
-    return <CircularProgress />;
-  }
-
   const rows = [
     <Checkbox
       key="all-supporting-creaotors-checkbox"
@@ -62,25 +60,36 @@ export const SupportingCreators = () => {
       <Typography sx={{ p: 3, pb: 2 }} variant="h4">
         {t('supportingCreators')}
       </Typography>
-      <Table
-        data={supportingCreators.map((d, i) => {
-          return [
-            <Checkbox
-              key={`supporting-creaotors-checkbox-${i}`}
-              checked={checkedCells.every((c) => c)}
-              onChange={(e) => check(e, i)}
-            />,
-            d.creator?.creatorName || '',
-            lockKeys?.[i].tokenId.toString() || '',
-            lockKeys?.[i].timestamp
-              ? blockTimestampToDate(lockKeys[i].timestamp).toLocaleString()
-              : '',
-            d.supportedAt.toLocaleString(),
-          ];
-        })}
-        elevation={0}
-        headRows={rows}
-      />
+      {supportingCreators ? (
+        supportingCreators.length > 1 ? (
+          <Table
+            data={supportingCreators.map((d, i) => {
+              return [
+                <Checkbox
+                  key={`supporting-creaotors-checkbox-${i}`}
+                  checked={checkedCells.every((c) => c)}
+                  onChange={(e) => check(e, i)}
+                />,
+                d.creator?.creatorName || '',
+                lockKeys?.[i].tokenId.toString() || '',
+                lockKeys?.[i].timestamp
+                  ? blockTimestampToDate(lockKeys[i].timestamp).toLocaleString()
+                  : '',
+                d.supportedAt.toLocaleString(),
+              ];
+            })}
+            elevation={0}
+            headRows={rows}
+          />
+        ) : (
+          <IconWithMessage
+            icon={PersonOffOutlinedIcon}
+            message={'Following Creator Does not Exist'}
+          />
+        )
+      ) : (
+        <CircularProgress />
+      )}
     </Stack>
   );
 };
