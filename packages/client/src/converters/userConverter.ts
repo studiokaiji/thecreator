@@ -11,18 +11,9 @@ export const userConverter: FirestoreDataConverter<WithId<UserDocData>> = {
   toFirestore: ({ globalNotificationSettings }) => {
     return {
       globalNotificationSettings: globalNotificationSettings || {
-        oneWeekBeforeExpiration: {
-          client: true,
-          email: true,
-        },
-        subscripionExpired: {
-          client: false,
-          email: false,
-        },
-        supportedCreatorNewPost: {
-          client: false,
-          email: false,
-        },
+        oneWeekBeforeExpiration: true,
+        subscripionExpired: true,
+        supportedCreatorNewPost: true,
       },
     };
   },
