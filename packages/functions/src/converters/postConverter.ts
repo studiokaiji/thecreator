@@ -1,4 +1,4 @@
-import { FirestoreDataConverter, Timestamp } from 'firebase-admin/firestore';
+import { Timestamp, FirestoreDataConverter } from 'firebase/firestore';
 
 const validContentsTypes = ['audio', 'text', 'images'];
 

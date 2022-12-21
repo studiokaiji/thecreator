@@ -1,9 +1,9 @@
-import { Timestamp } from 'firebase-admin/firestore';
 import {
   collection,
   doc,
   FirestoreDataConverter,
   serverTimestamp,
+  Timestamp,
 } from 'firebase/firestore';
 
 import type { SupportingCreatorDocData } from '#types/firestore/user/SupportingCreator';
