@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 import { auth, functions } from '@/firebase';
 import { connectors, useWallet } from '@/hooks/useWallet';
 
+const CONNECTOR_LOCAL_STORAGE_KEY = 'web3_auth_connector';
+
 const toHex = (v: string) =>
   v
     .split('')
@@ -61,19 +63,26 @@ export const useAuth = () => {
     });
 
     // Sign in with custom token
-    const { user } = await signInWithCustomToken(auth, verifyData.token);
-    return user;
+    return signInWithCustomToken(auth, verifyData.token);
   };
 
   const signIn = async (connector: keyof typeof connectors) => {
     await activate(connector, undefined, true);
     setNeedAuth(true);
+    localStorage.setItem(CONNECTOR_LOCAL_STORAGE_KEY, connector);
   };
 
   const signOut = async () => {
     deactivate();
     await auth.signOut();
+    localStorage.removeItem(CONNECTOR_LOCAL_STORAGE_KEY);
   };
 
-  return { signIn, signOut };
+  const getConnector = () => {
+    return localStorage.getItem(CONNECTOR_LOCAL_STORAGE_KEY) as
+      | keyof typeof connectors
+      | null;
+  };
+
+  return { authentication, getConnector, signIn, signOut };
 };
