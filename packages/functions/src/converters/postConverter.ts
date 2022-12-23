@@ -19,6 +19,7 @@ export const postConverter: FirestoreDataConverter<CreatorPostDocData> = {
       planId: data.planId,
       title: data.title,
       createdAt: (data.createdAt as Timestamp).toDate(),
+      borderLockAddress: data.borderLockAddress,
     };
   },
   toFirestore: (data) => {

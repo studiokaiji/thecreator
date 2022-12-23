@@ -6,4 +6,5 @@ type CreatorPostDocData = {
   description: string;
   updatedAt: Date;
   createdAt: Date;
+  borderLockAddress: string;
 };
