@@ -3,9 +3,8 @@ import { Conditions } from '@aws-sdk/s3-presigned-post/dist-types/types';
 import { https } from 'firebase-functions';
 import { z } from 'zod';
 
-import { toBytes } from '../../utils/toBytes';
-
 import { db, s3 } from '@/instances';
+import { maxContentSizes } from '@/settings';
 
 const requestDataSchema = z.object({
   contentType: z.union([
@@ -78,12 +77,7 @@ export const getUploadSignedUrl = https.onCall(async (d, context) => {
     throw new https.HttpsError('internal', 'Internal server error');
   }
 
-  const maxContentSize =
-    data.contentType === 'images' || data.contentType === 'attachedImage'
-      ? toBytes(5, 'MB')
-      : data.contentType === 'audio'
-      ? toBytes(300, 'MB')
-      : toBytes(10, 'MB');
+  const maxContentSize = maxContentSizes[data.contentType];
 
   const Conditions: Conditions[] = [
     ['content-length-range', 1, maxContentSize],
