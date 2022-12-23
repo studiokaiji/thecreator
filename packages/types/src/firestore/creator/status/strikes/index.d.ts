@@ -1,0 +1,3 @@
+type CreatorStatusStrikesDocData = {
+  isBanned: boolean;
+};
