@@ -2,17 +2,7 @@ import { Timestamp, FirestoreDataConverter } from 'firebase/firestore';
 
 const validContentsTypes = ['audio', 'text', 'images'];
 
-export type PostDocument<T extends Date | Timestamp = Date> = {
-  contentsType: 'audio' | 'text' | 'images';
-  contentsCount: number;
-  planId: string;
-  title: string;
-  description: string;
-  updatedAt: T;
-  createdAt: T;
-};
-
-export const postConverter: FirestoreDataConverter<PostDocument> = {
+export const postConverter: FirestoreDataConverter<CreatorPostDocData> = {
   fromFirestore: (snapshot) => {
     const data = snapshot.data();
 
