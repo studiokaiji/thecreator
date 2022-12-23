@@ -128,7 +128,7 @@ export const UserSettings = () => {
           <Typography variant="h6">{t('email')}</Typography>
           {data.email && (
             <Typography>
-              {t('currentEmail')}: {data.email}
+              {data.email}
               <Typography
                 color="red"
                 fontWeight={500}
