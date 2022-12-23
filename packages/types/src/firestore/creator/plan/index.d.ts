@@ -1,4 +1,4 @@
-export type CreatorPlanDoc = {
+type CreatorPlanDoc = {
   lockAddress: string;
   name: string;
   description: string;

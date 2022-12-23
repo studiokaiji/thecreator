@@ -6,7 +6,6 @@ import {
   Timestamp,
 } from 'firebase/firestore';
 
-import type { CreatorPostDocData } from '#types/firestore/creator/post';
 import { db } from '@/firebase';
 
 export const creatorPostConverter: FirestoreDataConverter<

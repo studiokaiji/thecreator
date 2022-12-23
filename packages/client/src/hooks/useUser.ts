@@ -4,7 +4,6 @@ import useSWR from 'swr';
 
 import { useCurrentUser } from './useCurrentUser';
 
-import type { UserDocData } from '#types/firestore/user';
 import { getUserDocRef } from '@/converters/userConverter';
 
 const CURRENT_USER_DOES_NOT_EXIST_ERROR = Error('currentUser does not exist');

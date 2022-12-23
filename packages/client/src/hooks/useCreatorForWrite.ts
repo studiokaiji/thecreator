@@ -3,7 +3,6 @@ import { useMemo } from 'react';
 
 import { useWallet } from './useWallet';
 
-import { CreatorDocData } from '#types/firestore/creator';
 import { getCreatorDocRef } from '@/converters/creatorConverter';
 
 const refErr = Error('Creator document reference does not exist.');

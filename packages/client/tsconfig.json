@@ -19,7 +19,6 @@
     "paths": {
       "@/*": ["src/*"],
       "@contracts": ["../hardhat/typechain-types/index.ts"],
-      "#types/*": ["@types/*"]
     }
   },
   "include": ["src", "@types"],

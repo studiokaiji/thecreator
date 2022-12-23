@@ -12,8 +12,6 @@ import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { CreatorDocSettings } from '#types/firestore/creator';
-
 type CreatorPageSettingsCardProps = {
   values: CreatorDocSettings;
   onChange: (value: CreatorDocSettings) => void;

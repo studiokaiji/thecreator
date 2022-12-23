@@ -1,4 +1,4 @@
-export type CreatorPostDocData = {
+type CreatorPostDocData = {
   contentsType: 'audio' | 'text' | 'images';
   contentsCount: number;
   planId: string;

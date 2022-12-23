@@ -9,8 +9,6 @@ import { useTranslation } from 'react-i18next';
 
 import { EmailInputModalButton } from './EmailInputModalButton';
 
-import { UserDocData } from '#types/firestore/user';
-import { NotificationSettings } from '#types/firestore/user/Notification';
 import { MainLoading } from '@/components/standalone/MainLoading';
 import { useUser } from '@/hooks/useUser';
 

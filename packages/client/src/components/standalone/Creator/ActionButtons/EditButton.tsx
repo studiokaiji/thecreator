@@ -5,7 +5,6 @@ import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { CreatorDocData } from '#types/firestore/creator';
 import { CenterModal } from '@/components/helpers/CenterModal';
 import { RoundedButton } from '@/components/helpers/RoundedButton';
 import { CreatorProfileEditForm } from '@/components/standalone/CreatorProfileEditForm';

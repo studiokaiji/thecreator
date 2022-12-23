@@ -3,8 +3,6 @@ import { BigNumber, BytesLike, constants, Contract } from 'ethers';
 
 import { aggregate } from './multicall';
 
-import type { CreatorPlanDoc } from '#types/firestore/creator/plan';
-import type { MulticallInput } from '#types/multicall/MulticallInput';
 import { rpcProvider } from '@/rpc-provider';
 
 export const getPlansFromChain = async (
@@ -121,20 +119,20 @@ const sortPlans = (plans: Plan[]) => {
     }
   });
 
-  const sortedExistsCurrenciesInPlans = Object.keys(
-    planIndexesByTokens
-  ).sort((first, second) => {
-    const firstIndex = tokenPriorityOrder.indexOf(first);
-    const secondIndex = tokenPriorityOrder.indexOf(second);
+  const sortedExistsCurrenciesInPlans = Object.keys(planIndexesByTokens).sort(
+    (first, second) => {
+      const firstIndex = tokenPriorityOrder.indexOf(first);
+      const secondIndex = tokenPriorityOrder.indexOf(second);
 
-    if (firstIndex === -1 || secondIndex === -1 || firstIndex < secondIndex) {
-      return -1;
+      if (firstIndex === -1 || secondIndex === -1 || firstIndex < secondIndex) {
+        return -1;
+      }
+      if (firstIndex > secondIndex) {
+        return 1;
+      }
+      return 0;
     }
-    if (firstIndex > secondIndex) {
-      return 1;
-    }
-    return 0;
-  });
+  );
 
   const sortedIndexes = sortedExistsCurrenciesInPlans
     .map((currency) => {

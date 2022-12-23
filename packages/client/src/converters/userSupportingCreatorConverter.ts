@@ -6,7 +6,6 @@ import {
   Timestamp,
 } from 'firebase/firestore';
 
-import type { SupportingCreatorDocData } from '#types/firestore/user/SupportingCreator';
 import { db } from '@/firebase';
 
 export const userSupportingCreatorConverter: FirestoreDataConverter<

@@ -6,7 +6,6 @@ import { usePublicLock } from './usePublicLock';
 import { CreateLockOpts, useUnlock } from './useUnlock';
 import { useWallet } from './useWallet';
 
-import { CreatorPlanDoc } from '#types/firestore/creator/plan';
 import { getCreatorPlansCollectionRef } from '@/converters/creatorPlanConverter';
 import type { Plan } from '@/utils/get-plans-from-chain';
 

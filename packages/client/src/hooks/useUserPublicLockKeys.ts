@@ -4,7 +4,6 @@ import useSWR from 'swr';
 
 import { useCurrentUser } from './useCurrentUser';
 
-import { MulticallInput } from '#types/multicall/MulticallInput';
 import { rpcProvider } from '@/rpc-provider';
 import { aggregate } from '@/utils/multicall';
 

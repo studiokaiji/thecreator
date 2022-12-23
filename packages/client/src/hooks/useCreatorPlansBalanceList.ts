@@ -1,8 +1,6 @@
 import { BigNumber, BytesLike, constants, providers, utils } from 'ethers';
 import useSWR from 'swr';
 
-import { MulticallInput } from '../../@types/multicall/MulticallInput';
-
 import { ERC20 } from '@/abis';
 import { Plan } from '@/utils/get-plans-from-chain';
 import { aggregate } from '@/utils/multicall';

@@ -14,8 +14,6 @@ import useSWRInfinite from 'swr/infinite';
 import { getCreatorDocRef } from './../converters/creatorConverter';
 import { useCurrentUser } from './useCurrentUser';
 
-import { CreatorDocData } from '#types/firestore/creator';
-import { SupportingCreatorDocData } from '#types/firestore/user/SupportingCreator';
 import { getUserSupportingCreatorsCollectionRef } from '@/converters/userSupportingCreatorConverter';
 
 export const useSupportingCreators = (supportingCreatorsLimit = 0) => {

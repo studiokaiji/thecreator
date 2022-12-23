@@ -1,17 +1,17 @@
-export type NotificationDocDataType =
+type NotificationDocDataType =
   | 'newPost'
   | 'subscriptionExpired'
   | 'oneWeekBeforeExpiration'
   | 'message';
 
-export type NotificationDocData = {
+type NotificationDocData = {
   type: NotificationDocDataType;
   creatorId: string;
   createdAt: Date;
   customMessage?: string;
 };
 
-export type NotificationSettings = {
+type NotificationSettings = {
   supportedCreatorNewPost: boolean;
   subscripionExpired: boolean;
   oneWeekBeforeExpiration: boolean;

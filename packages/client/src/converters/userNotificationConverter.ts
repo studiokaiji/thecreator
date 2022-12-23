@@ -6,7 +6,6 @@ import {
   Timestamp,
 } from 'firebase/firestore';
 
-import type { NotificationDocData } from '#types/firestore/user/Notification';
 import { db } from '@/firebase';
 
 export const userNotificationConverter: FirestoreDataConverter<

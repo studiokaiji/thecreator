@@ -6,8 +6,6 @@ import { ReactNode, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { CreatorDocData } from '#types/firestore/creator';
-import { Status } from '#types/status';
 import { useCreatorForWrite } from '@/hooks/useCreatorForWrite';
 import { useSnackbar } from '@/hooks/useSnackbar';
 

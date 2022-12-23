@@ -1,4 +1,4 @@
-export type CreatorDocData = {
+type CreatorDocData = {
   creatorAddress: string;
   creatorName: string;
   description: string;
@@ -8,7 +8,7 @@ export type CreatorDocData = {
   settings: CreatorDocSettings;
 };
 
-export type CreatorDocSettings = {
+type CreatorDocSettings = {
   isNSFW: boolean;
   isPublish: boolean;
 };

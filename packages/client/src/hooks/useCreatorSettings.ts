@@ -2,8 +2,6 @@ import { useCreator } from './useCreator';
 import { useCreatorForWrite } from './useCreatorForWrite';
 import { useCurrentUser } from './useCurrentUser';
 
-import { CreatorDocSettings } from '#types/firestore/creator';
-
 export const useCreatorSettings = () => {
   const { currentUser } = useCurrentUser();
   const { data, error, mutate } = useCreator({

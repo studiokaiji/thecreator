@@ -4647,6 +4647,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/thecreator@workspace:packages/types":
+  version: 0.0.0-use.local
+  resolution: "@types/thecreator@workspace:packages/types"
+  languageName: unknown
+  linkType: soft
+
 "@types/underscore@npm:*":
   version: 1.11.4
   resolution: "@types/underscore@npm:1.11.4"

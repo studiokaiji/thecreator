@@ -4,7 +4,6 @@ import useSWRInfinite from 'swr/infinite';
 
 import { useWallet } from './useWallet';
 
-import type { MulticallInput } from '#types/multicall/MultiCallInput';
 import { aggregate } from '@/utils/multicall';
 
 type UseCreatorSuportersProps = {

@@ -8,8 +8,6 @@ import {
 
 import { db } from '../firebase';
 
-import { CreatorPlanDoc } from '#types/firestore/creator/plan';
-
 export const creatorPlanConverter: FirestoreDataConverter<
   WithId<CreatorPlanDoc>
 > = {

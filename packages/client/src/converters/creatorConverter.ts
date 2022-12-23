@@ -10,8 +10,6 @@ import {
 
 import { db } from '../firebase';
 
-import type { CreatorDocData } from '#types/firestore/creator';
-
 export const creatorConverter: FirestoreDataConverter<WithId<CreatorDocData>> =
   {
     fromFirestore: (

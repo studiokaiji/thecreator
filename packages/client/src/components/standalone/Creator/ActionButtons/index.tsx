@@ -3,8 +3,6 @@ import Box from '@mui/material/Box';
 import { EditButton } from './EditButton';
 import { ShareButton } from './ShareButton';
 
-import type { CreatorDocData } from '#types/firestore/creator';
-
 type ActionButtonsProps = {
   minimize: boolean;
   editable: boolean;

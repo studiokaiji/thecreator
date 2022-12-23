@@ -12,7 +12,6 @@ import Typography from '@mui/material/Typography';
 import { MouseEvent, ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { CreatorDocData } from '#types/firestore/creator';
 import { RoundedButton } from '@/components/helpers/RoundedButton';
 import { useSnackbar } from '@/hooks/useSnackbar';
 
