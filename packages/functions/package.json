@@ -20,6 +20,7 @@
     "@aws-sdk/s3-presigned-post": "^3.213.0",
     "@aws-sdk/s3-request-presigner": "^3.210.0",
     "@metamask/eth-sig-util": "^5.0.0",
+    "@unlock-protocol/contracts": "^0.0.14",
     "cors": "^2.8.5",
     "esbuild": "^0.15.14",
     "ethers": "^5.7.2",
