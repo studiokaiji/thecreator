@@ -1,4 +1,4 @@
-import { signInWithCustomToken } from 'firebase/auth';
+import { getAdditionalUserInfo, signInWithCustomToken } from 'firebase/auth';
 import { httpsCallable } from 'firebase/functions';
 import { useEffect, useState } from 'react';
 
@@ -17,6 +17,7 @@ export const useAuth = () => {
   const { account, activate, active, deactivate, library } = useWallet();
 
   const [needAuth, setNeedAuth] = useState(false);
+  const [isNewUser, setIsNewUser] = useState<boolean>();
 
   useEffect(() => {
     if (!needAuth || !account || !active || !library) return;
@@ -63,7 +64,12 @@ export const useAuth = () => {
     });
 
     // Sign in with custom token
-    return signInWithCustomToken(auth, verifyData.token);
+    const cred = await signInWithCustomToken(auth, verifyData.token);
+
+    const isNewUser = getAdditionalUserInfo(cred)?.isNewUser;
+    setIsNewUser(isNewUser);
+
+    return cred;
   };
 
   const signIn = async (connector: keyof typeof connectors) => {
@@ -87,6 +93,7 @@ export const useAuth = () => {
   return {
     authentication,
     getConnector,
+    isNewUser,
     processing: needAuth,
     signIn,
     signOut,
