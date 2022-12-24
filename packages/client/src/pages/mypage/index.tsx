@@ -12,7 +12,7 @@ export const MyPage = () => {
     <MainSpacingLayout>
       <Stack spacing={6}>
         <Typography variant="h1">{t('mypage')}</Typography>
-        <Stack direction="row" gap={3}>
+        <Stack alignItems="flex-start" direction="row" gap={3}>
           <MenuCard />
           <MainCard />
         </Stack>
