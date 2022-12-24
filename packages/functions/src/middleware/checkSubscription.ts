@@ -1,5 +1,5 @@
+import { PublicLockV11 } from '@unlock-protocol/contracts';
 import { BigNumber } from '@ethersproject/bignumber';
-import type { BigNumberish } from '@ethersproject/bignumber';
 import { Contract } from '@ethersproject/contracts';
 import {
   BaseProvider,
@@ -7,8 +7,8 @@ import {
   JsonRpcProvider,
 } from '@ethersproject/providers';
 
-import { Multicall__factory } from '../../../hardhat/typechain-types/factories/contracts/multicall/multicall.sol';
-import { TheCreatorProduct__factory } from '../../../hardhat/typechain-types/factories/contracts/the-creator-product.sol';
+import { Multicall__factory } from '@contracts';
+import { utils } from 'ethers';
 
 export type Subscription = {
   tokenId: BigNumber;
@@ -43,28 +43,12 @@ const getProviderFromEnv = () => {
 };
 
 export const checkSubscription = async (
-  id: string,
-  creatorContractAddress: string,
-  planId: BigNumberish,
+  holderAddress: string,
+  holderLockAddress: string,
+  borderLockAddress: string,
   provider: BaseProvider = getProviderFromEnv(),
   multicallContractAddress = process.env.MULTICALL_ADDRESS
-): Promise<[boolean, { subscription: Subscription; plan: Plan }]> => {
-  // Getting Subscription and plan from Creator contract with multicall
-  const contract = TheCreatorProduct__factory.getContract(
-    creatorContractAddress,
-    TheCreatorProduct__factory.abi
-  );
-  const multicallInputs = [
-    {
-      callData: contract.interface.encodeFunctionData('subscriptions', [id]),
-      target: creatorContractAddress,
-    },
-    {
-      callData: contract.interface.encodeFunctionData('plans', [planId]),
-      target: creatorContractAddress,
-    },
-  ];
-
+) => {
   if (!multicallContractAddress) {
     throw Error(
       'If process.env.MULTICALL_ADDRESS does not exist, multicallContractAddress is required.'
@@ -76,24 +60,43 @@ export const checkSubscription = async (
     Multicall__factory.abi,
     provider
   );
+
+  const lockIface = new utils.Interface(PublicLockV11.abi);
+
+  const multicallInputs: MulticallInput[] = [];
+
+  multicallInputs.push({
+    target: borderLockAddress,
+    callData: lockIface.encodeFunctionData('keyPrice'),
+  });
+  multicallInputs.push({
+    target: holderLockAddress,
+    callData: lockIface.encodeFunctionData('keyPrice'),
+  });
+  multicallInputs.push({
+    target: holderLockAddress,
+    callData: lockIface.encodeFunctionData('getHasValidKey', [holderAddress]),
+  });
+
   const { returnData } = await multicall.callStatic.aggregate(multicallInputs);
 
-  const subscription = contract.interface.decodeFunctionResult(
-    'subscriptions',
+  const borderLockKeyPrice = lockIface.decodeFunctionResult(
+    'keyPrice',
     returnData[0]
-  )[0] as Subscription;
-
-  const plan = contract.interface.decodeFunctionResult(
-    'plans',
+  )[0] as BigNumber;
+  const holderLockKeyPrice = lockIface.decodeFunctionResult(
+    'keyPrice',
     returnData[1]
-  )[0] as Plan;
+  )[0] as BigNumber;
 
-  // Check if the plan you are signing up for meets your plan requirements.
-  return [
-    subscription.isValid && plan.usage.gte(subscription.usage),
-    {
-      plan,
-      subscription,
-    },
-  ];
+  if (borderLockKeyPrice.gt(holderLockKeyPrice)) {
+    return false;
+  }
+
+  const holderHasValidKey = lockIface.decodeFunctionResult(
+    'getHasValidKey',
+    returnData[2]
+  )[0] as boolean;
+
+  return holderHasValidKey;
 };

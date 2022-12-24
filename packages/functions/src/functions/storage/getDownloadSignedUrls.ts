@@ -2,116 +2,51 @@ import { GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { database } from 'firebase-admin';
 import { https } from 'firebase-functions';
-import {  z } from 'zod';
+import { z } from 'zod';
 
-import { postConverter } from '../../converters/postConverter';
 import { db, rtdb, s3 } from '../../instances';
 import { AccessTokenManager } from '../../middleware/accessTokenManager';
 import { checkSubscription } from '../../middleware/checkSubscription';
 
 type AccessTokenPayload = {
-  planId: string;
+  borderLockAddress: string;
   uid: string;
 };
 
-const accessTokenManager = new AccessTokenManager<AccessTokenPayload>(
-  rtdb.ref('/refreshToken'),
-  'SECRET_KEY'
-);
-
 const requestDataSchama = z.object({
-  accessToken: z.string().optional(),
-  creatorContractAddress: z.string().regex(/^0x[a-fA-F0-9]{40}$/g),
+  creatorId: z.string(),
   postId: z.string(),
 });
 
 const verify = async (
-  creatorContractAddress: string,
-  planId: string,
-  uid: string,
-  accessToken?: string
+  holderLockAddress: string,
+  borderLockAddress: string,
+  uid: string
 ): Promise<{
   ok: boolean;
-  usedAccessToken: boolean;
-  tokens?: { accessToken: string; refreshToken: string };
   reason:
-    | 'Invalid access token'
     | 'Subscription without access rights'
     | 'Invalid contract value'
     | 'Unknown'
     | '';
 }> => {
-  const payload = { planId, uid };
-
-  if (accessToken) {
-    try {
-      const accessTokenPayload = await accessTokenManager.verifyAccessToken(
-        accessToken
-      );
-
-      if (
-        accessTokenPayload.planId !== payload.planId ||
-        accessTokenPayload.uid !== payload.uid
-      ) {
-        throw 0;
-      }
-
-      return { ok: true, reason: '', usedAccessToken: true };
-    } catch (e) {
-      return {
-        ok: false,
-        reason: 'Invalid access token',
-        usedAccessToken: true,
-      };
-    }
-  }
-
   try {
-    const [ok, { subscription }] = await checkSubscription(
+    const ok = await checkSubscription(
       uid,
-      creatorContractAddress,
-      planId
+      holderLockAddress,
+      borderLockAddress
     );
 
-    if (!ok) {
-      return {
-        ok: false,
-        reason: 'Subscription without access rights',
-        usedAccessToken: false,
-      };
+    if (ok) {
+      return { ok: true, reason: '' };
     }
 
-    payload.planId = subscription.planId.toString();
-
-    if (subscription.balance.isNegative() || subscription.usage.isNegative()) {
-      return {
-        ok: false,
-        reason: 'Invalid contract value',
-        usedAccessToken: false,
-      };
-    }
-
-    const remainingSeconds = subscription.balance
-      .mul(86400)
-      .div(subscription.usage);
-
-    const accessTokenExpiresIn = remainingSeconds.lte(30 * 60)
-      ? remainingSeconds.toNumber()
-      : undefined;
-    const refreshTokenExpiresIn = remainingSeconds.lte(60 * 60 * 24 * 7)
-      ? remainingSeconds.toNumber()
-      : undefined;
-
-    const tokens = await accessTokenManager.generateNewAccessToken(
-      `/${uid}/${creatorContractAddress}`,
-      payload,
-      accessTokenExpiresIn,
-      refreshTokenExpiresIn
-    );
-
-    return { ok: true, reason: '', tokens, usedAccessToken: false };
+    return {
+      ok: false,
+      reason: 'Subscription without access rights',
+    };
   } catch (e) {
-    return { ok: false, reason: 'Unknown', usedAccessToken: false };
+    return { ok: false, reason: 'Unknown' };
   }
 };
 
@@ -119,7 +54,6 @@ const fetchUrlsFromCache = async (
   cacheRef: database.Reference
 ): Promise<{
   urls: string[];
-  planId: string;
   expiry: number;
   contentsType: string;
 } | null> => {
@@ -131,9 +65,8 @@ const fetchUrlsFromCache = async (
   const cacheData = cacheSnapshot.val();
   if (
     !cacheData ||
-    !cacheData.planId ||
     !cacheData.expiry ||
-    cacheData.expiry > Date.now()
+    cacheData.expiry > Date.now() + 5 * 60 * 1000
   ) {
     return null;
   }
@@ -145,12 +78,12 @@ const setUrlsToCache = async (
   cacheRef: database.Reference,
   urls: string[],
   planId: string,
-  contentsType: string
+  contentsType: string,
+  expiry: Date
 ) => {
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const setVal = { contentsType, expiry: tomorrow, planId, urls };
+  const setVal = { contentsType, expiry, planId, urls };
   await cacheRef.set(setVal);
+  return setVal;
 };
 
 export const getDownloadSignedUrls = https.onCall(async (d, context) => {
@@ -160,61 +93,76 @@ export const getDownloadSignedUrls = https.onCall(async (d, context) => {
 
   const uid = context.auth.uid;
 
-  const input = await requestDataSchama.parseAsync(d).catch(() => {
+  const reqBody = await requestDataSchama.parseAsync(d).catch(() => {
     throw new https.HttpsError('invalid-argument', 'Invalid input input');
   });
 
-  const verifyWithHttpsError = async (planId: string) => {
-    const result = await verify(
-      input.creatorContractAddress,
-      planId,
-      uid,
-      input.accessToken
+  const supportingCreatorDocRef = db
+    .collection('users')
+    .doc(uid)
+    .collection('supporting')
+    .doc(reqBody.creatorId);
+
+  const supportingCreatorDocSnapshot = await supportingCreatorDocRef.get();
+  const supportingCreatorDocData = supportingCreatorDocSnapshot.data();
+  if (!supportingCreatorDocSnapshot.exists || !supportingCreatorDocData) {
+    throw new https.HttpsError(
+      'not-found',
+      'You are trying to access content from a creator you do not support'
     );
+  }
 
-    const { ok, reason } = result;
+  const holderLockAddress = supportingCreatorDocData.plan.lockAddress;
+  if (typeof holderLockAddress !== 'string') {
+    throw new https.HttpsError(
+      'not-found',
+      "The plan's PublicLock address is not found"
+    );
+  }
 
-    if (!ok) {
-      if (
-        reason === 'Invalid access token' ||
-        reason === 'Subscription without access rights'
-      ) {
-        throw new https.HttpsError(
-          'permission-denied',
-          'Access to contents denied'
-        );
-      }
-      throw new https.HttpsError('internal', reason);
+  const postsCollectionRef = db
+    .collection('creator')
+    .doc(reqBody.creatorId)
+    .collection('posts');
+
+  const postDocRef = postsCollectionRef.doc(reqBody.postId);
+
+  const docSnapshot = await postDocRef.get();
+  const postData = docSnapshot.data() as CreatorPostDocData;
+
+  if (!docSnapshot.exists || !postData) {
+    throw new https.HttpsError(
+      'not-found',
+      'A nonexistent postId is specified'
+    );
+  }
+
+  const { ok, reason } = await verify(
+    holderLockAddress,
+    postData.borderLockAddress,
+    uid
+  );
+  if (!ok) {
+    if (reason === 'Subscription without access rights') {
+      throw new https.HttpsError(
+        'permission-denied',
+        'Access to contents denied'
+      );
     }
+    throw new https.HttpsError('internal', reason);
+  }
 
-    return result;
-  };
-
-  const storageKeysParent = `/${input.creatorContractAddress}/${input.postId}`;
-  const cacheRef = rtdb.ref(storageKeysParent);
+  const storageKeyPath = `/postContentCaches/${reqBody.creatorId}/${reqBody.postId}`;
+  const cacheRef = rtdb.ref(storageKeyPath);
 
   const cached = await fetchUrlsFromCache(cacheRef);
   if (cached) {
-    const { tokens } = await verifyWithHttpsError(cached.planId);
-    return { contentsType: cached.contentsType, tokens, urls: cached.urls };
+    return cached;
   }
-
-  const postRef = db
-    .doc(`/creators/${input.creatorContractAddress}/posts/${input.postId}`)
-    .withConverter(postConverter);
-
-  const postSnapshot = await postRef.get();
-  const postData = postSnapshot.data();
-
-  if (!postData) {
-    throw new https.HttpsError('not-found', 'Post not found');
-  }
-
-  const { tokens } = await verifyWithHttpsError(postData.planId);
 
   const urls = await Promise.all(
-    [...new Array(postData.contentsCount)].map((_, i) => {
-      const Key = `${storageKeysParent}/${i}}`;
+    [...new Array(postData.contentsCount)].map((_, j) => {
+      const Key = `${storageKeyPath}/${j}}`;
       return getSignedUrl(
         s3,
         new GetObjectCommand({
@@ -228,18 +176,23 @@ export const getDownloadSignedUrls = https.onCall(async (d, context) => {
     throw new https.HttpsError('internal', 'Failed to get content url');
   });
 
+  const expiry = new Date();
+  expiry.setDate(expiry.getDate() + 1);
+
   await setUrlsToCache(
     cacheRef,
     urls,
     postData.planId,
-    postData.contentsType
+    postData.contentsType,
+    expiry
   ).catch(() => {
     console.error('Failed to set urls to cache');
   });
 
   return {
-    contentsType: postData.contentsType,
-    tokens: tokens || null,
     urls,
+    planId: postData.planId,
+    contentsType: postData.contentsType,
+    expiry,
   };
 });
