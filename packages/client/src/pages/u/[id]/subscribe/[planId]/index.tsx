@@ -14,7 +14,7 @@ import { PlanCard } from '@/components/standalone/Creator/plans/PlanCard';
 import { MainLoading } from '@/components/standalone/MainLoading';
 import { useBeforeUnload } from '@/hooks/useBeforeUnload';
 import { useCreatorPlan } from '@/hooks/useCreatorPlan';
-import { useOnlyCurrentUser } from '@/hooks/useOnlyAuthenticated';
+import { useOnlyAuthenticated } from '@/hooks/useOnlyAuthenticated';
 import { usePublicLock } from '@/hooks/usePublicLock';
 import { NotFound } from '@/pages/404';
 
@@ -38,7 +38,7 @@ export const SubscribePage = () => {
 
   useBeforeUnload((status !== null && status !== 'complete') || !!errorMessage);
 
-  useOnlyCurrentUser();
+  useOnlyAuthenticated();
 
   const confirmPayment = useCallback(async () => {
     try {
