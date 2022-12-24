@@ -14,7 +14,6 @@ import { PlanCard } from '@/components/standalone/Creator/plans/PlanCard';
 import { MainLoading } from '@/components/standalone/MainLoading';
 import { useBeforeUnload } from '@/hooks/useBeforeUnload';
 import { useCreatorPlan } from '@/hooks/useCreatorPlan';
-import { useOnlyAuthenticated } from '@/hooks/useOnlyAuthenticated';
 import { usePublicLock } from '@/hooks/usePublicLock';
 import { NotFound } from '@/pages/404';
 
@@ -37,8 +36,6 @@ export const SubscribePage = () => {
   const [errorMessage, setErrorMessage] = useState('');
 
   useBeforeUnload((status !== null && status !== 'complete') || !!errorMessage);
-
-  useOnlyAuthenticated();
 
   const confirmPayment = useCallback(async () => {
     try {
