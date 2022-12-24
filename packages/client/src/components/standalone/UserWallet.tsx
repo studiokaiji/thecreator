@@ -15,7 +15,7 @@ import Paper from '@mui/material/Paper';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import metamaskLogoPath from '@/assets/metamask-logo.svg';
@@ -23,6 +23,7 @@ import walletConnectLogoPath from '@/assets/walletconnect-logo.svg';
 import { MinimalLink } from '@/components/helpers/MinimalLink';
 import { useAuth } from '@/hooks/useAuth';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { useIsCreator } from '@/hooks/useIsCreator';
 
 type UserWalletProps = {
   width?: number | string;
@@ -169,6 +170,13 @@ export const UserWallet = ({
 
   const { t } = useTranslation();
 
+  const { data: isCreator } = useIsCreator(currentUser?.uid);
+
+  const loading = useMemo(
+    () => checking || typeof isCreator !== 'boolean',
+    [checking, isCreator]
+  );
+
   return (
     <Box>
       <ButtonBase
@@ -191,7 +199,7 @@ export const UserWallet = ({
             sx={{ width: '100%' }}
           >
             <WalletIcon htmlColor="gray" />
-            {checking && !currentUser ? (
+            {loading ? (
               <Stack sx={{ width: '100%' }}>
                 <Skeleton sx={{ fontSize: '1rem' }} variant="text" />
                 <Skeleton sx={{ fontSize: '0.875rem' }} variant="text" />
@@ -237,7 +245,7 @@ export const UserWallet = ({
       >
         <UserWalletMenuBody
           isConnected={!!currentUser}
-          isCreator={true}
+          isCreator={!!isCreator}
           width={width}
         />
       </Menu>
