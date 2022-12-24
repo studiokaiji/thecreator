@@ -5,13 +5,7 @@ import { https } from 'firebase-functions';
 import { z } from 'zod';
 
 import { db, rtdb, s3 } from '../../instances';
-import { AccessTokenManager } from '../../middleware/accessTokenManager';
 import { checkSubscription } from '../../middleware/checkSubscription';
-
-type AccessTokenPayload = {
-  borderLockAddress: string;
-  uid: string;
-};
 
 const requestDataSchama = z.object({
   creatorId: z.string(),
