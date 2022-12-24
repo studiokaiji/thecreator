@@ -1,6 +1,11 @@
-import { getAdditionalUserInfo, signInWithCustomToken } from 'firebase/auth';
+import {
+  getAdditionalUserInfo,
+  signInWithCustomToken,
+  UserCredential,
+} from 'firebase/auth';
 import { httpsCallable } from 'firebase/functions';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { auth, functions } from '@/firebase';
 import { connectors, useWallet } from '@/hooks/useWallet';
@@ -13,11 +18,15 @@ const toHex = (v: string) =>
     .map((c) => c.charCodeAt(0).toString(16).padStart(2, '0'))
     .join('');
 
-export const useAuth = () => {
+export const useAuth = (
+  firstAuthFlow: string | ((cred: UserCredential) => void) = '/welcome'
+) => {
   const { account, activate, active, deactivate, library } = useWallet();
 
   const [needAuth, setNeedAuth] = useState(false);
-  const [isNewUser, setIsNewUser] = useState<boolean>();
+  const [userCred, setUserCred] = useState<UserCredential>();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!needAuth || !account || !active || !library) return;
@@ -66,11 +75,22 @@ export const useAuth = () => {
     // Sign in with custom token
     const cred = await signInWithCustomToken(auth, verifyData.token);
 
-    const isNewUser = getAdditionalUserInfo(cred)?.isNewUser;
-    setIsNewUser(isNewUser);
+    setUserCred(cred);
 
     return cred;
   };
+
+  useEffect(() => {
+    if (!userCred) return;
+
+    const isNewUser = getAdditionalUserInfo(userCred);
+    if (!isNewUser) return;
+
+    if (typeof firstAuthFlow === 'string') {
+      return navigate(firstAuthFlow);
+    }
+    return firstAuthFlow(userCred);
+  }, [userCred]);
 
   const signIn = async (connector: keyof typeof connectors) => {
     await activate(connector, undefined, true);
@@ -93,7 +113,6 @@ export const useAuth = () => {
   return {
     authentication,
     getConnector,
-    isNewUser,
     processing: needAuth,
     signIn,
     signOut,
