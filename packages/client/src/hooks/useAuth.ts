@@ -84,5 +84,11 @@ export const useAuth = () => {
       | null;
   };
 
-  return { authentication, getConnector, signIn, signOut };
+  return {
+    authentication,
+    getConnector,
+    processing: needAuth,
+    signIn,
+    signOut,
+  };
 };
