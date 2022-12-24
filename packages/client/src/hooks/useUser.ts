@@ -1,5 +1,5 @@
 import { updateProfile, User } from 'firebase/auth';
-import { getDoc, updateDoc } from 'firebase/firestore';
+import { getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import useSWR from 'swr';
 
 import { useCurrentUser } from './useCurrentUser';
@@ -15,11 +15,25 @@ export const useUser = () => {
     if (!user.uid) return null;
 
     const userRef = getUserDocRef(user.uid);
-    const userSnapshot = await getDoc(userRef);
-    const userData = userSnapshot.data();
 
-    const returnData = { ...userData, ...currentUser };
-    return returnData;
+    const userSnapshot = await getDoc(userRef);
+
+    if (userSnapshot.exists()) {
+      const userData = userSnapshot.data();
+      const returnData = { ...userData, ...currentUser };
+      return returnData;
+    } else {
+      const docData = {
+        globalNotificationSettings: {
+          oneWeekBeforeExpiration: true,
+          subscripionExpired: true,
+          supportedCreatorNewPost: true,
+        },
+        id: user.uid,
+      };
+      await setDoc(userRef, docData);
+      return { ...docData, ...currentUser };
+    }
   };
 
   const updateUserProfile = async (

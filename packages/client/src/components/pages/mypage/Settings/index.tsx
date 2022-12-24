@@ -63,11 +63,12 @@ export const UserSettings = () => {
       return;
     }
 
-    const newData: UserDocData = {
+    const newData: WithId<UserDocData> = {
       globalNotificationSettings: {
         ...data.globalNotificationSettings,
         ...watched.globalNotificationSettings,
       },
+      id: data.id,
     };
 
     await updateUserSettings(newData);
