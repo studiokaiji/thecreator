@@ -4,6 +4,7 @@ import { providers } from 'ethers';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import '@/firebase';
 
+import { RouteAuthGuard } from './components/routing/RouteAuthGuard';
 import { SnackbarProvider } from './contexts/SnackbarContext';
 import { NotFound } from './pages/404';
 import { PayoutPage } from './pages/edit/payout';
@@ -35,8 +36,25 @@ function App() {
               <NavLayout>
                 <Routes>
                   <Route element={<IndexPage />} path="/" />
-                  <Route element={<CreatePage />} path="/create" />
-                  <Route path="/edit">
+                  <Route path="/c">
+                    <Route index element={<NotFound />} />
+                    <Route path=":id">
+                      <Route index element={<CreatorPage />} />
+                      <Route path="subscribe">
+                        <Route index element={<NotFound />} />
+                        <Route element={<SubscribePage />} path=":planId" />
+                      </Route>
+                    </Route>
+                  </Route>
+                  <Route
+                    element={
+                      <RouteAuthGuard>
+                        <CreatePage />
+                      </RouteAuthGuard>
+                    }
+                    path="/create"
+                  />
+                  <Route element={<RouteAuthGuard />} path="/edit">
                     <Route
                       index
                       element={<Navigate replace to="profile#posts" />}
@@ -47,17 +65,7 @@ function App() {
                     />
                     <Route element={<PayoutPage />} path="payout" />
                     <Route element={<SettingsPage />} path="settings" />
-                  </Route>
-                  <Route element={<SupportersPage />} path="/edit/supporters" />
-                  <Route path="/c">
-                    <Route index element={<NotFound />} />
-                    <Route path=":id">
-                      <Route index element={<CreatorPage />} />
-                      <Route path="subscribe">
-                        <Route index element={<NotFound />} />
-                        <Route element={<SubscribePage />} path=":planId" />
-                      </Route>
-                    </Route>
+                    <Route element={<SupportersPage />} path="supporters" />
                   </Route>
                   <Route path="/mypage">
                     <Route index element={<MyPage />} />
