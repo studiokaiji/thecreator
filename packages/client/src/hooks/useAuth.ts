@@ -18,9 +18,7 @@ const toHex = (v: string) =>
     .map((c) => c.charCodeAt(0).toString(16).padStart(2, '0'))
     .join('');
 
-export const useAuth = (
-  firstAuthFlow: string | ((cred: UserCredential) => void) = '/welcome'
-) => {
+export const useAuth = (firstAuthFlow?: (cred: UserCredential) => void) => {
   const { account, activate, active, deactivate, library } = useWallet();
 
   const [needAuth, setNeedAuth] = useState(false);
@@ -86,9 +84,10 @@ export const useAuth = (
     const isNewUser = getAdditionalUserInfo(userCred);
     if (!isNewUser) return;
 
-    if (typeof firstAuthFlow === 'string') {
-      return navigate(firstAuthFlow);
+    if (!firstAuthFlow) {
+      firstAuthFlow = () => navigate('/mypage', { state: { isOk: true } });
     }
+
     return firstAuthFlow(userCred);
   }, [userCred]);
 
