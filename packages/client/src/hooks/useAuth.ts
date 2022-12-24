@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { auth, functions } from '@/firebase';
 import { connectors, useWallet } from '@/hooks/useWallet';
 
-const CONNECTOR_LOCAL_STORAGE_KEY = 'web3_auth_connector';
+const CONNECTOR_LOCAL_STORAGE_KEY = 'WEB3_CONNECT_CACHED_PROVIDER';
 
 const toHex = (v: string) =>
   v
@@ -37,7 +37,6 @@ export const useAuth = (firstAuthFlow?: (cred: UserCredential) => void) => {
     if (!account || !active || !library) {
       throw Error('Wallet is not connected.');
     }
-
     setNeedAuth(false);
 
     const { data: nonceData } = await httpsCallable<
@@ -94,19 +93,19 @@ export const useAuth = (firstAuthFlow?: (cred: UserCredential) => void) => {
   const signIn = async (connector: keyof typeof connectors) => {
     await activate(connector, undefined, true);
     setNeedAuth(true);
-    localStorage.setItem(CONNECTOR_LOCAL_STORAGE_KEY, connector);
   };
 
   const signOut = async () => {
     deactivate();
     await auth.signOut();
-    localStorage.removeItem(CONNECTOR_LOCAL_STORAGE_KEY);
   };
 
   const getConnector = () => {
-    return localStorage.getItem(CONNECTOR_LOCAL_STORAGE_KEY) as
-      | keyof typeof connectors
-      | null;
+    const item = localStorage.getItem(CONNECTOR_LOCAL_STORAGE_KEY);
+    if (item) {
+      return item.replace(/"/g, '') as keyof typeof connectors;
+    }
+    return null;
   };
 
   return {
