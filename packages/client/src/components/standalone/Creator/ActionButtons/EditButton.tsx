@@ -10,9 +10,9 @@ import { RoundedButton } from '@/components/helpers/RoundedButton';
 import { CreatorProfileEditForm } from '@/components/standalone/CreatorProfileEditForm';
 
 type EditButtonProps = {
-  data: CreatorDocData;
+  data: WithId<CreatorDocData>;
   minimize: boolean;
-  onChangeData: (data: CreatorDocData) => void;
+  onChangeData: (data: WithId<CreatorDocData>) => void;
 };
 
 export const EditButton = ({

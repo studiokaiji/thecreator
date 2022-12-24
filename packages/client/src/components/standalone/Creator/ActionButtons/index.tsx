@@ -6,8 +6,8 @@ import { ShareButton } from './ShareButton';
 type ActionButtonsProps = {
   minimize: boolean;
   editable: boolean;
-  data: CreatorDocData;
-  onChangeData: (data: CreatorDocData) => void;
+  data: WithId<CreatorDocData>;
+  onChangeData: (data: WithId<CreatorDocData>) => void;
 };
 
 export const ActionButtons = ({

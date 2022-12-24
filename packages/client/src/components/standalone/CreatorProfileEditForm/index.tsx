@@ -15,8 +15,8 @@ type EditableCreatorDocDataInputs = {
 };
 
 type CreatorProfileEditFormProps = {
-  data?: CreatorDocData;
-  onChangeData?: (data: CreatorDocData) => void;
+  data?: WithId<CreatorDocData>;
+  onChangeData?: (data: WithId<CreatorDocData>) => void;
   onError?: (e: any) => void;
   onEnd: () => void;
   saveButtonChild: ReactNode;
@@ -38,7 +38,7 @@ export const CreatorProfileEditForm = ({
     mode: 'onChange',
   });
 
-  const [status, setStatus] = useState<Status>('typing');
+  const [status, setStatus] = useState('typing');
 
   const { open: openSnackbar } = useSnackbar();
 
