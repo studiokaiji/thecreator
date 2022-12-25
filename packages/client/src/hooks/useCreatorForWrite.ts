@@ -1,7 +1,7 @@
 import { setDoc, updateDoc } from 'firebase/firestore';
 import { useMemo } from 'react';
 
-import { useIsCreator } from './useIsCreator';
+import { setIsCreatorFlag } from './useIsCreator';
 import { useWallet } from './useWallet';
 
 import { getCreatorDocRef } from '@/converters/creatorConverter';
@@ -15,8 +15,6 @@ export const useCreatorForWrite = () => {
     if (!account) return null;
     return getCreatorDocRef(account);
   }, [account]);
-
-  const { setIsCreatorFlag } = useIsCreator();
 
   const addCreator = async (creatorName: string, description: string) => {
     if (!docRef || !account) throw refErr;

@@ -34,22 +34,7 @@ export const useIsCreator = (address?: string) => {
     );
     setIsCreatorFlag(addr, isCreator);
 
-    console.log('isCreator', isCreator);
-
     return isCreator;
-  };
-
-  const setIsCreatorFlag = (address: string, value: boolean | null) => {
-    localStorage.setItem(
-      getKey(address),
-      String(value === null ? null : value ? 1 : 0)
-    );
-  };
-
-  const getIsCreatorFlag = (address: string) => {
-    const strVal = localStorage.getItem(getKey(address));
-    if (strVal === null) return null;
-    return !!Number(strVal);
   };
 
   return {
@@ -59,4 +44,17 @@ export const useIsCreator = (address?: string) => {
     getIsCreatorFlag,
     setIsCreatorFlag,
   };
+};
+
+export const setIsCreatorFlag = (address: string, value: boolean | null) => {
+  localStorage.setItem(
+    getKey(address),
+    String(value === null ? null : value ? 1 : 0)
+  );
+};
+
+export const getIsCreatorFlag = (address: string) => {
+  const strVal = localStorage.getItem(getKey(address));
+  if (strVal === null) return null;
+  return !!Number(strVal);
 };
