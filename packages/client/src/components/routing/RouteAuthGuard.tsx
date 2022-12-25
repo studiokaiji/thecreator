@@ -1,6 +1,7 @@
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { FC, PropsWithChildren } from 'react';
+import { Outlet } from 'react-router-dom';
 
 import { CenterModal } from '@/components/helpers/CenterModal';
 import { Auth } from '@/components/standalone/Auth/index';
@@ -18,18 +19,26 @@ export const RouteAuthGuard: FC<Partial<PropsWithChildren>> = ({
 
   if (!currentUser) {
     return (
-      <CenterModal open={true}>
-        <Stack spacing={3}>
-          <Typography variant="h5">Auth</Typography>
-          <Auth />
-        </Stack>
-      </CenterModal>
+      <>
+        <CenterModal open={true}>
+          <Stack spacing={3}>
+            <Typography variant="h5">Auth</Typography>
+            <Auth />
+          </Stack>
+        </CenterModal>
+        <Outlet />
+      </>
     );
   }
 
   if (children) {
-    return <>{children}</>;
+    return (
+      <>
+        {children}
+        <Outlet />
+      </>
+    );
   }
 
-  return <></>;
+  return <Outlet />;
 };
