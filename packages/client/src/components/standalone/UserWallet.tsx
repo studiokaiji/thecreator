@@ -85,7 +85,7 @@ const UserWalletMenuBody = ({
         : {
             icon: <LoyaltyIcon />,
             text: t('becomeACreator'),
-            to: '/become-a-creator',
+            to: '/create',
           },
     ],
     notConnected: [
