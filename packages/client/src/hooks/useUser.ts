@@ -1,4 +1,4 @@
-import { updateProfile, User } from 'firebase/auth';
+import { updateProfile } from 'firebase/auth';
 import { getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import useSWR from 'swr';
 
@@ -11,10 +11,10 @@ const CURRENT_USER_DOES_NOT_EXIST_ERROR = Error('currentUser does not exist');
 export const useUser = () => {
   const { currentUser, removeUser, updateUserEmail } = useCurrentUser();
 
-  const handler = async (user: User) => {
-    if (!user.uid) return null;
+  const handler = async () => {
+    if (!currentUser || !currentUser.uid) return null;
 
-    const userRef = getUserDocRef(user.uid);
+    const userRef = getUserDocRef(currentUser.uid);
 
     const userSnapshot = await getDoc(userRef);
 
@@ -29,7 +29,7 @@ export const useUser = () => {
           subscripionExpired: true,
           supportedCreatorNewPost: true,
         },
-        id: user.uid,
+        id: currentUser.uid,
       };
       await setDoc(userRef, docData);
       return { ...docData, ...currentUser };
@@ -56,7 +56,7 @@ export const useUser = () => {
     await updateDoc(userRef, data);
   };
 
-  const swr = useSWR(currentUser, handler, { revalidateOnFocus: false });
+  const swr = useSWR('/get-user', handler, { revalidateOnFocus: false });
 
   return {
     removeUser,

@@ -5,10 +5,10 @@ import { getCreatorPlansCollectionRef } from '@/converters/creatorPlanConverter'
 import { getPlansFromChain } from '@/utils/get-plans-from-chain';
 
 export const useCreatorPlans = (creatorId?: string) => {
-  const fetcher = async (docId?: string) => {
-    if (!docId) return undefined;
+  const fetcher = async () => {
+    if (!creatorId) return undefined;
 
-    const colRef = getCreatorPlansCollectionRef(docId);
+    const colRef = getCreatorPlansCollectionRef(creatorId);
     const snapshot = await getDocs(colRef);
 
     if (snapshot.empty) return [];
@@ -19,5 +19,7 @@ export const useCreatorPlans = (creatorId?: string) => {
     return plans;
   };
 
-  return useSWR(creatorId, fetcher, { revalidateOnFocus: false });
+  return useSWR(`/creator-plans`, fetcher, {
+    revalidateOnFocus: false,
+  });
 };

@@ -170,8 +170,6 @@ export const useCreatorPlanForWrite = (publicLockAddress?: string) => {
       (data) => typeof data !== 'undefined'
     );
 
-    console.log(isUpdatableOnDatabase);
-
     if (isUpdatableOnDatabase) {
       await updatePlanDocById(plan.id, {
         description: changedPlans.description,
