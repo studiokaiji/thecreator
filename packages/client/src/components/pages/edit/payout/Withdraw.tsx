@@ -37,11 +37,7 @@ export const Withdraw = ({ planWithBalanceList }: WithdrawTableProps) => {
     setTableData(
       planWithBalanceList.map((plan, i) => {
         return [
-          <Checkbox
-            key={`payout-plan-checkbox-${i}`}
-            checked={checkedCells[i]}
-            onChange={(e) => check(e, i)}
-          />,
+          null,
           plan.name,
           getStrBalances(plan.balance, plan.tokenAddress),
           <Typography
