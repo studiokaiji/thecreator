@@ -72,7 +72,7 @@ export const UserSettings = () => {
     };
 
     await updateUserSettings(newData);
-    await mutate(newData, false);
+    await mutate({...data, ...newData}, false);
   };
 
   const onEmailUpdated = async (email: string) => {
