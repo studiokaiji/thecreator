@@ -35,20 +35,9 @@ export const useCreatorPlanForWrite = (publicLockAddress?: string) => {
 
     const lockName = `${plan.name} plan`;
 
-    const data = {
-      id: '',
-      txHash: '',
-      ...plan,
-    };
-
     const contract = await createLock({
       onCreateLockEnded: opts.onCreateLockEnded,
       onCreateLockTxSend: async (res) => {
-        const result = await addDoc(colRef, {
-          ...data,
-          txHash: res.hash,
-        });
-        data.id = result.id;
         opts.onCreateLockTxSend && opts.onCreateLockTxSend(res);
       },
       onFailedToTxSend: opts.onFailedToTxSend,
@@ -60,10 +49,13 @@ export const useCreatorPlanForWrite = (publicLockAddress?: string) => {
       },
     });
 
-    await updatePlanDocById(data.id, {
+    const data = {
+      ...plan,
+      id: '',
       lockAddress: contract.address,
-      txHash: '',
-    });
+    };
+
+    await addDoc(colRef, data);
 
     return { contract, data };
   };

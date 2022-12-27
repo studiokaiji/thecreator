@@ -3,5 +3,4 @@ type CreatorPlanDoc = {
   name: string;
   description: string;
   features: string[];
-  txHash: string;
 };
