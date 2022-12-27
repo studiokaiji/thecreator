@@ -20,7 +20,7 @@ export const SupportingCreators = () => {
     useSupportingCreators();
 
   const { data: lockKeys, error: lockKeysError } = useUserPublicLockKeys(
-    supportingCreators?.map((d) => d.plan.lockAddress)
+    supportingCreators?.map((d) => d.lockAddress)
   );
 
   const checkAll = (e: ChangeEvent<HTMLInputElement>) => {
@@ -61,7 +61,7 @@ export const SupportingCreators = () => {
         {t('supportingCreators')}
       </Typography>
       {supportingCreators ? (
-        supportingCreators.length > 1 ? (
+        supportingCreators.length > 0 ? (
           <Table
             data={supportingCreators.map((d, i) => {
               return [
