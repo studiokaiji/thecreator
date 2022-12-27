@@ -3,7 +3,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { BigNumber, constants } from 'ethers';
+import { constants } from 'ethers';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -12,7 +12,6 @@ import { PlanForm } from '../PlanForm';
 
 import { CenterModal } from '@/components/helpers/CenterModal';
 import { SeeMore } from '@/components/helpers/SeeMore';
-import { blockTimestampToDate } from '@/utils/block-timestamp-to-date';
 import { tokenAddressToCurrency } from '@/utils/currency-converter';
 import { Plan } from '@/utils/get-plans-from-chain';
 import { formatWeiUnits } from '@/utils/wei-units-converter';
@@ -20,7 +19,6 @@ import { formatWeiUnits } from '@/utils/wei-units-converter';
 type PlanCardProps = {
   plan: Plan;
   editable?: boolean;
-  expirationTimestamp?: BigNumber;
   subscribeUrl?: string;
   hiddenButton?: boolean;
   onChangePlan?: (plan: Plan) => void;
@@ -28,7 +26,6 @@ type PlanCardProps = {
 
 export const PlanCard = ({
   editable,
-  expirationTimestamp,
   hiddenButton,
   onChangePlan,
   plan,
@@ -39,6 +36,7 @@ export const PlanCard = ({
   const {
     description,
     features,
+    isSubscribed,
     keyPrice,
     maxNumberOfKeys,
     name,
@@ -156,15 +154,10 @@ export const PlanCard = ({
                   >
                     {t('edit')}
                   </Button>
-                ) : expirationTimestamp ? (
+                ) : isSubscribed ? (
                   <Stack spacing={1}>
                     <Button variant="contained">{t('extendThePeriod')}</Button>
                     <Button variant="outlined">{t('settings')}</Button>
-                    <Typography color="GrayText" variant="subtitle2">
-                      {blockTimestampToDate(
-                        expirationTimestamp
-                      ).toLocaleString()}
-                    </Typography>
                   </Stack>
                 ) : (
                   <Button
