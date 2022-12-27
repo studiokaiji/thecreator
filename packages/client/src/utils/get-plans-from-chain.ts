@@ -50,8 +50,8 @@ const checkPlans = async (
   if (docPlans.length < 1) return [];
 
   const contracts = docPlans
-    .filter(({ lockAddress }) => lockAddress)
-    .map(({ lockAddress }) => new Contract(lockAddress, PublicLockV11.abi));
+    .filter(({ id }) => id)
+    .map(({ id}) => new Contract(id, PublicLockV11.abi));
 
   if (addressToCheckIfSubscriber) {
     lockInputKeys.push('getHasValidKey');

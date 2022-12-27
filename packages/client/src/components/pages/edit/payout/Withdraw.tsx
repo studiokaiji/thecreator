@@ -45,7 +45,7 @@ export const Withdraw = ({ planWithBalanceList }: WithdrawTableProps) => {
             textOverflow="ellipsis"
             variant="body2"
           >
-            {plan.lockAddress}
+            {plan.id}
           </Typography>,
           <IconButton key={`payout-plan-button-${i}`}>
             <PaymentsOutlinedIcon />

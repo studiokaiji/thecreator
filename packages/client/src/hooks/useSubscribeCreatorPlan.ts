@@ -4,7 +4,7 @@ import { useSupportingCreatorsForWrite } from './useSupportingCreatorsForWrite';
 
 export const useSubscribeCreatorPlan = (
   creatorId: string,
-  lockAddress?: string
+  lockAddress: string
 ) => {
   const { currentUser } = useCurrentUser();
 
@@ -21,7 +21,6 @@ export const useSubscribeCreatorPlan = (
     }
   ) => {
     if (!currentUser) throw Error('Need authentication');
-    if (!lockAddress) throw Error('need lock address');
     await purchase(opts);
     await addSupportingCreator({
       creatorId,

@@ -137,6 +137,7 @@ export const PlanForm = ({
         features: features
           .filter(({ feature }) => feature)
           .map(({ feature }) => feature),
+        isSubscribed: false,
         keyPrice,
         lockAddress: '',
         maxNumberOfKeys,
@@ -170,7 +171,10 @@ export const PlanForm = ({
               .map(({ feature }) => feature) || [],
         };
 
-        const updatableData = { ...data, id: defaultValuesData.id };
+        const updatableData = {
+          ...data,
+          id: defaultValuesData.id,
+        };
         if (!updatableData.id) {
           throw Error('If you want to update, need id');
         }
@@ -189,7 +193,6 @@ export const PlanForm = ({
           keyPrice,
           maxNumberOfKeys,
           ok: true,
-          txHash: '',
         });
       } else {
         const { data: plan } = await addPlan(data, {
@@ -205,6 +208,7 @@ export const PlanForm = ({
 
         onDone({
           ...plan,
+          isSubscribed: false,
           keyPrice,
           maxNumberOfKeys,
           ok: true,

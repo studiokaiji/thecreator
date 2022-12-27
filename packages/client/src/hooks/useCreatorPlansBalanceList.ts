@@ -22,11 +22,11 @@ export const useCreatorPlansBalanceList = (basePlans?: Plan[]) => {
 
     plans.forEach((plan) => {
       if (plan.tokenAddress === constants.AddressZero) {
-        promises.push(batchProvider.getBalance(plan.lockAddress));
+        promises.push(batchProvider.getBalance(plan.id));
       } else {
         balanceInput.push({
           callData: erc20Interface.encodeFunctionData(balanceOfFragment, [
-            plan.lockAddress,
+            plan.id,
           ]),
           target: plan.tokenAddress,
         });

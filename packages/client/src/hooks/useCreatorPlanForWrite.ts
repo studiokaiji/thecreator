@@ -1,12 +1,15 @@
 import { BigNumber, Contract, providers } from 'ethers';
-import { addDoc, doc, updateDoc } from 'firebase/firestore';
+import { doc, setDoc, updateDoc } from 'firebase/firestore';
 import { useMemo } from 'react';
 
 import { usePublicLock } from './usePublicLock';
 import { CreateLockOpts, useUnlock } from './useUnlock';
 import { useWallet } from './useWallet';
 
-import { getCreatorPlansCollectionRef } from '@/converters/creatorPlanConverter';
+import {
+  getCreatorPlanDocRef,
+  getCreatorPlansCollectionRef,
+} from '@/converters/creatorPlanConverter';
 import type { Plan } from '@/utils/get-plans-from-chain';
 
 type PlanUpdateInput = Omit<Plan, 'ok' | 'currency' | 'txHash'> & {
@@ -31,9 +34,9 @@ export const useCreatorPlanForWrite = (publicLockAddress?: string) => {
     plan: PlanCreateInput,
     opts: Omit<CreateLockOpts, 'request'> = {}
   ): Promise<{ contract: Contract; data: WithId<CreatorPlanDoc> }> => {
-    if (!colRef) throw Error('Collection ref does not exist.');
-
-    const lockName = `${plan.name} plan`;
+    if (!account) {
+      throw Error('Need user wallet');
+    }
 
     const contract = await createLock({
       onCreateLockEnded: opts.onCreateLockEnded,
@@ -44,18 +47,18 @@ export const useCreatorPlanForWrite = (publicLockAddress?: string) => {
       onUserRejected: opts.onUserRejected,
       request: {
         keyPrice: plan.keyPrice,
-        lockName,
+        lockName: plan.name,
         tokenAddress: plan.tokenAddress,
       },
     });
 
     const data = {
       ...plan,
-      id: '',
-      lockAddress: contract.address,
+      id: contract.address,
     };
 
-    await addDoc(colRef, data);
+    const docRef = getCreatorPlanDocRef(account, contract.address);
+    await setDoc(docRef, data);
 
     return { contract, data };
   };
@@ -154,7 +157,6 @@ export const useCreatorPlanForWrite = (publicLockAddress?: string) => {
     const updateData = {
       description: changedPlans.description,
       features: changedPlans.features,
-      lockAddress: changedPlans.lockAddress,
       name: changedPlans.name,
     };
 
@@ -166,7 +168,6 @@ export const useCreatorPlanForWrite = (publicLockAddress?: string) => {
       await updatePlanDocById(plan.id, {
         description: changedPlans.description,
         features: changedPlans.features,
-        lockAddress: changedPlans.lockAddress,
         name: changedPlans.name,
       });
     }

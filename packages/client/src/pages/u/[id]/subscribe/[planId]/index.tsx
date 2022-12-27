@@ -26,7 +26,7 @@ export const SubscribePage = () => {
 
   const { data: plan, error } = useCreatorPlan(id, planId);
 
-  const { subscribe } = useSubscribeCreatorPlan(id, plan?.lockAddress);
+  const { subscribe } = useSubscribeCreatorPlan(id, planId);
 
   const { t } = useTranslation();
 

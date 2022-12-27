@@ -19,13 +19,11 @@ export const creatorPlanConverter: FirestoreDataConverter<
     data.id = snapshot.id;
     return data as WithId<CreatorPlanDoc>;
   },
-  toFirestore: ({ description, features, lockAddress, name, txHash }) => {
+  toFirestore: ({ description, features, name }) => {
     return {
       description: description || '',
       features: features || [],
-      lockAddress: lockAddress || '',
       name: name || '',
-      txHash: txHash || '',
     };
   },
 };
