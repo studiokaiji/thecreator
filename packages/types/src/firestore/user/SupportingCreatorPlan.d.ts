@@ -1,4 +1,4 @@
-type SupportingCreatorDocData = {
+type SupportingCreatorPlanDocData = {
   lockAddress: string;
   notificationSettings: NotificationSettings;
   creatorId: string;

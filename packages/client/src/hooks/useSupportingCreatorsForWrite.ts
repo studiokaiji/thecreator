@@ -1,8 +1,8 @@
 import { addDoc, deleteDoc, updateDoc } from 'firebase/firestore';
 
 import {
-  getUserSupportingCreatorDocRef,
-  getUserSupportingCreatorsCollectionRef,
+  getUserSupportingCreatorPlanDocRef,
+  getUserSupportingCreatorPlansCollectionRef,
 } from '../converters/userSupportingCreatorConverter';
 
 import { useCurrentUser } from './useCurrentUser';
@@ -11,13 +11,13 @@ export const useSupportingCreatorsForWrite = () => {
   const { currentUser } = useCurrentUser();
 
   const addSupportingCreator = async (
-    input: Omit<SupportingCreatorDocData, 'supportedAt'>
+    input: Omit<SupportingCreatorPlanDocData, 'supportedAt'>
   ) => {
     if (!currentUser?.uid) {
       throw Error('Need authentication');
     }
 
-    const colRef = getUserSupportingCreatorsCollectionRef(currentUser.uid);
+    const colRef = getUserSupportingCreatorPlansCollectionRef(currentUser.uid);
 
     const data = { ...input, id: input.creatorId };
 
@@ -32,7 +32,7 @@ export const useSupportingCreatorsForWrite = () => {
       throw Error('Need authentication');
     }
 
-    const ref = getUserSupportingCreatorDocRef(currentUser.uid, creatorId);
+    const ref = getUserSupportingCreatorPlanDocRef(currentUser.uid, creatorId);
 
     await updateDoc(ref, { notificationSettings });
   };
@@ -42,7 +42,7 @@ export const useSupportingCreatorsForWrite = () => {
       throw Error('Need authentication');
     }
 
-    const ref = getUserSupportingCreatorDocRef(currentUser.uid, creatorId);
+    const ref = getUserSupportingCreatorPlanDocRef(currentUser.uid, creatorId);
 
     await deleteDoc(ref);
   };

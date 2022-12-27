@@ -5,5 +5,5 @@ import './firestore/creator/post';
 import './firestore/creator/status/strikes';
 import './firestore/user';
 import './firestore/user/Notification';
-import './firestore/user/SupportingCreator';
+import './firestore/user/SupportingCreatorPlan';
 import './multicall/MulticallInput';

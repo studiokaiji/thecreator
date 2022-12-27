@@ -14,18 +14,18 @@ import useSWRInfinite from 'swr/infinite';
 import { getCreatorDocRef } from './../converters/creatorConverter';
 import { useCurrentUser } from './useCurrentUser';
 
-import { getUserSupportingCreatorsCollectionRef } from '@/converters/userSupportingCreatorConverter';
+import { getUserSupportingCreatorPlansCollectionRef } from '@/converters/userSupportingCreatorConverter';
 
 export const useSupportingCreators = (supportingCreatorsLimit = 0) => {
   const { currentUser } = useCurrentUser();
 
   const supportingCreatorsRef = useMemo(() => {
     if (!currentUser?.uid) return null;
-    return getUserSupportingCreatorsCollectionRef(currentUser.uid);
+    return getUserSupportingCreatorPlansCollectionRef(currentUser.uid);
   }, [currentUser?.uid]);
 
   const fetcher = async (
-    colRef: CollectionReference<WithId<SupportingCreatorDocData>>,
+    colRef: CollectionReference<WithId<SupportingCreatorPlanDocData>>,
     docsLimit: number,
     lastSupportedAt: Date
   ) => {
@@ -45,7 +45,7 @@ export const useSupportingCreators = (supportingCreatorsLimit = 0) => {
     );
 
     const returnData: WithId<
-      SupportingCreatorDocData & { creator?: CreatorDocData }
+      SupportingCreatorPlanDocData & { creator?: CreatorDocData }
     >[] = [];
 
     await Promise.allSettled(
@@ -62,7 +62,7 @@ export const useSupportingCreators = (supportingCreatorsLimit = 0) => {
 
   const getKey = (
     _pageIndex: number,
-    prevData?: WithId<SupportingCreatorDocData>[]
+    prevData?: WithId<SupportingCreatorPlanDocData>[]
   ) => {
     if (prevData && !prevData.length) return null;
     const lastSupportedAt = prevData?.slice(-1)[0].supportedAt || new Date(0);

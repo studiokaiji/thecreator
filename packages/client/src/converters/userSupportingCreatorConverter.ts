@@ -8,20 +8,26 @@ import {
 
 import { db } from '@/firebase';
 
-export const userSupportingCreatorConverter: FirestoreDataConverter<
-  WithId<SupportingCreatorDocData>
+export const userSupportingCreatorPlanConverter: FirestoreDataConverter<
+  WithId<SupportingCreatorPlanDocData>
 > = {
   fromFirestore: (snapshot, opts) => {
     const data = snapshot.data(opts);
     data.id = snapshot.id;
     data.supportedAt = data.supportedAt.toDate();
-    return data as WithId<SupportingCreatorDocData>;
+    return data as WithId<SupportingCreatorPlanDocData>;
   },
-  toFirestore: ({ lockAddress, notificationSettings, supportedAt }) => {
+  toFirestore: ({
+    creatorId,
+    lockAddress,
+    notificationSettings,
+    supportedAt,
+  }) => {
     if (!lockAddress || !notificationSettings) {
       throw Error('Invalid data.');
     }
     return {
+      creatorId: creatorId,
       lockAddress,
       notificationSettings,
       supportedAt: supportedAt
@@ -31,12 +37,15 @@ export const userSupportingCreatorConverter: FirestoreDataConverter<
   },
 };
 
-export const getUserSupportingCreatorsCollectionRef = (id: string) =>
-  collection(db, 'users', id, 'supportingCreators').withConverter(
-    userSupportingCreatorConverter
+export const getUserSupportingCreatorPlansCollectionRef = (id: string) =>
+  collection(db, 'users', id, 'supportingCreatorPlans').withConverter(
+    userSupportingCreatorPlanConverter
   );
 
-export const getUserSupportingCreatorDocRef = (id: string, creatorId: string) =>
-  doc(db, 'users', id, 'supportingCreators', creatorId).withConverter(
-    userSupportingCreatorConverter
+export const getUserSupportingCreatorPlanDocRef = (
+  id: string,
+  creatorId: string
+) =>
+  doc(db, 'users', id, 'supportingCreatorsPlans', creatorId).withConverter(
+    userSupportingCreatorPlanConverter
   );
