@@ -1,11 +1,11 @@
 import {
   CollectionReference,
+  endBefore,
   getDoc,
   getDocs,
   limit,
   orderBy,
   query,
-  startAfter,
   Timestamp,
 } from 'firebase/firestore';
 import { useMemo } from 'react';
@@ -27,11 +27,11 @@ export const useSupportingCreators = (supportingCreatorsLimit = 0) => {
   const fetcher = async (
     colRef: CollectionReference<WithId<SupportingCreatorPlanDocData>>,
     docsLimit: number,
-    lastSupportedAt: Date
+    supportedAt: Date
   ) => {
     const supportingCreatorsQueries = [
-      orderBy('lastSupportedAt', 'desc'),
-      startAfter(Timestamp.fromDate(lastSupportedAt)),
+      orderBy('supportedAt', 'desc'),
+      endBefore(Timestamp.fromDate(supportedAt)),
     ];
     if (docsLimit) {
       supportingCreatorsQueries.push(limit(docsLimit));
@@ -50,7 +50,7 @@ export const useSupportingCreators = (supportingCreatorsLimit = 0) => {
 
     await Promise.allSettled(
       supportingCreatorsDocDatas.map(async (d, i) => {
-        const creatorRef = getCreatorDocRef(d.id);
+        const creatorRef = getCreatorDocRef(d.creatorId);
         const doc = await getDoc(creatorRef);
         const creator = doc.data();
         returnData[i] = { ...d, creator };
@@ -65,8 +65,8 @@ export const useSupportingCreators = (supportingCreatorsLimit = 0) => {
     prevData?: WithId<SupportingCreatorPlanDocData>[]
   ) => {
     if (prevData && !prevData.length) return null;
-    const lastSupportedAt = prevData?.slice(-1)[0].supportedAt || new Date(0);
-    return [supportingCreatorsRef, supportingCreatorsLimit, lastSupportedAt];
+    const supportedAt = prevData?.slice(-1)[0].supportedAt || new Date(0);
+    return [supportingCreatorsRef, supportingCreatorsLimit, supportedAt];
   };
 
   const {
