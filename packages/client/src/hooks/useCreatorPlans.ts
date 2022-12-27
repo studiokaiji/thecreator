@@ -9,8 +9,8 @@ import { getPlansFromChain } from '@/utils/get-plans-from-chain';
 export const useCreatorPlans = (creatorId?: string) => {
   const { checking, currentUser } = useCurrentUser();
 
-  const fetcher = async () => {
-    if (!creatorId || checking) return undefined;
+  const fetcher = async (creatorId: string, checkingUser: boolean) => {
+    if (!creatorId || checkingUser) return undefined;
 
     const colRef = getCreatorPlansCollectionRef(creatorId);
     const snapshot = await getDocs(colRef);
@@ -23,7 +23,7 @@ export const useCreatorPlans = (creatorId?: string) => {
     return plans;
   };
 
-  return useSWR(`/creator-plans`, fetcher, {
+  return useSWR([creatorId, checking], fetcher, {
     revalidateOnFocus: false,
   });
 };
