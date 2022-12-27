@@ -7,9 +7,10 @@ import { rpcProvider } from '@/rpc-provider';
 
 export const getPlansFromChain = async (
   docPlans: WithId<CreatorPlanDoc>[],
-  excludeInvalidPlans: boolean
+  addressToCheckIfSubscriber?: string,
+  excludeInvalidPlans = true
 ): Promise<Plan[]> => {
-  const checkResults = await checkPlans(docPlans);
+  const checkResults = await checkPlans(docPlans, addressToCheckIfSubscriber);
 
   const filtered = excludeInvalidPlans
     ? checkResults.filter((result) => result.ok)
@@ -30,6 +31,7 @@ type PlanCheckResult = {
   keyPrice: BigNumber;
   ok: boolean;
   maxNumberOfKeys: BigNumber;
+  isSubscribed: boolean;
 };
 
 export type Plan = WithId<CreatorPlanDoc & PlanCheckResult>;
@@ -39,14 +41,21 @@ const lockInputKeys = [
   'keyPrice',
   'expirationDuration',
   'maxNumberOfKeys',
-] as const;
+];
 
-const checkPlans = async (docPlans: WithId<CreatorPlanDoc>[]) => {
+const checkPlans = async (
+  docPlans: WithId<CreatorPlanDoc>[],
+  addressToCheckIfSubscriber?: string
+) => {
   if (docPlans.length < 1) return [];
 
   const contracts = docPlans
     .filter(({ lockAddress }) => lockAddress)
     .map(({ lockAddress }) => new Contract(lockAddress, PublicLockV11.abi));
+
+  if (addressToCheckIfSubscriber) {
+    lockInputKeys.push('getHasValidKey');
+  }
 
   const lockInputs: MulticallInput[] = [];
   contracts.forEach((contract) => {
@@ -68,6 +77,7 @@ const checkPlans = async (docPlans: WithId<CreatorPlanDoc>[]) => {
 
     if (!checkResults[lockIndex]) {
       checkResults[lockIndex] = {
+        isSubscribed: false,
         keyPrice: BigNumber.from(0),
         maxNumberOfKeys: BigNumber.from(0),
         ok: false,
@@ -96,6 +106,8 @@ const checkPlans = async (docPlans: WithId<CreatorPlanDoc>[]) => {
       checkResults[lockIndex].ok = data.eq(30 * 24 * 60 * 60);
     } else if (key === 'maxNumberOfKeys') {
       checkResults[lockIndex].maxNumberOfKeys = data;
+    } else if (key === 'getHasValidKey') {
+      checkResults[lockIndex].isSubscribed = data;
     }
   });
 
