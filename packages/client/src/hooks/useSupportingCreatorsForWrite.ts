@@ -14,7 +14,7 @@ export const useSupportingCreatorsForWrite = () => {
 
   const addSupportingCreator = async (
     creatorId: string,
-    input: Omit<SupportingCreatorDocData, 'supportingAt'>
+    input: Omit<SupportingCreatorDocData, 'supportedAt'>
   ) => {
     if (!currentUser?.uid) {
       throw Error('Need authentication');
