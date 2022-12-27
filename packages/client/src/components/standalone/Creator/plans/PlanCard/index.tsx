@@ -80,7 +80,7 @@ export const PlanCard = ({
             defaultValues={defaultValues}
             onClose={() => setIsOpenEditModal(false)}
             onDone={onChangePlanHandler}
-            publicLockAddress={plan.lockAddress}
+            publicLockAddress={plan.id}
             title={t('editPlan')}
           />
         </CenterModal>
