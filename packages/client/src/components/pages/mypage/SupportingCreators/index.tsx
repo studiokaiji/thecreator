@@ -3,7 +3,7 @@ import Checkbox from '@mui/material/Checkbox';
 import CircularProgress from '@mui/material/CircularProgress';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Table } from '@/components/helpers/Table';
@@ -22,6 +22,12 @@ export const SupportingCreators = () => {
   const { data: lockKeys, error: lockKeysError } = useUserPublicLockKeys(
     supportingCreators?.map((d) => d.lockAddress)
   );
+
+  useEffect(() => {
+    if (!checkedCells.length && supportingCreators) {
+      setCheckedCells(supportingCreators.map(() => false));
+    }
+  }, [supportingCreators]);
 
   const checkAll = (e: ChangeEvent<HTMLInputElement>) => {
     if (!supportingCreators) return;
