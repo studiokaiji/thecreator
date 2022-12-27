@@ -1,11 +1,6 @@
 type SupportingCreatorDocData = {
   creatorId: string;
-  plan: SupportingCreatorDocDataPlan;
+  lockAddress: string
   notificationSettings: NotificationSettings;
   supportedAt: Date;
-};
-
-type SupportingCreatorDocDataPlan = {
-  name: string;
-  lockAddress: string;
 };

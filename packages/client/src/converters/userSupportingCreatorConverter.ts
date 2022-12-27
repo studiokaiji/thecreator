@@ -17,13 +17,13 @@ export const userSupportingCreatorConverter: FirestoreDataConverter<
     data.supportedAt = data.supportedAt.toDate();
     return data as WithId<SupportingCreatorDocData>;
   },
-  toFirestore: ({ notificationSettings, plan, supportedAt }) => {
-    if (!plan || !notificationSettings) {
+  toFirestore: ({ lockAddress, notificationSettings, supportedAt }) => {
+    if (!lockAddress || !notificationSettings) {
       throw Error('Invalid data.');
     }
     return {
+      lockAddress,
       notificationSettings,
-      plan,
       supportedAt: supportedAt
         ? Timestamp.fromDate(supportedAt as Date)
         : serverTimestamp(),
@@ -36,10 +36,7 @@ export const getUserSupportingCreatorsCollectionRef = (id: string) =>
     userSupportingCreatorConverter
   );
 
-export const getUserSupportingCreatorDocRef = (
-  id: string,
-  notificationId: string
-) =>
-  doc(db, 'users', id, 'supportingCreators', notificationId).withConverter(
+export const getUserSupportingCreatorDocRef = (id: string, creatorId: string) =>
+  doc(db, 'users', id, 'supportingCreators', creatorId).withConverter(
     userSupportingCreatorConverter
   );
