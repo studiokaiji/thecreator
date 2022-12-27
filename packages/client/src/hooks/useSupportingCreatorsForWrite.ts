@@ -1,9 +1,4 @@
-import {
-  deleteDoc,
-  serverTimestamp,
-  setDoc,
-  updateDoc,
-} from 'firebase/firestore';
+import { deleteDoc, setDoc, updateDoc } from 'firebase/firestore';
 
 import { getUserSupportingCreatorDocRef } from '../converters/userSupportingCreatorConverter';
 
@@ -22,8 +17,7 @@ export const useSupportingCreatorsForWrite = () => {
 
     const ref = getUserSupportingCreatorDocRef(currentUser.uid, creatorId);
 
-    const supportedAt = serverTimestamp();
-    const data = { ...input, id: creatorId, supportedAt };
+    const data = { ...input, id: creatorId };
 
     await setDoc(ref, data);
   };
