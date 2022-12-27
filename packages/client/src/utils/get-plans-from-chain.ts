@@ -61,11 +61,14 @@ const checkPlans = async (
   contracts.forEach((contract) => {
     lockInputKeys.forEach((k) => {
       const target = contract.address;
-      const callData = contract.interface.encodeFunctionData(k);
+      const callData = contract.interface.encodeFunctionData(
+        k,
+        k === 'getHasValidKey' ? [addressToCheckIfSubscriber] : []
+      );
       lockInputs.push({ callData, target });
     });
   });
-
+  
   const { returnData: lockData } = await aggregate(lockInputs, rpcProvider);
 
   const checkResults: PlanCheckResult[] = [];
