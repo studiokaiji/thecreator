@@ -77,6 +77,10 @@ export const SubscribePage = () => {
     return <div />;
   }
 
+  if (plan && plan.isSubscribed) {
+    return <div>{t('alreadySubscribedError')}</div>;
+  }
+
   return (
     <MainSpacingLayout>
       <Stack

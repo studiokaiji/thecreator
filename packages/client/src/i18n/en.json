@@ -1,6 +1,7 @@
 {
   "addNewPlan": "Add New Plan",
   "address": "Address",
+  "alreadySubscribedError": "You are already subscribed.",
   "audio": "Audio",
   "back": "Back",
   "backToInput": "Back to input",
