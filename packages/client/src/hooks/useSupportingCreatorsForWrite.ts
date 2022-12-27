@@ -1,6 +1,9 @@
-import { deleteDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { addDoc, deleteDoc, updateDoc } from 'firebase/firestore';
 
-import { getUserSupportingCreatorDocRef } from '../converters/userSupportingCreatorConverter';
+import {
+  getUserSupportingCreatorDocRef,
+  getUserSupportingCreatorsCollectionRef,
+} from '../converters/userSupportingCreatorConverter';
 
 import { useCurrentUser } from './useCurrentUser';
 
@@ -8,18 +11,17 @@ export const useSupportingCreatorsForWrite = () => {
   const { currentUser } = useCurrentUser();
 
   const addSupportingCreator = async (
-    creatorId: string,
     input: Omit<SupportingCreatorDocData, 'supportedAt'>
   ) => {
     if (!currentUser?.uid) {
       throw Error('Need authentication');
     }
 
-    const ref = getUserSupportingCreatorDocRef(currentUser.uid, creatorId);
+    const colRef = getUserSupportingCreatorsCollectionRef(currentUser.uid);
 
-    const data = { ...input, id: creatorId };
+    const data = { ...input, id: input.creatorId };
 
-    await setDoc(ref, data);
+    await addDoc(colRef, data);
   };
 
   const updateNotificationSettings = async (

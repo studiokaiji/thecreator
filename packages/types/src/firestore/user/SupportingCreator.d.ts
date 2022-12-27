@@ -1,5 +1,6 @@
 type SupportingCreatorDocData = {
-  lockAddress: string
+  lockAddress: string;
   notificationSettings: NotificationSettings;
+  creatorId: string;
   supportedAt: Date;
 };

@@ -23,7 +23,8 @@ export const useSubscribeCreatorPlan = (
     if (!currentUser) throw Error('Need authentication');
     if (!lockAddress) throw Error('need lock address');
     await purchase(opts);
-    await addSupportingCreator(creatorId, {
+    await addSupportingCreator({
+      creatorId,
       lockAddress,
       notificationSettings,
     });
