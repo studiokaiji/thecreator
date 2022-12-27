@@ -14,7 +14,7 @@ import { PlanCard } from '@/components/standalone/Creator/plans/PlanCard';
 import { MainLoading } from '@/components/standalone/MainLoading';
 import { useBeforeUnload } from '@/hooks/useBeforeUnload';
 import { useCreatorPlan } from '@/hooks/useCreatorPlan';
-import { usePublicLock } from '@/hooks/usePublicLock';
+import { useSubscribeCreatorPlan } from '@/hooks/useSubscribeCreatorPlan';
 import { NotFound } from '@/pages/404';
 
 export const SubscribePage = () => {
@@ -26,7 +26,7 @@ export const SubscribePage = () => {
 
   const { data: plan, error } = useCreatorPlan(id, planId);
 
-  const { purchase } = usePublicLock(plan?.lockAddress);
+  const { subscribe } = useSubscribeCreatorPlan(id, plan?.lockAddress);
 
   const { t } = useTranslation();
 
@@ -40,7 +40,7 @@ export const SubscribePage = () => {
   const confirmPayment = useCallback(async () => {
     try {
       setStatus('waitingSendTx');
-      await purchase({
+      await subscribe({
         onApproveTxSend: () => setStatus('sentApproveTx'),
         onPurchaseTxSend: () => setStatus('sentPurchaseTx'),
         requests: [
