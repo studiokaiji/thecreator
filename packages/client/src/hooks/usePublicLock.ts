@@ -20,7 +20,7 @@ type PurchaseReq = {
   keyManager: string;
 };
 
-type PurchaseOpts = Partial<{
+export type PurchaseOpts = Partial<{
   tokenAddress: string;
   requests: Partial<PurchaseReq>[];
   onApproveTxSend: (response: providers.TransactionResponse) => void;
@@ -50,7 +50,7 @@ export const usePublicLock = (address = constants.AddressZero) => {
     tokenAddress,
   }: PurchaseOpts = {}) => {
     if (!account || !library) {
-      return;
+      throw Error('Need user wallet');
     }
 
     if (requests.length < 1) {
@@ -113,7 +113,7 @@ export const usePublicLock = (address = constants.AddressZero) => {
     const purchaseReceipt = await purchaseRes.wait();
     onPurchased && onPurchased(purchaseReceipt);
 
-    return purchaseReceipt;
+    return purchaseReceipt as providers.TransactionReceipt;
   };
 
   const getKeyPrice = async (): Promise<BigNumber> => {
