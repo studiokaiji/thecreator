@@ -6,6 +6,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { CenterModalWithTitle } from '@/components/helpers/CenterModalWithTitle';
+import { useSnackbar } from '@/hooks/useSnackbar';
 
 type NotificationSettingsProps = {
   isOpen: boolean;
@@ -28,6 +29,8 @@ export const NotificationSettingsModal = ({
     defaultValues: notificationSettings,
     mode: 'onChange',
   });
+
+  const { open } = useSnackbar();
 
   const updateNotification = async () => {
     const settings = getValues();

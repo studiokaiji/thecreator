@@ -12,7 +12,6 @@ import { useTranslation } from 'react-i18next';
 import { ExtendModal } from './ExtendModal';
 import { NotificationSettingsModal } from './NotificationSettingsModal';
 
-import { useSnackbar } from '@/hooks/useSnackbar';
 import { useSupportingCreatorPlanForWrite } from '@/hooks/useSupportingCreatorsForWrite';
 
 type SupportingCreatorMenuButtonProps = {
@@ -84,16 +83,8 @@ export const SupportingCreatorMenuButton = ({
   const [isOpenNotificationSettings, setIsOpenNotificationSettings] =
     useState(false);
 
-  const { open: openSnackbar } = useSnackbar();
-
   const updateNotification = async (settings: NotificationSettings) => {
-    updateNotificationSettings(data.id, settings)
-      .then(() => openSnackbar(t('saveSuccessed'), 'success'))
-      .catch((e) => {
-        openSnackbar(t('saveFailed'), 'error');
-        console.error(e);
-      });
-    closeNotificationSettings();
+    await updateNotificationSettings(data.id, settings);
   };
 
   const openNotificationSettings = () => {
