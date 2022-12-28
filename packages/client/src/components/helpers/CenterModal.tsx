@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import Modal, { ModalProps } from '@mui/material/Modal';
 
-type CenterModalProps = ModalProps & {
+export type CenterModalProps = ModalProps & {
   width?: string | number;
   maxWidth?: string | number;
   height?: string | number;
