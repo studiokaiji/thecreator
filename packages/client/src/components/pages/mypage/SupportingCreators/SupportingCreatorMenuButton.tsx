@@ -14,7 +14,7 @@ import { BigNumber } from 'ethers';
 import { MouseEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { CenterModal } from '@/components/helpers/CenterModal';
+import { CenterModalWithTitle } from '@/components/helpers/CenterModalWithTitle';
 import { useSupportingCreatorPlanForWrite } from '@/hooks/useSupportingCreatorsForWrite';
 
 type SupportingCreatorMenuButtonProps = {
@@ -100,9 +100,12 @@ export const SupportingCreatorMenuButton = ({
           {t('updateNotificationSettings')}
         </MenuItem>
       </Menu>
-      <CenterModal onClose={closeExtendModal} open={!!extendStatus}>
+      <CenterModalWithTitle
+        onClose={closeExtendModal}
+        open={!!extendStatus}
+        title={t('extendThePeriod')}
+      >
         <Stack spacing={3}>
-          <Typography variant="h4">{t('extendThePeriod')}</Typography>
           {extendError ? (
             <>
               <Typography component={'pre'}>{t(extendError)}</Typography>
@@ -127,7 +130,7 @@ export const SupportingCreatorMenuButton = ({
             </Button>
           )}
         </Stack>
-      </CenterModal>
+      </CenterModalWithTitle>
     </>
   );
 };
