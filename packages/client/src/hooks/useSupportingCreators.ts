@@ -22,6 +22,7 @@ import { aggregate } from '@/utils/multicall';
 
 const TOKEN_OF_OWNER_BY_INDEX_FRAGMENT = 'tokenOfOwnerByIndex';
 const KEY_EXPIRATION_TIMESTAMP_FOR_FRAGMENT = 'keyExpirationTimestampFor';
+const NAME_FRAGMENT = 'name';
 
 export const useSupportingCreators = (supportingCreatorsLimit = 0) => {
   const { currentUser } = useCurrentUser();
@@ -96,26 +97,44 @@ export const useSupportingCreators = (supportingCreatorsLimit = 0) => {
         )[0] as BigNumber
     );
 
-    // 取得したトークンのIDからそのトークンの有効期限を取得する
-    const keyExpirationTimestampForInputs: MulticallInput[] = tokenIds.map(
-      (tokenId, i) => {
-        const callData = iface.encodeFunctionData(
-          KEY_EXPIRATION_TIMESTAMP_FOR_FRAGMENT,
-          [tokenId]
-        );
-        const target = publicLocks[i];
-        return { callData, target };
-      }
-    );
+    const secondaryInputs: MulticallInput[] = [];
+    
+    tokenIds.forEach((tokenId, i) => {
+      const keyExpirationCallData = iface.encodeFunctionData(
+        KEY_EXPIRATION_TIMESTAMP_FOR_FRAGMENT,
+        [tokenId]
+      );
+      const planNameCalldata = iface.encodeFunctionData(NAME_FRAGMENT);
 
-    const { returnData: keyExpirationTimestampForDatas } = await aggregate(
-      keyExpirationTimestampForInputs,
+      const target = publicLocks[i];
+
+      secondaryInputs.push({
+        callData: keyExpirationCallData,
+        target,
+      });
+      secondaryInputs.push({
+        callData: planNameCalldata,
+        target,
+      });
+    });
+
+    const { returnData: secondaryDatas } = await aggregate(
+      secondaryInputs,
       rpcProvider
     );
 
-    const expirationTimestamps = (
-      keyExpirationTimestampForDatas as BytesLike[]
-    ).map(
+    const keyExpirationTimestampForDatas: BytesLike[] = [];
+    const planNameDatas: BytesLike[] = [];
+
+    (secondaryDatas as BytesLike[]).forEach((data, i) => {
+      if (i % 2 === 0) {
+        keyExpirationTimestampForDatas.push(data);
+      } else {
+        planNameDatas.push(data);
+      }
+    });
+
+    const expirationTimestamps = keyExpirationTimestampForDatas.map(
       (data) =>
         iface.decodeFunctionResult(
           KEY_EXPIRATION_TIMESTAMP_FOR_FRAGMENT,
@@ -123,8 +142,13 @@ export const useSupportingCreators = (supportingCreatorsLimit = 0) => {
         )[0] as BigNumber
     );
 
+    const planNames = planNameDatas.map(
+      (data) => iface.decodeFunctionResult(NAME_FRAGMENT, data)[0] as string
+    );
+
     const returnData = expirationTimestamps.map((timestamp, i) => {
       return {
+        planName: planNames[i],
         timestamp,
         tokenId: tokenIds[i],
         ...supportingCreators[i],

@@ -99,7 +99,7 @@ export const SupportingCreators = () => {
                   onChange={(e) => check(e, i)}
                 />,
                 d.creator?.creatorName || '',
-                d.lockAddress,
+                d.planName,
                 d.tokenId.toString() || '',
                 d.timestamp
                   ? blockTimestampToDate(d.timestamp).toLocaleDateString()
