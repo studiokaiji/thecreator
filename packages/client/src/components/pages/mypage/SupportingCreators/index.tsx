@@ -122,7 +122,9 @@ export const SupportingCreators = () => {
           />
         )
       ) : (
-        <CircularProgress />
+        <Stack p={3}>
+          <CircularProgress sx={{ mx: 'auto' }} />
+        </Stack>
       )}
     </Stack>
   );
