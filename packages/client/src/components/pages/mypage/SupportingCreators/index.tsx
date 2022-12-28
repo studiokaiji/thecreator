@@ -78,8 +78,8 @@ export const SupportingCreators = () => {
     t('creator'),
     t('plan'),
     t('tokenId'),
-    t('expiringAt'),
-    t('subscribedAt'),
+    t('expiration'),
+    t('subscribed'),
     '',
   ];
 
