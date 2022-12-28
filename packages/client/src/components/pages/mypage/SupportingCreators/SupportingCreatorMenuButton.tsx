@@ -53,6 +53,7 @@ export const SupportingCreatorMenuButton = ({
     }
     setExtendStatus('');
     setExtendError('');
+    closeMenu();
   };
 
   const openMenu = (e: MouseEvent<HTMLButtonElement>) => {
