@@ -4,7 +4,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { BigNumber } from 'ethers';
-import { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { SupportingCreatorMenuButton } from './SupportingCreatorMenuButton';
@@ -12,28 +12,24 @@ import { SupportingCreatorMenuButton } from './SupportingCreatorMenuButton';
 import { Table } from '@/components/helpers/Table';
 import { IconWithMessage } from '@/components/standalone/IconWithMessage';
 import { useSupportingCreators } from '@/hooks/useSupportingCreators';
-import { useUserPublicLockKeys } from '@/hooks/useUserPublicLockKeys';
 import { blockTimestampToDate } from '@/utils/block-timestamp-to-date';
 
 export const SupportingCreators = () => {
   const { t } = useTranslation();
   const [checkedCells, setCheckedCells] = useState<boolean[]>([]);
 
-  const { data: supportingCreators, error: supportingCreatorsError } =
-    useSupportingCreators();
-
   const {
-    data: lockKeys,
-    error: lockKeysError,
-    mutate: mutateLockKeys,
-  } = useUserPublicLockKeys(supportingCreators?.map((d) => d.lockAddress));
+    data: supportingCreators,
+    error: supportingCreatorsError,
+    mutate: mutateNewSupportingCreators,
+  } = useSupportingCreators();
 
   const onExtendHandler = (
     lockAddress: string,
     tokenId: BigNumber,
     timestamp: BigNumber
   ) => {
-    if (!supportingCreators || !lockKeys) {
+    if (!supportingCreators) {
       return;
     }
 
@@ -44,20 +40,12 @@ export const SupportingCreators = () => {
       return;
     }
 
-    const newLockKeys = [...lockKeys];
-    newLockKeys[index] = {
-      timestamp,
-      tokenId,
-    };
-    mutateLockKeys(newLockKeys);
-  };
+    const newSupportingCreators = [...supportingCreators];
+    newSupportingCreators[index].timestamp = timestamp;
+    newSupportingCreators[index].tokenId = tokenId;
 
-  const supportingCreatorMenuDatas = useMemo(() => {
-    if (!supportingCreators || !lockKeys) return [];
-    return supportingCreators.map(({ lockAddress }, i) => {
-      return { lockAddress, tokenId: lockKeys[i].tokenId };
-    });
-  }, [supportingCreators, lockKeys]);
+    mutateNewSupportingCreators([newSupportingCreators]);
+  };
 
   useEffect(() => {
     if (!checkedCells.length && supportingCreators) {
@@ -76,12 +64,8 @@ export const SupportingCreators = () => {
     setCheckedCells(current);
   };
 
-  if (supportingCreatorsError || lockKeysError) {
-    const errMessage = JSON.stringify(
-      supportingCreatorsError || lockKeysError,
-      null,
-      2
-    );
+  if (supportingCreatorsError) {
+    const errMessage = JSON.stringify(supportingCreatorsError, null, 2);
     return <pre>{errMessage}</pre>;
   }
 
@@ -92,6 +76,7 @@ export const SupportingCreators = () => {
       onChange={checkAll}
     />,
     t('creator'),
+    t('plan'),
     t('tokenId'),
     t('expiringAt'),
     t('subscribedAt'),
@@ -103,8 +88,8 @@ export const SupportingCreators = () => {
       <Typography sx={{ p: 3, pb: 2 }} variant="h4">
         {t('supportingCreators')}
       </Typography>
-      {supportingCreators && lockKeys ? (
-        supportingCreators.length > 0 && lockKeys.length > 0 ? (
+      {supportingCreators ? (
+        supportingCreators.length > 0 ? (
           <Table
             data={supportingCreators.map((d, i) => {
               return [
@@ -114,16 +99,15 @@ export const SupportingCreators = () => {
                   onChange={(e) => check(e, i)}
                 />,
                 d.creator?.creatorName || '',
-                lockKeys?.[i].tokenId.toString() || '',
-                lockKeys?.[i].timestamp
-                  ? blockTimestampToDate(
-                      lockKeys[i].timestamp
-                    ).toLocaleDateString()
+                d.lockAddress,
+                d.tokenId.toString() || '',
+                d.timestamp
+                  ? blockTimestampToDate(d.timestamp).toLocaleDateString()
                   : '',
                 d.supportedAt.toLocaleDateString(),
                 <SupportingCreatorMenuButton
                   key={`supporting-creaotors-menu-button-${i}`}
-                  data={supportingCreatorMenuDatas[i]}
+                  data={d}
                   onExtend={onExtendHandler}
                 />,
               ];
