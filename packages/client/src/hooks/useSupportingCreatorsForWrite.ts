@@ -28,11 +28,13 @@ export const useSupportingCreatorPlanForWrite = (planId?: string) => {
   };
 
   const updateNotificationSettings = async (
-    planId: string,
     notificationSettings: NotificationSettings
   ) => {
     if (!currentUser?.uid) {
       throw Error('Need authentication');
+    }
+    if (!planId) {
+      throw Error('Need planId');
     }
 
     const ref = getUserSupportingCreatorPlanDocRef(currentUser.uid, planId);
