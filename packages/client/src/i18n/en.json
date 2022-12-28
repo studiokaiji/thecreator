@@ -34,7 +34,7 @@
   "enterThePlanInfo": "Enter the plan info",
   "expirationDate": "Expiration Date",
   "expirationDateNote": "Since this value is a prediction, it may differ from the actual expiration date.",
-  "extendThePeriod": "Extend The Period",
+  "extendThePeriod": "Extend the period",
   "failedToSendTx": "Failed to send transaction.",
   "feature": "Feature",
   "features": "Features",
@@ -86,6 +86,7 @@
   "supportingCreators": "Supporting Creators",
   "text": "Text",
   "total": "Total",
+  "updateNotificationSettings": "Update notification setings",
   "userRejectedRequest": "User rejected request",
   "validationErrors": {
     "invalidType": "Invalid type",

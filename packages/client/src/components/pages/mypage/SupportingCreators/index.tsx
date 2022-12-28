@@ -3,8 +3,11 @@ import Checkbox from '@mui/material/Checkbox';
 import CircularProgress from '@mui/material/CircularProgress';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { BigNumber } from 'ethers';
+import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import { SupportingCreatorMenuButton } from './SupportingCreatorMenuButton';
 
 import { Table } from '@/components/helpers/Table';
 import { IconWithMessage } from '@/components/standalone/IconWithMessage';
@@ -19,9 +22,42 @@ export const SupportingCreators = () => {
   const { data: supportingCreators, error: supportingCreatorsError } =
     useSupportingCreators();
 
-  const { data: lockKeys, error: lockKeysError } = useUserPublicLockKeys(
-    supportingCreators?.map((d) => d.lockAddress)
-  );
+  const {
+    data: lockKeys,
+    error: lockKeysError,
+    mutate: mutateLockKeys,
+  } = useUserPublicLockKeys(supportingCreators?.map((d) => d.lockAddress));
+
+  const onExtendHandler = (
+    lockAddress: string,
+    tokenId: BigNumber,
+    timestamp: BigNumber
+  ) => {
+    if (!supportingCreators || !lockKeys) {
+      return;
+    }
+
+    const index = supportingCreators.findIndex(
+      (v) => (v.lockAddress = lockAddress)
+    );
+    if (index === -1) {
+      return;
+    }
+
+    const newLockKeys = [...lockKeys];
+    newLockKeys[index] = {
+      timestamp,
+      tokenId,
+    };
+    mutateLockKeys(newLockKeys);
+  };
+
+  const supportingCreatorMenuDatas = useMemo(() => {
+    if (!supportingCreators || !lockKeys) return [];
+    return supportingCreators.map(({ lockAddress }, i) => {
+      return { lockAddress, tokenId: lockKeys[i].tokenId };
+    });
+  }, [supportingCreators, lockKeys]);
 
   useEffect(() => {
     if (!checkedCells.length && supportingCreators) {
@@ -59,6 +95,7 @@ export const SupportingCreators = () => {
     t('tokenId'),
     t('expiringAt'),
     t('subscribedAt'),
+    '',
   ];
 
   return (
@@ -66,8 +103,8 @@ export const SupportingCreators = () => {
       <Typography sx={{ p: 3, pb: 2 }} variant="h4">
         {t('supportingCreators')}
       </Typography>
-      {supportingCreators ? (
-        supportingCreators.length > 0 ? (
+      {supportingCreators && lockKeys ? (
+        supportingCreators.length > 0 && lockKeys.length > 0 ? (
           <Table
             data={supportingCreators.map((d, i) => {
               return [
@@ -79,9 +116,16 @@ export const SupportingCreators = () => {
                 d.creator?.creatorName || '',
                 lockKeys?.[i].tokenId.toString() || '',
                 lockKeys?.[i].timestamp
-                  ? blockTimestampToDate(lockKeys[i].timestamp).toLocaleString()
+                  ? blockTimestampToDate(
+                      lockKeys[i].timestamp
+                    ).toLocaleDateString()
                   : '',
-                d.supportedAt.toLocaleString(),
+                d.supportedAt.toLocaleDateString(),
+                <SupportingCreatorMenuButton
+                  key={`supporting-creaotors-menu-button-${i}`}
+                  data={supportingCreatorMenuDatas[i]}
+                  onExtend={onExtendHandler}
+                />,
               ];
             })}
             elevation={0}

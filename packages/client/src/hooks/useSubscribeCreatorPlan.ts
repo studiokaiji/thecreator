@@ -1,6 +1,6 @@
 import { useCurrentUser } from './useCurrentUser';
 import { PurchaseOpts, usePublicLock } from './usePublicLock';
-import { useSupportingCreatorsForWrite } from './useSupportingCreatorsForWrite';
+import { useSupportingCreatorPlanForWrite } from './useSupportingCreatorsForWrite';
 
 export const useSubscribeCreatorPlan = (
   creatorId: string,
@@ -10,7 +10,7 @@ export const useSubscribeCreatorPlan = (
 
   const { purchase } = usePublicLock(lockAddress);
 
-  const { addSupportingCreator } = useSupportingCreatorsForWrite();
+  const { addSupportingCreatorPlan } = useSupportingCreatorPlanForWrite();
 
   const subscribe = async (
     opts: PurchaseOpts,
@@ -22,7 +22,7 @@ export const useSubscribeCreatorPlan = (
   ) => {
     if (!currentUser) throw Error('Need authentication');
     await purchase(opts);
-    await addSupportingCreator({
+    await addSupportingCreatorPlan({
       creatorId,
       lockAddress,
       notificationSettings,

@@ -6,11 +6,14 @@ import {
 } from '../converters/userSupportingCreatorConverter';
 
 import { useCurrentUser } from './useCurrentUser';
+import { useUserPublicLockKeysForWrite } from './useUserPublicLockKeysForWrite';
 
-export const useSupportingCreatorsForWrite = () => {
+import { ExtendPeriodOpts } from '@/hooks/usePublicLock';
+
+export const useSupportingCreatorPlanForWrite = (planId?: string) => {
   const { currentUser } = useCurrentUser();
 
-  const addSupportingCreator = async (
+  const addSupportingCreatorPlan = async (
     input: Omit<SupportingCreatorPlanDocData, 'supportedAt'>
   ) => {
     if (!currentUser?.uid) {
@@ -19,36 +22,53 @@ export const useSupportingCreatorsForWrite = () => {
 
     const colRef = getUserSupportingCreatorPlansCollectionRef(currentUser.uid);
 
-    const data = { ...input, id: input.creatorId };
+    const data = { ...input, id: input.lockAddress };
 
     await addDoc(colRef, data);
   };
 
   const updateNotificationSettings = async (
-    creatorId: string,
+    planId: string,
     notificationSettings: NotificationSettings
   ) => {
     if (!currentUser?.uid) {
       throw Error('Need authentication');
     }
 
-    const ref = getUserSupportingCreatorPlanDocRef(currentUser.uid, creatorId);
+    const ref = getUserSupportingCreatorPlanDocRef(currentUser.uid, planId);
 
     await updateDoc(ref, { notificationSettings });
   };
 
-  const removeSupportingCreator = async (creatorId: string) => {
+  const { extendPeriodAndGetNewExpirationTimestamp } =
+    useUserPublicLockKeysForWrite(planId);
+
+  const extendPlanPeriod = async (opts: ExtendPeriodOpts) => {
     if (!currentUser?.uid) {
       throw Error('Need authentication');
     }
+    if (!planId) {
+      throw Error('Need planId');
+    }
+    return extendPeriodAndGetNewExpirationTimestamp(opts);
+  };
 
-    const ref = getUserSupportingCreatorPlanDocRef(currentUser.uid, creatorId);
+  const removeSupportingCreator = async () => {
+    if (!currentUser?.uid) {
+      throw Error('Need authentication');
+    }
+    if (!planId) {
+      throw Error('Need planId');
+    }
+
+    const ref = getUserSupportingCreatorPlanDocRef(currentUser.uid, planId);
 
     await deleteDoc(ref);
   };
 
   return {
-    addSupportingCreator,
+    addSupportingCreatorPlan,
+    extendPlanPeriod,
     removeSupportingCreator,
     updateNotificationSettings,
   };

@@ -20,19 +20,32 @@ type PurchaseReq = {
   keyManager: string;
 };
 
+export type ERC20ApproveOpts = Partial<{
+  onApproveTxSend: (response: providers.TransactionResponse) => void;
+  onApproved: (receipt: providers.TransactionReceipt) => void;
+}>;
+
 export type PurchaseOpts = Partial<{
   tokenAddress: string;
   requests: Partial<PurchaseReq>[];
-  onApproveTxSend: (response: providers.TransactionResponse) => void;
-  onApproved: (receipt: providers.TransactionReceipt) => void;
   onPurchaseTxSend: (response: providers.TransactionResponse) => void;
   onPurchased: (receipt: providers.TransactionReceipt) => void;
-}>;
+}> &
+  ERC20ApproveOpts;
 
 export type UpdateOpts<T = unknown> = Partial<{
   onTxSend: (response: providers.TransactionResponse) => void;
   onTxConfirmed: (receipt: providers.TransactionReceipt) => void;
 }> & { value: T };
+
+export type ExtendPeriodOpts = Partial<{
+  onExtendTxSend: (response: providers.TransactionResponse) => void;
+  onExtend: (receipt: providers.TransactionReceipt) => void;
+  referrer: string;
+  keyPrice: BigNumber;
+  tokenAddress: string;
+}> &
+  ERC20ApproveOpts & { tokenId: BigNumber };
 
 export const usePublicLock = (address = constants.AddressZero) => {
   const { contract: lock } = useContract(address, PublicLockV11.abi);
@@ -152,8 +165,39 @@ export const usePublicLock = (address = constants.AddressZero) => {
     onTxConfirmed && onTxConfirmed(receipt);
   };
 
+  const extendPeriod = async ({
+    keyPrice,
+    onApproved,
+    onApproveTxSend,
+    onExtend,
+    onExtendTxSend,
+    referrer = constants.AddressZero,
+    tokenAddress,
+    tokenId,
+  }: ExtendPeriodOpts) => {
+    keyPrice ??= await getKeyPrice();
+    tokenAddress ??= await getPaymentTokenAddress();
+
+    if (tokenAddress !== constants.AddressZero) {
+      const erc20 = new Contract(tokenAddress, ERC20, library?.getSigner());
+
+      const approveRes = await erc20.approve(address, keyPrice);
+      onApproveTxSend && onApproveTxSend(approveRes);
+
+      const approveReceipt = await approveRes.wait();
+      onApproved && onApproved(approveReceipt);
+    }
+
+    const res = await lock.extend(keyPrice, tokenId, referrer, []);
+    onExtendTxSend && onExtendTxSend(res);
+
+    const receipt = await res.wait();
+    onExtend && onExtend(receipt);
+  };
+
   return {
     contract: lock,
+    extendPeriod,
     getKeyPrice,
     getPaymentTokenAddress,
     isValidKey,
