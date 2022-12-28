@@ -44,7 +44,7 @@ export const SupportingCreatorMenuButton = ({
 
   const [extendStatus, setExtendStatus] = useState<
     '' | 'waitingSendTx' | 'sentApproveTx' | 'sentExtendTx' | 'complete'
-  >('complete');
+  >('');
   const [extendError, setExtendError] = useState('');
 
   const closeExtendModal = () => {
