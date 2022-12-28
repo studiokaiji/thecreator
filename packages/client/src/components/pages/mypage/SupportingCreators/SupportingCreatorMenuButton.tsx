@@ -1,8 +1,11 @@
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import EditNotificationsOutlinedIcon from '@mui/icons-material/EditNotificationsOutlined';
+import MoreTimeIcon from '@mui/icons-material/MoreTime';
 import MoreVertIcon from '@mui/icons-material/MoreVertOutlined';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import IconButton from '@mui/material/IconButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
@@ -83,8 +86,18 @@ export const SupportingCreatorMenuButton = ({
         <MoreVertIcon />
       </IconButton>
       <Menu anchorEl={anchorEl} onClose={closeMenu} open={isOpen}>
-        <MenuItem onClick={extend}>{t('extendThePeriod')}</MenuItem>
-        <MenuItem>{t('updateNotificationSettings')}</MenuItem>
+        <MenuItem onClick={extend}>
+          <ListItemIcon>
+            <MoreTimeIcon />
+          </ListItemIcon>
+          {t('extendThePeriod')}
+        </MenuItem>
+        <MenuItem>
+          <ListItemIcon>
+            <EditNotificationsOutlinedIcon />
+          </ListItemIcon>
+          {t('updateNotificationSettings')}
+        </MenuItem>
       </Menu>
       <CenterModal onClose={closeExtendModal} open={!!extendStatus}>
         <Stack spacing={3}>
