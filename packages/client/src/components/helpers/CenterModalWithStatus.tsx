@@ -67,16 +67,12 @@ export const CenterModalWithStatus = (props: CenterModalWithStatusProps) => {
     <Complete key={'complete'} />,
   ];
 
-  const isClosable = steps.length - 1 >= props.activeStep || !!props.err;
+  const isClosable = steps.length - 1 <= props.activeStep || !!props.err;
 
   return (
-    <CenterModalWithTitle {...props} components="div">
+    <CenterModalWithTitle {...props} components={undefined}>
       <Box>
-        <Stepper
-          alternativeLabel
-          activeStep={props.activeStep}
-          sx={{ textAlign: 'center' }}
-        >
+        <Stepper alternativeLabel activeStep={props.activeStep}>
           {steps.map((step, i) => (
             <Step key={`step-${i}`}>
               <StepLabel>{step}</StepLabel>
