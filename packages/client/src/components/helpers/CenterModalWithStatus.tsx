@@ -10,7 +10,10 @@ import Typography from '@mui/material/Typography';
 import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { CenterModalWithTitleProps } from './CenterModalWithTitle';
+import {
+  CenterModalWithTitle,
+  CenterModalWithTitleProps,
+} from './CenterModalWithTitle';
 
 type CenterModalWithStatusProps = Omit<
   CenterModalWithTitleProps,
@@ -67,7 +70,7 @@ export const CenterModalWithStatus = (props: CenterModalWithStatusProps) => {
   const isClosable = steps.length - 1 >= props.activeStep || !!props.err;
 
   return (
-    <CenterModalWithStatus {...props}>
+    <CenterModalWithTitle {...props} components="div">
       <Box>
         <Stepper
           alternativeLabel
@@ -89,6 +92,6 @@ export const CenterModalWithStatus = (props: CenterModalWithStatusProps) => {
           </Box>
         )}
       </Box>
-    </CenterModalWithStatus>
+    </CenterModalWithTitle>
   );
 };
