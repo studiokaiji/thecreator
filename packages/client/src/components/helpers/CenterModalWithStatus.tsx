@@ -14,7 +14,7 @@ import { CenterModalWithTitleProps } from './CenterModalWithTitle';
 
 type CenterModalWithStatusProps = Omit<
   CenterModalWithTitleProps,
-  'children'
+  'children' | 'components'
 > & {
   components: {
     component: ReactNode;
