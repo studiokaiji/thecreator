@@ -18,7 +18,7 @@ type PlanUpdateInput = Omit<Plan, 'ok' | 'currency' | 'txHash'> & {
 
 type PlanCreateInput = Omit<PlanUpdateInput, 'id'>;
 
-type TxType = 'keyPricing' | 'maxNumberOfKeys';
+type TxType = 'keyPricing' | 'maxNumberOfKeys' | 'name';
 
 export const useCreatorPlanForWrite = (publicLockAddress?: string) => {
   const { account } = useWallet();
@@ -63,7 +63,7 @@ export const useCreatorPlanForWrite = (publicLockAddress?: string) => {
     return { contract, data };
   };
 
-  const { updateKeyPricing, updateMaxNumberOfKeys } =
+  const { updateKeyPricing, updateLockName, updateMaxNumberOfKeys } =
     usePublicLock(publicLockAddress);
 
   const updatePlan = async (
@@ -109,7 +109,7 @@ export const useCreatorPlanForWrite = (publicLockAddress?: string) => {
     const needToRecordOnChain = (
       Object.keys(changedPlans) as (keyof PlanUpdateInput)[]
     ).every((key) => {
-      const onChainKeys = ['currency', 'keyPrice', 'maxNumberOfKeys'];
+      const onChainKeys = ['currency', 'keyPrice', 'maxNumberOfKeys', 'name'];
       return onChainKeys.includes(key);
     });
 
@@ -151,13 +151,22 @@ export const useCreatorPlanForWrite = (publicLockAddress?: string) => {
         );
       }
 
+      if (changedPlans.name) {
+        promises.push(
+          updateLockName({
+            onTxConfirmed: (receipt) => opts.onTxConfirmed('name', receipt),
+            onTxSend: (res) => opts.onTxSend('name', res),
+            value: changedPlans.name,
+          })
+        );
+      }
+
       await Promise.all(promises);
     }
 
     const updateData = {
       description: changedPlans.description,
       features: changedPlans.features,
-      name: changedPlans.name,
     };
 
     const isUpdatableOnDatabase = Object.values(updateData).some(
@@ -168,7 +177,6 @@ export const useCreatorPlanForWrite = (publicLockAddress?: string) => {
       await updatePlanDocById(plan.id, {
         description: changedPlans.description,
         features: changedPlans.features,
-        name: changedPlans.name,
       });
     }
   };

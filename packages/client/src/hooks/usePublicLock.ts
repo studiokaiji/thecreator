@@ -195,6 +195,18 @@ export const usePublicLock = (address = constants.AddressZero) => {
     onExtend && onExtend(receipt);
   };
 
+  const updateLockName = async ({
+    onTxConfirmed,
+    onTxSend,
+    value,
+  }: UpdateOpts<string>) => {
+    const res = await lock.updateLockName(value);
+    onTxSend && onTxSend(res);
+
+    const receipt = await res.wait();
+    onTxConfirmed && onTxConfirmed(receipt);
+  };
+
   return {
     contract: lock,
     extendPeriod,
@@ -203,6 +215,7 @@ export const usePublicLock = (address = constants.AddressZero) => {
     isValidKey,
     purchase,
     updateKeyPricing,
+    updateLockName,
     updateMaxNumberOfKeys,
   };
 };
