@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
+import InputAdornment from '@mui/material/InputAdornment';
 import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import Step from '@mui/material/Step';
@@ -271,25 +272,27 @@ export const PlanForm = ({
 
           <Stack spacing={1.5}>
             <Divider>{t('price')}</Divider>
-            <Controller
-              control={control}
-              name="currency"
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  required
-                  select
-                  label={t('currency')}
-                  variant="standard"
-                >
-                  {currencies.map((c) => (
-                    <MenuItem key={c} value={c}>
-                      {c}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              )}
-            />
+            {!update && (
+              <Controller
+                control={control}
+                name="currency"
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    required
+                    select
+                    label={t('currency')}
+                    variant="standard"
+                  >
+                    {currencies.map((c) => (
+                      <MenuItem key={c} value={c}>
+                        {c}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                )}
+              />
+            )}
             <TextField
               required
               {...register('priceEthPerMonth', {
@@ -299,6 +302,15 @@ export const PlanForm = ({
                 },
                 required: valT('required'),
               })}
+              InputProps={{
+                endAdornment: update ? (
+                  <InputAdornment position="end">
+                    {selectedCurrency}
+                  </InputAdornment>
+                ) : (
+                  <></>
+                ),
+              }}
               error={!!errors.priceEthPerMonth}
               helperText={errors.priceEthPerMonth?.message}
               label={t('pricePerMonth')}
