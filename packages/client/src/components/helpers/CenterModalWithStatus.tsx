@@ -12,7 +12,10 @@ import { useTranslation } from 'react-i18next';
 
 import { CenterModalWithTitleProps } from './CenterModalWithTitle';
 
-type CenterModalWithStatusProps = CenterModalWithTitleProps & {
+type CenterModalWithStatusProps = Omit<
+  CenterModalWithTitleProps,
+  'children'
+> & {
   components: {
     component: ReactNode;
     stepLabel: string;
@@ -20,7 +23,7 @@ type CenterModalWithStatusProps = CenterModalWithTitleProps & {
   completeComponent?: ReactNode;
   failedComponent?: ReactNode;
   activeStep: number;
-  err: any;
+  err?: any;
 };
 
 const Complete = () => {
@@ -78,11 +81,7 @@ export const CenterModalWithStatus = (props: CenterModalWithStatusProps) => {
           ))}
         </Stepper>
         <Box sx={{ mt: 5 }}>
-          {props.err ? (
-            <Failed err={props.err} />
-          ) : (
-            sections[props.activeStep]
-          )}
+          {props.err ? <Failed err={props.err} /> : sections[props.activeStep]}
         </Box>
         {isClosable && (
           <Box sx={{ mt: 3 }}>
