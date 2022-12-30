@@ -1,7 +1,6 @@
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
@@ -22,6 +21,7 @@ type CenterModalWithStatusProps = Omit<
   components: {
     component: ReactNode;
     stepLabel: string;
+    closable?: boolean;
   }[];
   completeComponent?: ReactNode;
   failedComponent?: ReactNode;
@@ -67,10 +67,20 @@ export const CenterModalWithStatus = (props: CenterModalWithStatusProps) => {
     <Complete key={'complete'} />,
   ];
 
-  const isClosable = steps.length - 1 <= props.activeStep || !!props.err;
+  const isClosable =
+    steps.length - 1 <= props.activeStep ||
+    !!props.err ||
+    props.components[props.activeStep].closable;
+
+  const close = (
+    event: Record<string, never>,
+    reason: 'backdropClick' | 'escapeKeyDown'
+  ) => {
+    isClosable && props.onClose && props.onClose(event, reason);
+  };
 
   return (
-    <CenterModalWithTitle {...props} components={undefined}>
+    <CenterModalWithTitle {...props} components={undefined} onClose={close}>
       <Box>
         <Stepper alternativeLabel activeStep={props.activeStep}>
           {steps.map((step, i) => (
@@ -82,11 +92,6 @@ export const CenterModalWithStatus = (props: CenterModalWithStatusProps) => {
         <Box sx={{ mt: 5 }}>
           {props.err ? <Failed err={props.err} /> : sections[props.activeStep]}
         </Box>
-        {isClosable && (
-          <Box sx={{ mt: 3 }}>
-            <Button>{t('close')}</Button>
-          </Box>
-        )}
       </Box>
     </CenterModalWithTitle>
   );
