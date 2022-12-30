@@ -54,6 +54,12 @@ export const usePublicLock = (address = constants.AddressZero) => {
 
   useOnlyValidNetwork();
 
+  const addressCheck = () => {
+    if (address === constants.AddressZero) {
+      throw Error('Address is zero.');
+    }
+  };
+
   const purchase = async ({
     onApproved,
     onApproveTxSend,
@@ -65,6 +71,8 @@ export const usePublicLock = (address = constants.AddressZero) => {
     if (!account || !library) {
       throw Error('Need user wallet');
     }
+
+    addressCheck();
 
     if (requests.length < 1) {
       requests.push({});
@@ -130,14 +138,17 @@ export const usePublicLock = (address = constants.AddressZero) => {
   };
 
   const getKeyPrice = async (): Promise<BigNumber> => {
+    addressCheck();
     return lock.keyPrice();
   };
 
   const getPaymentTokenAddress = async (): Promise<string> => {
+    addressCheck();
     return lock.tokenAddress();
   };
 
   const isValidKey = async (tokenId: BigNumberish): Promise<BigNumber> => {
+    addressCheck();
     return lock.isValidKey(tokenId);
   };
 
@@ -146,6 +157,7 @@ export const usePublicLock = (address = constants.AddressZero) => {
     onTxSend,
     value: { keyPrice, tokenAddress },
   }: UpdateOpts<{ keyPrice: BigNumberish; tokenAddress: string }>) => {
+    addressCheck();
     const res = await lock.updateKeyPricing(keyPrice, tokenAddress);
     onTxSend && onTxSend(res);
 
@@ -158,6 +170,7 @@ export const usePublicLock = (address = constants.AddressZero) => {
     onTxSend,
     value,
   }: UpdateOpts<BigNumberish>) => {
+    addressCheck();
     const res = await lock.setMaxNumberOfKeys(value);
     onTxSend && onTxSend(res);
 
@@ -175,6 +188,8 @@ export const usePublicLock = (address = constants.AddressZero) => {
     tokenAddress,
     tokenId,
   }: ExtendPeriodOpts) => {
+    addressCheck();
+
     keyPrice ??= await getKeyPrice();
     tokenAddress ??= await getPaymentTokenAddress();
 
@@ -200,7 +215,23 @@ export const usePublicLock = (address = constants.AddressZero) => {
     onTxSend,
     value,
   }: UpdateOpts<string>) => {
+    addressCheck();
+
     const res = await lock.updateLockName(value);
+    onTxSend && onTxSend(res);
+
+    const receipt = await res.wait();
+    onTxConfirmed && onTxConfirmed(receipt);
+  };
+
+  const withdraw = async ({
+    onTxConfirmed,
+    onTxSend,
+    value: { tokenAddress, value },
+  }: UpdateOpts<{ tokenAddress: string; value: BigNumber }>) => {
+    addressCheck();
+
+    const res = await lock.withdraw(tokenAddress, value);
     onTxSend && onTxSend(res);
 
     const receipt = await res.wait();
@@ -217,5 +248,6 @@ export const usePublicLock = (address = constants.AddressZero) => {
     updateKeyPricing,
     updateLockName,
     updateMaxNumberOfKeys,
+    withdraw,
   };
 };
