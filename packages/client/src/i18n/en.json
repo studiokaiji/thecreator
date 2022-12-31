@@ -3,6 +3,7 @@
   "address": "Address",
   "alreadySubscribedError": "You are already subscribed.",
   "audio": "Audio",
+  "available": "Available",
   "back": "Back",
   "backToInput": "Back to input",
   "balance": "Balance",
@@ -41,6 +42,7 @@
   "feature": "Feature",
   "features": "Features",
   "goToCreatorConsole": "Go To Creator Console",
+  "guideLineMessageForRefund": "*Keep a portion of the balance in the contract for refunds to users is recommended. The guideline is 10%.",
   "image": "Image",
   "inProgress": "In progress",
   "limit": "Limit",
@@ -80,6 +82,8 @@
   "sentApproveTx": "Sent approve transaction",
   "sentPurchaseTx": "Sent subscription purchase transaction",
   "settings": "Settings",
+  "specifyWithdrawalAmount": "Specify Withdrawal Amount",
+  "status": "Status",
   "subscribe": "Subscribe",
   "subscribed": "Subscribed",
   "subscribedDate": "Subscribed Date",
@@ -99,11 +103,13 @@
     "minLength": "{{minLength}} characters or more",
     "mustBePositive": "Must be positive",
     "mustBeValOrGreater": "Must be {{val}} or greater",
+    "mustBeValOrLess": "Must be {{val}} or less",
     "required": "Required"
   },
   "video": "Video",
   "waitingConfirmation": "Waiting confirmation",
   "waitingSendTx": "Waiting for transaction to be sent",
   "walletSelectMessage": "Select a wallet to connect.",
-  "withdraw": "Withdraw"
+  "withdraw": "Withdraw",
+  "withdrawableAmount": "Withdrawable amount"
 }

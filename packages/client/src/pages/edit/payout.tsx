@@ -1,6 +1,6 @@
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { useMemo } from 'react';
+import { BigNumber } from 'ethers';
 import { useTranslation } from 'react-i18next';
 
 import { MainSpacingLayout } from '@/components/layout/MainSpacingLayout';
@@ -13,12 +13,16 @@ import { useCurrentUser } from '@/hooks/useCurrentUser';
 export const PayoutPage = () => {
   const { currentUser } = useCurrentUser();
   const { data: plans } = useCreatorPlans(currentUser?.uid);
-  const { data: balances, error } = useCreatorPlansBalanceList(plans);
+  const {
+    data: balances,
+    error,
+    mutate: balancesMutate,
+  } = useCreatorPlansBalanceList(plans);
 
-  const planWithBalanceList = useMemo(() => {
+  const planWithBalanceList = (() => {
     if (!plans || !balances) return undefined;
     return plans.map((plan, i) => ({ ...plan, balance: balances[i] }));
-  }, [plans, balances, error]);
+  })();
 
   const { t } = useTranslation();
 
@@ -30,11 +34,26 @@ export const PayoutPage = () => {
     return <MainLoading />;
   }
 
+  const onWithdrawnHandler = (id: string, balance: BigNumber) => {
+    if (!balances || !plans) return;
+
+    const index = plans.findIndex((plan) => plan.id === id);
+    if (index === -1) return;
+
+    const currentBalances = [...balances];
+    currentBalances[index] = balance;
+
+    balancesMutate(currentBalances);
+  };
+
   return (
     <MainSpacingLayout>
       <Stack spacing={6}>
         <Typography variant="h1">{t('payout')}</Typography>
-        <Withdraw planWithBalanceList={planWithBalanceList} />
+        <Withdraw
+          onWithdrawn={onWithdrawnHandler}
+          planWithBalanceList={planWithBalanceList}
+        />
       </Stack>
     </MainSpacingLayout>
   );
