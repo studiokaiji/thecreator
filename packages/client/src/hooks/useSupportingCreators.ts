@@ -14,10 +14,9 @@ import { useMemo } from 'react';
 import useSWRInfinite from 'swr/infinite';
 
 import { getCreatorDocRef } from './../converters/creatorConverter';
-import { useCurrentUser } from './useCurrentUser';
+import { useWallet } from './useWallet';
 
 import { getUserSupportingCreatorPlansCollectionRef } from '@/converters/userSupportingCreatorConverter';
-import { rpcProvider } from '@/rpc-provider';
 import { aggregate } from '@/utils/multicall';
 
 const TOKEN_OF_OWNER_BY_INDEX_FRAGMENT = 'tokenOfOwnerByIndex';
@@ -25,12 +24,12 @@ const KEY_EXPIRATION_TIMESTAMP_FOR_FRAGMENT = 'keyExpirationTimestampFor';
 const NAME_FRAGMENT = 'name';
 
 export const useSupportingCreators = (supportingCreatorsLimit = 0) => {
-  const { currentUser } = useCurrentUser();
+  const { account, library } = useWallet();
 
   const supportingCreatorsRef = useMemo(() => {
-    if (!currentUser?.uid) return null;
-    return getUserSupportingCreatorPlansCollectionRef(currentUser.uid);
-  }, [currentUser?.uid]);
+    if (!account) return null;
+    return getUserSupportingCreatorPlansCollectionRef(account);
+  }, [account]);
 
   const fetcher = async (
     uid: string,
@@ -38,6 +37,10 @@ export const useSupportingCreators = (supportingCreatorsLimit = 0) => {
     docsLimit: number,
     supportedAt: Date
   ) => {
+    if (!library) {
+      throw Error('Need user wallet');
+    }
+
     const supportingCreatorsQueries = [
       orderBy('supportedAt', 'desc'),
       endBefore(Timestamp.fromDate(supportedAt)),
@@ -84,9 +87,11 @@ export const useSupportingCreators = (supportingCreatorsLimit = 0) => {
       })
     );
 
+    const signer = library.getSigner();
+
     const { returnData: tokenOfOwnerByIndexDatas } = await aggregate(
       tokenOfOwnerByIndexInputs,
-      rpcProvider
+      signer
     );
 
     const tokenIds = (tokenOfOwnerByIndexDatas as BytesLike[]).map(
@@ -98,7 +103,7 @@ export const useSupportingCreators = (supportingCreatorsLimit = 0) => {
     );
 
     const secondaryInputs: MulticallInput[] = [];
-    
+
     tokenIds.forEach((tokenId, i) => {
       const keyExpirationCallData = iface.encodeFunctionData(
         KEY_EXPIRATION_TIMESTAMP_FOR_FRAGMENT,
@@ -120,7 +125,7 @@ export const useSupportingCreators = (supportingCreatorsLimit = 0) => {
 
     const { returnData: secondaryDatas } = await aggregate(
       secondaryInputs,
-      rpcProvider
+      signer
     );
 
     const keyExpirationTimestampForDatas: BytesLike[] = [];
@@ -165,7 +170,7 @@ export const useSupportingCreators = (supportingCreatorsLimit = 0) => {
     if (prevData && !prevData.length) return null;
     const supportedAt = prevData?.slice(-1)[0].supportedAt || new Date(0);
     return [
-      currentUser?.uid,
+      account,
       supportingCreatorsRef,
       supportingCreatorsLimit,
       supportedAt,
