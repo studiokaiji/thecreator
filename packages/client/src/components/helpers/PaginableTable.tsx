@@ -30,7 +30,12 @@ export const PaginableTable = ({
           };
         }}
       />
-      <TablePagination {...paging} component="div" rowsPerPage={data.length} />
+      <TablePagination
+        rowsPerPageOptions={[]}
+        {...paging}
+        component="div"
+        rowsPerPage={data.length}
+      />
     </Paper>
   );
 };
