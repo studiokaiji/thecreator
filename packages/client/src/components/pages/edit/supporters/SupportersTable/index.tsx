@@ -51,7 +51,7 @@ export const SupportersTable = () => {
       paging={{
         count,
         onPageChange: (_, page) => setSize(page),
-        page: size,
+        page: size - 1,
       }}
     />
   );
