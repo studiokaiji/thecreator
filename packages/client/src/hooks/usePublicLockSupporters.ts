@@ -1,6 +1,5 @@
 import { PublicLockV11 } from '@unlock-protocol/contracts';
 import { BigNumber, BytesLike, constants, Contract } from 'ethers';
-import { useMemo, useRef } from 'react';
 import useSWRInfinite, { SWRInfiniteKeyLoader } from 'swr/infinite';
 
 import { useWallet } from '@/hooks/useWallet';
@@ -29,22 +28,19 @@ export const usePublicLockSupporters = (
 ) => {
   const { library } = useWallet();
 
-  const lastLockKeyIdRef = useRef<BigNumber | null>(null);
-
   const getKey: SWRInfiniteKeyLoader = (_, data: LockKeyDetail[]) => {
-    const lastLockKeyId = data && data.length ? data[0].id : null;
+    const lastId = data && data.length ? data[0].id : null;
     const lock: LockSettings = {
       address: publicLock || constants.AddressZero,
-      startLockKeyId: lastLockKeyId ? lastLockKeyId.add(1) : null,
+      startLockKeyId: lastId ? lastId.add(1) : null,
     };
-    lastLockKeyIdRef.current = lastLockKeyId;
     return [lock, fetchLimit];
   };
 
   const fetcher = async (
     { address, startLockKeyId }: LockSettings,
     limit: number
-  ): Promise<LockKeyDetail[] | null> => {
+  ): Promise<{ results: LockKeyDetail[]; totalSupply: BigNumber } | null> => {
     if (!library || address === constants.AddressZero) return null;
 
     const signer = library.getSigner();
@@ -120,30 +116,8 @@ export const usePublicLockSupporters = (
         r.ownerOf !== constants.AddressZero,
     }));
 
-    return lockKeyDetailResults;
+    return { results: lockKeyDetailResults, totalSupply };
   };
 
-  const swr = useSWRInfinite(getKey, fetcher, { revalidateOnFocus: false });
-
-  const isLast = useMemo(() => {
-    return (
-      BigNumber.isBigNumber(lastLockKeyIdRef.current) &&
-      lastLockKeyIdRef.current.lte(fetchLimit)
-    );
-  }, [lastLockKeyIdRef.current]);
-
-  const next = () => {
-    if (!isLast) swr.setSize(swr.size + 1);
-  };
-
-  const back = () => {
-    if (swr.size > 1) swr.setSize(swr.size - 1);
-  };
-
-  return {
-    ...swr,
-    back,
-    isLast,
-    next,
-  };
+  return useSWRInfinite(getKey, fetcher, { revalidateOnFocus: false });
 };
