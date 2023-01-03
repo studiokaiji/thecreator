@@ -18,10 +18,15 @@ export const useUser = () => {
 
     const userSnapshot = await getDoc(userRef);
 
-    if (userSnapshot.exists()) {
-      const userData = userSnapshot.data();
-      const returnData = { ...userData, ...currentUser };
-      return returnData;
+    if (!userSnapshot.exists()) {
+      throw Error('User does not exist.');
+    }
+
+    const userData = userSnapshot.data();
+    const returnData = { ...userData, ...currentUser };
+
+    if (userData.globalNotificationSettings) {
+      return { ...userData, ...currentUser };
     } else {
       const docData = {
         globalNotificationSettings: {
@@ -29,10 +34,9 @@ export const useUser = () => {
           subscripionExpired: true,
           supportedCreatorNewPost: true,
         },
-        id: currentUser.uid,
       };
       await setDoc(userRef, docData);
-      return { ...docData, ...currentUser };
+      return { ...returnData, ...docData };
     }
   };
 
