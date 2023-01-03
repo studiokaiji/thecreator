@@ -6,6 +6,7 @@ type CreatorDocData = {
   updatedAt: Date;
   createdAt: Date;
   settings: CreatorDocSettings;
+  planIds: string[];
 };
 
 type CreatorDocSettings = {

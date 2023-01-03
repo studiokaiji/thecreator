@@ -1,15 +1,22 @@
 import { BigNumber, Contract, providers } from 'ethers';
-import { doc, setDoc, updateDoc } from 'firebase/firestore';
+import {
+  arrayUnion,
+  doc,
+  updateDoc,
+  writeBatch,
+} from 'firebase/firestore';
 import { useMemo } from 'react';
 
 import { usePublicLock } from './usePublicLock';
 import { CreateLockOpts, useUnlock } from './useUnlock';
 import { useWallet } from './useWallet';
 
+import { getCreatorDocRef } from '@/converters/creatorConverter';
 import {
   getCreatorPlanDocRef,
   getCreatorPlansCollectionRef,
 } from '@/converters/creatorPlanConverter';
+import { db } from '@/firebase';
 import type { Plan } from '@/utils/get-plans-from-chain';
 
 type PlanUpdateInput = Omit<Plan, 'ok' | 'currency' | 'txHash'> & {
@@ -25,7 +32,7 @@ export const useCreatorPlanForWrite = (publicLockAddress?: string) => {
 
   const { createLock } = useUnlock();
 
-  const colRef = useMemo(() => {
+  const plansColRef = useMemo(() => {
     if (!account) return null;
     return getCreatorPlansCollectionRef(account);
   }, [account]);
@@ -57,8 +64,15 @@ export const useCreatorPlanForWrite = (publicLockAddress?: string) => {
       id: contract.address,
     };
 
-    const docRef = getCreatorPlanDocRef(account, contract.address);
-    await setDoc(docRef, data);
+    const batch = writeBatch(db);
+
+    const creatorDocRef = getCreatorDocRef(account);
+    batch.update(creatorDocRef, { planIds: arrayUnion(contract.address) });
+
+    const planDocRef = getCreatorPlanDocRef(account, contract.address);
+    batch.set(planDocRef, data);
+
+    await batch.commit();
 
     return { contract, data };
   };
@@ -185,8 +199,8 @@ export const useCreatorPlanForWrite = (publicLockAddress?: string) => {
     id: string,
     plan: Partial<CreatorPlanDoc>
   ) => {
-    if (!colRef) throw Error('Collection ref does not exist.');
-    const ref = doc(colRef, id);
+    if (!plansColRef) throw Error('Collection ref does not exist.');
+    const ref = doc(plansColRef, id);
     await updateDoc(ref, plan);
   };
 
