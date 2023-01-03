@@ -9,7 +9,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { ReactNode } from 'react';
 
-type TableProps = {
+export type TableProps = {
   headRows: ReactNode[];
   data: ReactNode[][];
   sx?: SxProps<Theme>;
