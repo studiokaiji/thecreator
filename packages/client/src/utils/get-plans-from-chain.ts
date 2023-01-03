@@ -32,6 +32,7 @@ type PlanCheckResult = {
   ok: boolean;
   maxNumberOfKeys: BigNumber;
   isSubscribed: boolean;
+  name: string;
 };
 
 export type Plan = WithId<CreatorPlanDoc & PlanCheckResult>;
@@ -41,6 +42,7 @@ const lockInputKeys = [
   'keyPrice',
   'expirationDuration',
   'maxNumberOfKeys',
+  'name',
 ];
 
 const checkPlans = async (
@@ -51,7 +53,7 @@ const checkPlans = async (
 
   const contracts = docPlans
     .filter(({ id }) => id)
-    .map(({ id}) => new Contract(id, PublicLockV11.abi));
+    .map(({ id }) => new Contract(id, PublicLockV11.abi));
 
   if (addressToCheckIfSubscriber) {
     lockInputKeys.push('getHasValidKey');
@@ -68,7 +70,7 @@ const checkPlans = async (
       lockInputs.push({ callData, target });
     });
   });
-  
+
   const { returnData: lockData } = await aggregate(lockInputs, rpcProvider);
 
   const checkResults: PlanCheckResult[] = [];
@@ -83,6 +85,7 @@ const checkPlans = async (
         isSubscribed: false,
         keyPrice: BigNumber.from(0),
         maxNumberOfKeys: BigNumber.from(0),
+        name: '',
         ok: false,
         tokenAddress: constants.AddressZero,
       };
@@ -111,6 +114,8 @@ const checkPlans = async (
       checkResults[lockIndex].maxNumberOfKeys = data;
     } else if (key === 'getHasValidKey') {
       checkResults[lockIndex].isSubscribed = data;
+    } else if (key === 'name') {
+      checkResults[lockIndex].name = data;
     }
   });
 
