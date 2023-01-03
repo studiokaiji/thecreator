@@ -6,7 +6,10 @@ import { useTranslation } from 'react-i18next';
 import { WithdrawButton } from './WithdrawButton';
 
 import { Table } from '@/components/helpers/Table';
-import { PlanWithBalance } from '@/hooks/useCreatorPlansBalanceList';
+import { MainLoading } from '@/components/standalone/MainLoading';
+import { useCreatorPlans } from '@/hooks/useCreatorPlans';
+import { useCreatorPlansBalanceList } from '@/hooks/useCreatorPlansBalanceList';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { tokenAddressToCurrency } from '@/utils/currency-converter';
 import { formatWeiUnits } from '@/utils/wei-units-converter';
 
@@ -16,15 +19,42 @@ const getStrBalances = (balance: BigNumber, tokenAddress: string) => {
   return `${formatted} ${currency}`;
 };
 
-type WithdrawTableProps = {
-  planWithBalanceList?: PlanWithBalance[];
-  onWithdrawn: (id: string, currentBalance: BigNumber) => void;
-};
+export const Withdraw = () => {
+  const { currentUser } = useCurrentUser();
+  const { data: plans } = useCreatorPlans(currentUser?.uid);
+  const {
+    data: balances,
+    error,
+    mutate: balancesMutate,
+  } = useCreatorPlansBalanceList(plans);
 
-export const Withdraw = ({
-  onWithdrawn,
-  planWithBalanceList,
-}: WithdrawTableProps) => {
+  const planWithBalanceList = (() => {
+    if (!plans || !balances) return undefined;
+    return plans.map((plan, i) => ({ ...plan, balance: balances[i] }));
+  })();
+
+  const { t } = useTranslation();
+
+  if (error) {
+    return <pre>{error}</pre>;
+  }
+
+  if (!planWithBalanceList) {
+    return <MainLoading />;
+  }
+
+  const onWithdrawnHandler = (id: string, balance: BigNumber) => {
+    if (!balances || !plans) return;
+
+    const index = plans.findIndex((plan) => plan.id === id);
+    if (index === -1) return;
+
+    const currentBalances = [...balances];
+    currentBalances[index] = balance;
+
+    balancesMutate(currentBalances);
+  };
+
   const tableData =
     planWithBalanceList?.map((plan, i) => {
       return [
@@ -39,13 +69,11 @@ export const Withdraw = ({
         </Typography>,
         <WithdrawButton
           key={`payout-plan-button-${i}`}
-          onWithdrawn={onWithdrawn}
+          onWithdrawn={onWithdrawnHandler}
           planWithBalance={planWithBalanceList[i]}
         />,
       ];
     }) || [];
-
-  const { t } = useTranslation();
 
   return (
     <Stack spacing={3}>
