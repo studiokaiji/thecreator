@@ -15,9 +15,10 @@ type LockSettings = {
   startLockKeyId: BigNumber | null;
 };
 
-type LockKeyDetail = {
+export type LockKeyDetail = {
   keyExpirationTimestampFor: BigNumber;
   ownerOf: string;
+  isValidKey: boolean;
   id: BigNumber;
 };
 
@@ -41,7 +42,7 @@ export const usePublicLockSupporters = (
   const fetcher = async (
     { address, startLockKeyId }: LockSettings,
     limit: number
-  ) => {
+  ): Promise<LockKeyDetail[] | null> => {
     if (!library || address === constants.AddressZero) return null;
 
     const signer = library.getSigner();
