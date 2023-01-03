@@ -58,8 +58,6 @@ export const usePublicLockSupporters = (
 
     startLockKeyId ??= totalSupply;
 
-    console.log(totalSupply.toNumber());
-
     const numberToBeFetched =
       totalSupply.add(startLockKeyId).sub(totalSupply).toNumber() > limit
         ? limit
@@ -70,7 +68,6 @@ export const usePublicLockSupporters = (
 
     for (let i = 0; i < numberToBeFetched; i++) {
       const lockKeyId = startLockKeyId.sub(i);
-      console.log('lockKeyId', lockKeyId);
       // Add lockKey detail inputs
       lockKeyDetailInputKeys.forEach((inputKey) => {
         const callData = contract.interface.encodeFunctionData(inputKey, [
@@ -92,7 +89,6 @@ export const usePublicLockSupporters = (
     }[] = [];
 
     lockKeyDetailDatas.forEach((data, i) => {
-      console.log(data);
       const inputKeyIndex = i % lockKeyDetailInputKeys.length;
 
       const resultIndex = Math.floor(i / lockKeyDetailInputKeys.length);
