@@ -2,24 +2,22 @@ import { useTranslation } from 'react-i18next';
 
 import { PaginableTable } from '@/components/helpers/PaginableTable';
 import { MainLoading } from '@/components/standalone/MainLoading';
-import { useCreator } from '@/hooks/useCreator';
-import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useOnlyValidNetwork } from '@/hooks/useOnlyValidNetwork';
 import { usePublicLockSupporters } from '@/hooks/usePublicLockSupporters';
 import { blockTimestampToDate } from '@/utils/block-timestamp-to-date';
 
-export const SupportersTable = () => {
+type SupportersTableProps = {
+  planId: string;
+};
+
+export const SupportersTable = ({ planId }: SupportersTableProps) => {
   useOnlyValidNetwork();
 
-  const { currentUser } = useCurrentUser();
-  const { data: creatorData } = useCreator({
-    creatorAddress: currentUser?.uid,
-  });
   const {
     data: publicLockSupportersData,
     setSize,
     size,
-  } = usePublicLockSupporters(creatorData?.planIds[0]);
+  } = usePublicLockSupporters(planId);
 
   const { t } = useTranslation();
 
@@ -40,7 +38,7 @@ export const SupportersTable = () => {
 
   const count = supportersData?.totalSupply.toNumber();
 
-  if (!data || !count) {
+  if (!data || typeof count !== 'number') {
     return <MainLoading />;
   }
 
