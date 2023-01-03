@@ -90,6 +90,7 @@
   "subscripionExpired": "Subscription Expired",
   "success": "Success",
   "supportedCreatorNewPost": "Supported Creator New Post",
+  "supporter": "Supporter",
   "supporters": "Supporters",
   "supportingCreatorDoesNotExist": "Supporting Creator Does Not Exist",
   "supportingCreators": "Supporting Creators",
@@ -106,6 +107,7 @@
     "mustBeValOrLess": "Must be {{val}} or less",
     "required": "Required"
   },
+  "validity": "Validity",
   "video": "Video",
   "waitingConfirmation": "Waiting confirmation",
   "waitingSendTx": "Waiting for transaction to be sent",
