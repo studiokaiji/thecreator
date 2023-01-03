@@ -1,5 +1,6 @@
 import { PublicLockV11 } from '@unlock-protocol/contracts';
 import { BigNumber, BytesLike, constants, Contract } from 'ethers';
+import { useMemo, useRef } from 'react';
 import useSWRInfinite, { SWRInfiniteKeyLoader } from 'swr/infinite';
 
 import { useWallet } from '@/hooks/useWallet';
@@ -28,16 +29,17 @@ export const usePublicLockSupporters = (
 ) => {
   const { library } = useWallet();
 
+  const lastLockKeyIdRef = useRef<BigNumber | null>(null);
+
   const getKey: SWRInfiniteKeyLoader = (_, data: LockKeyDetail[]) => {
     const lastLockKeyId = data && data.length ? data[0].id : null;
     const lock: LockSettings = {
       address: publicLock || constants.AddressZero,
       startLockKeyId: lastLockKeyId ? lastLockKeyId.add(1) : null,
     };
+    lastLockKeyIdRef.current = lastLockKeyId;
     return [lock, fetchLimit];
   };
-
-  let lastLockKeyId: BigNumber;
 
   const fetcher = async (
     { address, startLockKeyId }: LockSettings,
@@ -121,11 +123,27 @@ export const usePublicLockSupporters = (
     return lockKeyDetailResults;
   };
 
-  const isLast = () =>
-    BigNumber.isBigNumber(lastLockKeyId) && lastLockKeyId.lte(fetchLimit);
+  const swr = useSWRInfinite(getKey, fetcher, { revalidateOnFocus: false });
+
+  const isLast = useMemo(() => {
+    return (
+      BigNumber.isBigNumber(lastLockKeyIdRef.current) &&
+      lastLockKeyIdRef.current.lte(fetchLimit)
+    );
+  }, [lastLockKeyIdRef.current]);
+
+  const next = () => {
+    if (!isLast) swr.setSize(swr.size + 1);
+  };
+
+  const back = () => {
+    if (swr.size > 1) swr.setSize(swr.size - 1);
+  };
 
   return {
-    ...useSWRInfinite(getKey, fetcher, { revalidateOnFocus: false }),
+    ...swr,
+    back,
     isLast,
+    next,
   };
 };
