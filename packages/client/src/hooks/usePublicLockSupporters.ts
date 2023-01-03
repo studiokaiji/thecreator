@@ -91,7 +91,7 @@ export const usePublicLockSupporters = (
       const inputKeyIndex = i % lockKeyDetailInputKeys.length;
 
       const resultIndex = Math.floor(i / lockKeyDetailInputKeys.length);
-      if (!resultIndex) {
+      if (!parsedResults[resultIndex]) {
         parsedResults[resultIndex] = {
           keyExpirationTimestampFor: BigNumber.from(0),
           ownerOf: '',
