@@ -1,12 +1,13 @@
 import PersonOffOutlinedIcon from '@mui/icons-material/PersonOffOutlined';
-import Checkbox from '@mui/material/Checkbox';
+import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { BigNumber } from 'ethers';
-import { ChangeEvent, useEffect, useState } from 'react';
+import {  useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { CreatorCard } from './CreatorCard';
 import { SupportingCreatorMenuButton } from './SupportingCreatorMenuButton';
 
 import { Table } from '@/components/helpers/Table';
@@ -53,28 +54,12 @@ export const SupportingCreators = () => {
     }
   }, [supportingCreators]);
 
-  const checkAll = (e: ChangeEvent<HTMLInputElement>) => {
-    if (!supportingCreators) return;
-    setCheckedCells(supportingCreators.map(() => e.target.checked));
-  };
-
-  const check = (e: ChangeEvent<HTMLInputElement>, index: number) => {
-    const current = [...checkedCells];
-    current[index] = e.target.checked;
-    setCheckedCells(current);
-  };
-
   if (supportingCreatorsError) {
     const errMessage = JSON.stringify(supportingCreatorsError, null, 2);
     return <pre>{errMessage}</pre>;
   }
 
   const rows = [
-    <Checkbox
-      key="all-supporting-creaotors-checkbox"
-      checked={checkedCells.every((c) => c)}
-      onChange={checkAll}
-    />,
     t('creator'),
     t('plan'),
     t('tokenId'),
@@ -93,12 +78,13 @@ export const SupportingCreators = () => {
           <Table
             data={supportingCreators.map((d, i) => {
               return [
-                <Checkbox
-                  key={`supporting-creaotors-checkbox-${i}`}
-                  checked={checkedCells.every((c) => c)}
-                  onChange={(e) => check(e, i)}
-                />,
-                d.creator?.creatorName || '',
+                <Box key={`creator-card-${i}`} maxWidth={250} width="100%">
+                  <CreatorCard
+                    creatorId={d.creatorId}
+                    creatorName={d.creator?.creatorName || ''}
+                    icon={{}}
+                  />
+                </Box>,
                 d.planName,
                 d.tokenId.toString() || '',
                 d.timestamp
