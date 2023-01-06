@@ -7,7 +7,7 @@ import { ERC20 } from '@/abis';
 
 export const useERC20 = (address: string) => {
   const { library } = useWallet();
-  const contract = useContract(address, ERC20, library);
+  const { contract } = useContract(address, ERC20, library);
 
   const getName = (): Promise<string> => contract.name();
   const getSymbol = (): Promise<string> => contract.symbol();
