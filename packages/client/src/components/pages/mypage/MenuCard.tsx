@@ -1,4 +1,3 @@
-import AccountCircleIcon from '@mui/icons-material/AccountCircleOutlined';
 import GroupIcon from '@mui/icons-material/GroupOutlined';
 import SettingsIcon from '@mui/icons-material/SettingsOutlined';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -17,19 +16,14 @@ export const MenuCard = () => {
 
   const menuList = [
     {
-      icon: <AccountCircleIcon />,
-      text: t('mypage'),
-      to: '/mypage',
-    },
-    {
       icon: <GroupIcon />,
       text: t('supportingCreators'),
-      to: '/mypage#supporting-creators',
+      to: '/mypage/supporting-creators',
     },
     {
       icon: <SettingsIcon />,
       text: t('settings'),
-      to: '/mypage#settings',
+      to: '/mypage/settings',
     },
   ];
 

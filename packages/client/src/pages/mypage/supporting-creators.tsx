@@ -7,10 +7,9 @@ import { BigNumber } from 'ethers';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { CreatorCard } from './CreatorCard';
-import { SupportingCreatorMenuButton } from './SupportingCreatorMenuButton';
-
 import { Table } from '@/components/helpers/Table';
+import { CreatorCard } from '@/components/pages/mypage/SupportingCreators/CreatorCard';
+import { SupportingCreatorMenuButton } from '@/components/pages/mypage/SupportingCreators/SupportingCreatorMenuButton';
 import { IconWithMessage } from '@/components/standalone/IconWithMessage';
 import { useSupportingCreators } from '@/hooks/useSupportingCreators';
 import { blockTimestampToDate } from '@/utils/block-timestamp-to-date';

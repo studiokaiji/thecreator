@@ -1,5 +1,4 @@
 import WalletIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
-import AccountCircleIcon from '@mui/icons-material/AccountCircleOutlined';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistrationOutlined';
 import GroupIcon from '@mui/icons-material/GroupOutlined';
 import LoyaltyIcon from '@mui/icons-material/LoyaltyOutlined';
@@ -60,11 +59,6 @@ const UserWalletMenuBody = ({
     )[];
   } = {
     connected: [
-      {
-        icon: <AccountCircleIcon />,
-        text: t('mypage'),
-        to: '/mypage',
-      },
       {
         icon: <GroupIcon />,
         text: t('supportingCreators'),

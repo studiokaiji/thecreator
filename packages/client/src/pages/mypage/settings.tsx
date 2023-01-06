@@ -7,8 +7,7 @@ import { useEffect, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { EmailInputModalButton } from './EmailInputModalButton';
-
+import { EmailInputModalButton } from '@/components/pages/mypage/Settings/EmailInputModalButton';
 import { MainLoading } from '@/components/standalone/MainLoading';
 import { useUser } from '@/hooks/useUser';
 
@@ -72,7 +71,7 @@ export const UserSettings = () => {
     };
 
     await updateUserSettings(newData);
-    await mutate({...data, ...newData}, false);
+    await mutate({ ...data, ...newData }, false);
   };
 
   const onEmailUpdated = async (email: string) => {

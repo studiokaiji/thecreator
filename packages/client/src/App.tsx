@@ -10,6 +10,8 @@ import { NotFound } from './pages/404';
 import { PayoutPage } from './pages/edit/payout';
 import { SettingsPage } from './pages/edit/settings';
 import { MyPage } from './pages/mypage';
+import { UserSettings } from './pages/mypage/settings';
+import { SupportingCreators } from './pages/mypage/supporting-creators';
 import { CreatorPage } from './pages/u/[id]';
 import { SubscribePage } from './pages/u/[id]/subscribe/[planId]';
 
@@ -67,8 +69,13 @@ function App() {
                     <Route element={<SettingsPage />} path="settings" />
                     <Route element={<SupportersPage />} path="supporters" />
                   </Route>
-                  <Route path="/mypage">
-                    <Route index element={<MyPage />} />
+                  <Route element={<MyPage />} path="/mypage">
+                    <Route index />
+                    <Route element={<UserSettings />} path="settings" />
+                    <Route
+                      element={<SupportingCreators />}
+                      path="supporting-creators"
+                    />
                   </Route>
                   <Route element={<NotFound />} path="/*" />
                 </Routes>
