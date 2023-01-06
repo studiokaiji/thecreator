@@ -11,10 +11,10 @@ const CURRENT_USER_DOES_NOT_EXIST_ERROR = Error('currentUser does not exist');
 export const useUser = () => {
   const { currentUser, removeUser, updateUserEmail } = useCurrentUser();
 
-  const handler = async () => {
-    if (!currentUser || !currentUser.uid) return null;
+  const handler = async (_: string, uid: string) => {
+    if (!uid) return null;
 
-    const userRef = getUserDocRef(currentUser.uid);
+    const userRef = getUserDocRef(uid);
 
     const userSnapshot = await getDoc(userRef);
 
@@ -26,7 +26,7 @@ export const useUser = () => {
     const returnData = { ...userData, ...currentUser };
 
     if (userData.globalNotificationSettings) {
-      return { ...userData, ...currentUser };
+      return returnData;
     } else {
       const docData = {
         globalNotificationSettings: {
@@ -60,7 +60,9 @@ export const useUser = () => {
     await updateDoc(userRef, data);
   };
 
-  const swr = useSWR('/get-user', handler, { revalidateOnFocus: false });
+  const swr = useSWR(['/get-user', currentUser?.uid], handler, {
+    revalidateOnFocus: false,
+  });
 
   return {
     removeUser,

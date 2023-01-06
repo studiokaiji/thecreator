@@ -1,4 +1,5 @@
 import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Stack from '@mui/material/Stack';
 import Switch from '@mui/material/Switch';
@@ -8,7 +9,6 @@ import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { EmailInputModalButton } from '@/components/pages/mypage/Settings/EmailInputModalButton';
-import { MainLoading } from '@/components/standalone/MainLoading';
 import { useUser } from '@/hooks/useUser';
 
 export const UserSettings = () => {
@@ -19,9 +19,9 @@ export const UserSettings = () => {
   const { control, setValue, watch } = useForm<UserDocData>({
     defaultValues: {
       globalNotificationSettings: {
-        oneWeekBeforeExpiration: false,
-        subscriptionExpired: false,
-        supportedCreatorNewPost: false,
+        oneWeekBeforeExpiration: true,
+        subscriptionExpired: true,
+        supportedCreatorNewPost: true,
       },
     },
     mode: 'onChange',
@@ -54,7 +54,11 @@ export const UserSettings = () => {
   }
 
   if (!data || !data?.globalNotificationSettings) {
-    return <MainLoading />;
+    return (
+      <Stack>
+        <CircularProgress sx={{ m: 3, mx: 'auto' }} />
+      </Stack>
+    );
   }
 
   const save = async () => {
