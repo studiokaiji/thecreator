@@ -20,7 +20,7 @@ export const UserSettings = () => {
     defaultValues: {
       globalNotificationSettings: {
         oneWeekBeforeExpiration: false,
-        subscripionExpired: false,
+        subscriptionExpired: false,
         supportedCreatorNewPost: false,
       },
     },

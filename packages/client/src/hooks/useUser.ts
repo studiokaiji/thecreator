@@ -31,7 +31,7 @@ export const useUser = () => {
       const docData = {
         globalNotificationSettings: {
           oneWeekBeforeExpiration: true,
-          subscripionExpired: true,
+          subscriptionExpired: true,
           supportedCreatorNewPost: true,
         },
       };

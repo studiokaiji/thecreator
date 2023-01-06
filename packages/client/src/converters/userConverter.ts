@@ -12,7 +12,7 @@ export const userConverter: FirestoreDataConverter<WithId<UserDocData>> = {
     return {
       globalNotificationSettings: globalNotificationSettings || {
         oneWeekBeforeExpiration: true,
-        subscripionExpired: true,
+        subscriptionExpired: true,
         supportedCreatorNewPost: true,
       },
     };

@@ -16,7 +16,7 @@ export const useSubscribeCreatorPlan = (
     opts: PurchaseOpts,
     notificationSettings: NotificationSettings = {
       oneWeekBeforeExpiration: true,
-      subscripionExpired: true,
+      subscriptionExpired: true,
       supportedCreatorNewPost: true,
     }
   ) => {

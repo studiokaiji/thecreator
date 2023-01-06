@@ -13,6 +13,6 @@ type NotificationDocData = {
 
 type NotificationSettings = {
   supportedCreatorNewPost: boolean;
-  subscripionExpired: boolean;
+  subscriptionExpired: boolean;
   oneWeekBeforeExpiration: boolean;
 };
