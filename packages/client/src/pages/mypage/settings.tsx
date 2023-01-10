@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { EmailInputModalButton } from '@/components/pages/mypage/Settings/EmailInputModalButton';
 import { useUser } from '@/hooks/useUser';
 
-export const UserSettings = () => {
+export const UserSettingsPage = () => {
   const { data, error, mutate, updateUserSettings } = useUser();
 
   const { t } = useTranslation();

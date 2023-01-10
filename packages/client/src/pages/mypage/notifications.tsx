@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Table } from '@/components/helpers/Table';
 
-export const Notifications = () => {
+export const NotificationsPage = () => {
   const { t } = useTranslation();
 
   const notifications = [];

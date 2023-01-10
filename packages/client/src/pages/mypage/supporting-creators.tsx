@@ -14,7 +14,7 @@ import { IconWithMessage } from '@/components/standalone/IconWithMessage';
 import { useSupportingCreators } from '@/hooks/useSupportingCreators';
 import { blockTimestampToDate } from '@/utils/block-timestamp-to-date';
 
-export const SupportingCreators = () => {
+export const SupportingCreatorsPage = () => {
   const { t } = useTranslation();
   const [checkedCells, setCheckedCells] = useState<boolean[]>([]);
 
