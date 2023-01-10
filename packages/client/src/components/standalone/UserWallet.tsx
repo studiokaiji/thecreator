@@ -62,12 +62,12 @@ const UserWalletMenuBody = ({
       {
         icon: <GroupIcon />,
         text: t('supportingCreators'),
-        to: '/mypage#supporing-creators',
+        to: '/mypage/supporting-creators',
       },
       {
         icon: <SettingsIcon />,
         text: t('settings'),
-        to: '/mypage#settings',
+        to: '/mypage/settings',
       },
       'Creator',
       isCreator
