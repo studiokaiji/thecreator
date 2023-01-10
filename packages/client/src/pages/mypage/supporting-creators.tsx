@@ -7,8 +7,8 @@ import { BigNumber } from 'ethers';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { MinimalCreatorCell } from '@/components/helpers/Creator/MinimalCreatorCell';
 import { Table } from '@/components/helpers/Table';
-import { CreatorCard } from '@/components/pages/mypage/SupportingCreators/CreatorCard';
 import { SupportingCreatorMenuButton } from '@/components/pages/mypage/SupportingCreators/SupportingCreatorMenuButton';
 import { IconWithMessage } from '@/components/standalone/IconWithMessage';
 import { useSupportingCreators } from '@/hooks/useSupportingCreators';
@@ -78,7 +78,7 @@ export const SupportingCreators = () => {
             data={supportingCreators.map((d, i) => {
               return [
                 <Box key={`creator-card-${i}`} maxWidth={250} width="100%">
-                  <CreatorCard
+                  <MinimalCreatorCell
                     creatorId={d.creatorId}
                     creatorName={d.creator?.creatorName || ''}
                     icon={{}}

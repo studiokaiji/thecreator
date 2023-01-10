@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 
 import { MinimalLink } from '@/components/helpers/MinimalLink';
 
-type CreatorCardProps = {
+type MinimalCreatorCellProps = {
   creatorId: string;
   creatorName: string;
   icon?: {
@@ -14,11 +14,11 @@ type CreatorCardProps = {
   };
 };
 
-export const CreatorCard = ({
+export const MinimalCreatorCell = ({
   creatorId,
   creatorName,
   icon,
-}: CreatorCardProps) => {
+}: MinimalCreatorCellProps) => {
   return (
     <MinimalLink to={`/c/${creatorId}`}>
       <Stack direction="row" gap={2}>
