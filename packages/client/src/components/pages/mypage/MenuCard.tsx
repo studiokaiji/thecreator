@@ -1,4 +1,5 @@
 import GroupIcon from '@mui/icons-material/GroupOutlined';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import SettingsIcon from '@mui/icons-material/SettingsOutlined';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
@@ -24,6 +25,11 @@ export const MenuCard = () => {
       icon: <SettingsIcon />,
       text: t('settings'),
       to: '/mypage/settings',
+    },
+    {
+      icon: <NotificationsNoneIcon />,
+      text: t('notifications'),
+      to: '/mypage/notifications',
     },
   ];
 
