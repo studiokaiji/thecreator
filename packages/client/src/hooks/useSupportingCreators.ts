@@ -27,7 +27,7 @@ const NAME_FRAGMENT = 'name';
 export const useSupportingCreators = (supportingCreatorsLimit = 0) => {
   const { account, library } = useWallet();
 
-  useOnlyValidNetwork();
+  const isValidNetwork = useOnlyValidNetwork();
 
   const supportingCreatorsRef = useMemo(() => {
     if (!account) return null;
@@ -38,7 +38,7 @@ export const useSupportingCreators = (supportingCreatorsLimit = 0) => {
     uid: string,
     colRef: CollectionReference<WithId<SupportingCreatorPlanDocData>>,
     docsLimit: number,
-    supportedAt: Date
+    supportedAt: Date,
   ) => {
     if (!library) {
       throw Error('Need user wallet');
@@ -170,13 +170,14 @@ export const useSupportingCreators = (supportingCreatorsLimit = 0) => {
     _pageIndex: number,
     prevData?: WithId<SupportingCreatorPlanDocData>[]
   ) => {
-    if (prevData && !prevData.length) return null;
+    if ((prevData && !prevData.length) || !isValidNetwork) return null;
     const supportedAt = prevData?.slice(-1)[0].supportedAt || new Date(0);
     return [
       account,
       supportingCreatorsRef,
       supportingCreatorsLimit,
       supportedAt,
+      isValidNetwork,
     ];
   };
 

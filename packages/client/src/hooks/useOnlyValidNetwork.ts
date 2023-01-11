@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useWallet } from './useWallet';
 
 export const useOnlyValidNetwork = () => {
-  const { library, switchChain } = useWallet();
+  const { chainId, library, switchChain } = useWallet();
 
   useEffect(() => {
     if (!library) return;
@@ -22,4 +22,6 @@ export const useOnlyValidNetwork = () => {
     library.off('chainChanged', onChainChangedHandler);
     library.on('chainChanged', onChainChangedHandler);
   }, [library]);
+
+  return chainId === Number(import.meta.env.VITE_CHAIN_ID);
 };
