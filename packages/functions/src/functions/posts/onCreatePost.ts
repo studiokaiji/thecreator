@@ -32,6 +32,7 @@ export const onCreatePost = firestore
           type: 'newPost',
           creatorId: ctx.params.creatorId,
           createdAt: snapshot.createTime,
+          postTitle: snapshot.get('title'),
         };
 
         batch.create(ref, data);

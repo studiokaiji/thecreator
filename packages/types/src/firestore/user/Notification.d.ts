@@ -9,6 +9,8 @@ type NotificationDocData = {
   creatorId: string;
   createdAt: Date;
   customMessage?: string;
+  planId?: string;
+  postTitle?: string;
 };
 
 type NotificationSettings = {
