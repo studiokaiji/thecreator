@@ -2,6 +2,7 @@ import WalletIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistrationOutlined';
 import GroupIcon from '@mui/icons-material/GroupOutlined';
 import LoyaltyIcon from '@mui/icons-material/LoyaltyOutlined';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import SettingsIcon from '@mui/icons-material/SettingsOutlined';
 import { PopoverOrigin } from '@mui/material';
 import Box from '@mui/material/Box';
@@ -63,6 +64,11 @@ const UserWalletMenuBody = ({
         icon: <GroupIcon />,
         text: t('supportingCreators'),
         to: '/mypage/supporting-creators',
+      },
+      {
+        icon: <NotificationsNoneIcon />,
+        text: t('notifications'),
+        to: '/mypage/notifications',
       },
       {
         icon: <SettingsIcon />,

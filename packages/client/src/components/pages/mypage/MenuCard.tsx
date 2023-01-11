@@ -22,14 +22,14 @@ export const MenuCard = () => {
       to: '/mypage/supporting-creators',
     },
     {
-      icon: <SettingsIcon />,
-      text: t('settings'),
-      to: '/mypage/settings',
-    },
-    {
       icon: <NotificationsNoneIcon />,
       text: t('notifications'),
       to: '/mypage/notifications',
+    },
+    {
+      icon: <SettingsIcon />,
+      text: t('settings'),
+      to: '/mypage/settings',
     },
   ];
 
