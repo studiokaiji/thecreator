@@ -56,6 +56,12 @@
   "notConnectedWallet": "Not Connected Wallet",
   "notification": "Notification",
   "notificationEmail": "Notification Email",
+  "notificationMessages": {
+    "message": "Message {{title}} was received from {{creator}}.",
+    "newPost": "{{creator}} posted {{title}}.",
+    "oneWeekBeforeExpiration": "One week remains until the expiration date of {{plan}} subscription by {{creator}}.",
+    "subscriptionExpired": "{{plan}} subscription by {{creator}} has expired."
+  },
   "notificationSettings": "Notification setings",
   "notifications": "Notifications",
   "nsfwAccount": "NSFW Account",
