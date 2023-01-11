@@ -71,6 +71,10 @@ function App() {
                     <Route element={<SupportersPage />} path="supporters" />
                   </Route>
                   <Route element={<MyPage />} path="/mypage">
+                    <Route
+                      index
+                      element={<Navigate to="/mypage/supporting-creators" />}
+                    />
                     <Route element={<UserSettingsPage />} path="settings" />
                     <Route
                       element={<SupportingCreatorsPage />}
