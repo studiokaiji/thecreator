@@ -36,7 +36,8 @@ export const Notification = ({
         alignItems="center"
         direction="row"
         justifyContent="space-between"
-        p={2}
+        px={3}
+        py={1.75}
       >
         <Stack alignItems="center" direction="row" gap={1.5}>
           <Avater />
