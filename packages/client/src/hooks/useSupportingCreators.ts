@@ -14,6 +14,7 @@ import { useMemo } from 'react';
 import useSWRInfinite from 'swr/infinite';
 
 import { getCreatorDocRef } from './../converters/creatorConverter';
+import { useOnlyValidNetwork } from './useOnlyValidNetwork';
 import { useWallet } from './useWallet';
 
 import { getUserSupportingCreatorPlansCollectionRef } from '@/converters/userSupportingCreatorConverter';
@@ -25,6 +26,8 @@ const NAME_FRAGMENT = 'name';
 
 export const useSupportingCreators = (supportingCreatorsLimit = 0) => {
   const { account, library } = useWallet();
+
+  useOnlyValidNetwork();
 
   const supportingCreatorsRef = useMemo(() => {
     if (!account) return null;
