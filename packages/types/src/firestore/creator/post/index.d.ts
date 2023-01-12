@@ -1,7 +1,6 @@
 type CreatorPostDocData = {
   contentsType: CreatorPostDocDataContentsType;
   contentsCount: number;
-  planId: string;
   title: string;
   description: string;
   updatedAt: Date;
