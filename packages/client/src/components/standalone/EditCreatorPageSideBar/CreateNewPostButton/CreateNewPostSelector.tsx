@@ -18,23 +18,23 @@ export const CreateNewPostSelector = () => {
   const postTypes: PostTypeButtonLinkProps[] = [
     {
       icon: <FormatColorTextIcon />,
+      onClick: () => null,
       text: t('text'),
-      to: '/edit/post/text',
     },
     {
       icon: <InsertPhotoIcon />,
+      onClick: () => null,
       text: t('image'),
-      to: '/edit/post/image',
     },
     {
       icon: <VideoLibraryIcon />,
+      onClick: () => null,
       text: t('video'),
-      to: '/edit/post/video',
     },
     {
       icon: <HeadphonesIcon />,
+      onClick: () => null,
       text: t('audio'),
-      to: '/edit/post/audio',
     },
   ];
 

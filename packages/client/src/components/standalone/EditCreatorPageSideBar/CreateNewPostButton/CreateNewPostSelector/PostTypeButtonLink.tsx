@@ -6,17 +6,17 @@ import type { ReactNode } from 'react';
 export type PostTypeButtonLinkProps = {
   icon: ReactNode;
   text: string;
-  to: string;
+  onClick?: () => void;
 };
 
 export const PostTypeButtonLink = ({
   icon,
+  onClick,
   text,
-  to,
 }: PostTypeButtonLinkProps) => {
   return (
     <ButtonBase
-      href={to}
+      onClick={onClick}
       sx={(theme) => ({
         ':hover': {
           backgroundColor: theme.palette.grey[200],
