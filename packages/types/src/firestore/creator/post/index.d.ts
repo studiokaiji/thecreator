@@ -1,5 +1,5 @@
 type CreatorPostDocData = {
-  contentsType: 'audio' | 'text' | 'images';
+  contentsType: CreatorPostDocDataContentsType;
   contentsCount: number;
   planId: string;
   title: string;
@@ -8,3 +8,5 @@ type CreatorPostDocData = {
   createdAt: Date;
   borderLockAddress: string;
 };
+
+type CreatorPostDocDataContentsType = 'audio' | 'text' | 'images';
