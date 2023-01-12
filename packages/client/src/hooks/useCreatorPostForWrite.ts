@@ -1,4 +1,4 @@
-import { addDoc } from 'firebase/firestore';
+import { addDoc, serverTimestamp } from 'firebase/firestore';
 
 import { useWallet } from './useWallet';
 
@@ -15,7 +15,12 @@ export const useCreatorPostForWrite = () => {
       throw Error('User wallet does not exist.');
     }
     const postsRef = getCreatorPostsCollectionRef(account);
-    const { id } = await addDoc(postsRef, data);
+    const { id } = await addDoc(postsRef, {
+      ...data,
+      createdAt: serverTimestamp(),
+      id: '',
+      updatedAt: serverTimestamp(),
+    });
     return id;
   };
 
