@@ -12,18 +12,35 @@ import {
   PostTypeButtonLinkProps,
 } from './CreateNewPostSelector/PostTypeButtonLink';
 
+import { useCreatorPostForWrite } from '@/hooks/useCreatorPostForWrite';
+
+const testPostData = {
+  borderLockAddress: '',
+  contentsCount: 1,
+  description: '',
+  title: 'TITLE',
+};
+
 export const CreateNewPostSelector = () => {
   const { t } = useTranslation();
+
+  const { post } = useCreatorPostForWrite();
 
   const postTypes: PostTypeButtonLinkProps[] = [
     {
       icon: <FormatColorTextIcon />,
-      onClick: () => null,
+      onClick: async () => {
+        await post({ ...testPostData, contentsType: 'text' }, null);
+        alert('Successful text post');
+      },
       text: t('text'),
     },
     {
       icon: <InsertPhotoIcon />,
-      onClick: () => null,
+      onClick: async () => {
+        await post({ ...testPostData, contentsType: 'images' }, null);
+        alert('Successful images post');
+      },
       text: t('image'),
     },
     {
@@ -33,7 +50,10 @@ export const CreateNewPostSelector = () => {
     },
     {
       icon: <HeadphonesIcon />,
-      onClick: () => null,
+      onClick: async () => {
+        await post({ ...testPostData, contentsType: 'audio' }, null);
+        alert('Successful audio post');
+      },
       text: t('audio'),
     },
   ];
