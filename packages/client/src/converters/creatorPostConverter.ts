@@ -25,7 +25,7 @@ export const creatorPostConverter: FirestoreDataConverter<
 };
 
 export const getCreatorPostsCollectionRef = (id: string) =>
-  collection(db, 'creators', id).withConverter(creatorPostConverter);
+  collection(db, 'creators', id, 'posts').withConverter(creatorPostConverter);
 
 export const getCreatorPostDocRef = (id: string, postId: string) =>
   doc(db, 'creators', id, 'posts', postId).withConverter(creatorPostConverter);
