@@ -1,10 +1,5 @@
 import { BigNumber, Contract, providers } from 'ethers';
-import {
-  arrayUnion,
-  doc,
-  updateDoc,
-  writeBatch,
-} from 'firebase/firestore';
+import { arrayUnion, doc, updateDoc, writeBatch } from 'firebase/firestore';
 import { useMemo } from 'react';
 
 import { usePublicLock } from './usePublicLock';
@@ -55,6 +50,7 @@ export const useCreatorPlanForWrite = (publicLockAddress?: string) => {
       request: {
         keyPrice: plan.keyPrice,
         lockName: plan.name,
+        maxNumberOfKeys: plan.maxNumberOfKeys,
         tokenAddress: plan.tokenAddress,
       },
     });
