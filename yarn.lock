@@ -4323,6 +4323,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/debounce@npm:*":
+  version: 3.0.0
+  resolution: "@types/debounce@npm:3.0.0"
+  checksum: af99f44f8ce90388aa5a909066c64b4ddc5efdff72bccf7dcef1fe8a04f03d03a7a42cc1f42ff14620c66923f92600ccfeb768bd77ad250f12a6ebca116ca719
+  languageName: node
+  linkType: hard
+
 "@types/eslint@npm:^8.4.10":
   version: 8.4.10
   resolution: "@types/eslint@npm:8.4.10"
@@ -4657,6 +4664,15 @@ __metadata:
   version: 1.11.4
   resolution: "@types/underscore@npm:1.11.4"
   checksum: db9f8486bc851b732259e51f42d62aad1ae2158be5724612dc125ece5f5d61c51447f9dea28284c2a0f79cb95e788d01cb5ce97709880019213e69fab0dd1696
+  languageName: node
+  linkType: hard
+
+"@types/wavesurfer.js@npm:^6.0.3":
+  version: 6.0.3
+  resolution: "@types/wavesurfer.js@npm:6.0.3"
+  dependencies:
+    "@types/debounce": "*"
+  checksum: 41b45e1863474da106ea95573134171142d26b11775922f153775ed0b070b2a430146f9f293353df12de4991f2d224b1413f1b9dc6a60e1383aeacfa83fc4177
   languageName: node
   linkType: hard
 
@@ -17022,6 +17038,7 @@ resolve@^2.0.0-next.3:
   version: 0.0.0-use.local
   resolution: "thecreator@workspace:."
   dependencies:
+    "@types/wavesurfer.js": ^6.0.3
     "@typescript-eslint/eslint-plugin": ^5.40.1
     "@typescript-eslint/parser": ^5.40.1
     eslint: ^8.25.0
@@ -17033,6 +17050,7 @@ resolve@^2.0.0-next.3:
     prettier: ^2.7.1
     prettier-plugin-sort-json: ^0.0.3
     typescript: ^4.8.4
+    wavesurfer.js: ^6.4.0
   languageName: unknown
   linkType: soft
 
@@ -17970,6 +17988,13 @@ typescript@^4.8.4:
   version: 3.1.0
   resolution: "void-elements@npm:3.1.0"
   checksum: 0390f818107fa8fce55bb0a5c3f661056001c1d5a2a48c28d582d4d847347c2ab5b7f8272314cac58acf62345126b6b09bea623a185935f6b1c3bbce0dfd7f7f
+  languageName: node
+  linkType: hard
+
+"wavesurfer.js@npm:^6.4.0":
+  version: 6.4.0
+  resolution: "wavesurfer.js@npm:6.4.0"
+  checksum: 637df6c5c10b5026bbb0c388941775f05f8b1322ab582577dde45ff359bfa09ce94f7c53dc8d2a4040a45cdf6a435f3af3dea39b283d4fb1153216aee7115c46
   languageName: node
   linkType: hard
 
