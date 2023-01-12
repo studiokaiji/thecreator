@@ -330,7 +330,9 @@ export const PlanForm = ({
                 },
               })}
               error={!!errors.maxNumberOfMembers}
-              helperText={errors.maxNumberOfMembers?.message}
+              helperText={
+                errors.maxNumberOfMembers?.message || t('maxNumberOfMembersSub')
+              }
               label={t('maxNumberOfMembers')}
               placeholder={`${t('ex')}: 100`}
               type="number"
