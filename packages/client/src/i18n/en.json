@@ -9,6 +9,7 @@
   "balance": "Balance",
   "becomeACreator": "Become a Creator",
   "changeEmail": "Change Email",
+  "clickOrDragAndDropToAddFiles": "Click or drag & drop to add files",
   "close": "Close",
   "complete": "Complete",
   "completePaymentToCreator": "Complete payment to {{creator}}",
@@ -45,6 +46,7 @@
   "guideLineMessageForRefund": "*Keep a portion of the balance in the contract for refunds to users is recommended. The guideline is 10%.",
   "image": "Image",
   "inProgress": "In progress",
+  "invalidFaileSelectedMessage": "A invalid file was selected. Please check file format and size.",
   "limit": "Limit",
   "maxNumberOfMembers": "Max number of members",
   "maxNumberOfMembersSub": "If the value is 0 or not entered, the number of people will not be limited.",
@@ -72,7 +74,10 @@
   "payout": "Payout",
   "plan": "Plan",
   "plans": "Plans",
+  "postAudio": "Post audio",
+  "postImages": "Post images",
   "postType": "Post type",
+  "postVideo": "Post video",
   "posts": "Posts",
   "price": "Price",
   "pricePerMonth": "Price / month",
@@ -103,6 +108,11 @@
   "text": "Text",
   "tokenId": "Token ID",
   "total": "Total",
+  "uploaderSubMessages": {
+    "audio": "100MB or less, Format: mp3, aac",
+    "images": "Can be drag & drop in batches. maximum of 30 images, 10 MB or less per file, jpeg, png, gif are supported.",
+    "thumbnail": "10 MB or less, jpeg, png, gif are supported."
+  },
   "userRejectedRequest": "User rejected request",
   "validationErrors": {
     "invalidType": "Invalid type",

@@ -10,36 +10,29 @@ import { useTranslation } from 'react-i18next';
 import {
   PostTypeButtonLink,
   PostTypeButtonLinkProps,
-} from './CreateNewPostSelector/PostTypeButtonLink';
+} from './PostTypeButtonLink';
 
-import { useCreatorPostForWrite } from '@/hooks/useCreatorPostForWrite';
-
-const testPostData = {
-  borderLockAddress: '',
-  contentsCount: 1,
-  description: '',
-  title: 'TITLE',
+type CreateNewPostSelectorProps = {
+  onSelectPostType: (postType: CreatorPostDocDataContentsType) => void;
 };
 
-export const CreateNewPostSelector = () => {
+export const CreateNewPostSelector = ({
+  onSelectPostType,
+}: CreateNewPostSelectorProps) => {
   const { t } = useTranslation();
-
-  const { post } = useCreatorPostForWrite();
 
   const postTypes: PostTypeButtonLinkProps[] = [
     {
       icon: <FormatColorTextIcon />,
       onClick: async () => {
-        await post({ ...testPostData, contentsType: 'text' }, null);
-        alert('Successful text post');
+        onSelectPostType('text');
       },
       text: t('text'),
     },
     {
       icon: <InsertPhotoIcon />,
       onClick: async () => {
-        await post({ ...testPostData, contentsType: 'images' }, null);
-        alert('Successful images post');
+        onSelectPostType('images');
       },
       text: t('image'),
     },
@@ -51,8 +44,7 @@ export const CreateNewPostSelector = () => {
     {
       icon: <HeadphonesIcon />,
       onClick: async () => {
-        await post({ ...testPostData, contentsType: 'audio' }, null);
-        alert('Successful audio post');
+        onSelectPostType('audio');
       },
       text: t('audio'),
     },

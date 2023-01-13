@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { AudioPost } from './AudioPost';
 import { CreateNewPostSelector } from './CreateNewPostSelector';
+import { ImagesPost } from './ImagesPost';
 
 import { CenterModal } from '@/components/helpers/CenterModal';
 import { RoundedButton } from '@/components/helpers/RoundedButton';
@@ -9,24 +11,28 @@ import { RoundedButton } from '@/components/helpers/RoundedButton';
 export const CreateNewPostButton = () => {
   const { t } = useTranslation();
 
-  const [open, setOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedPostType, setSelectedPostType] =
+    useState<CreatorPostDocDataContentsType>();
+
+  const open = useCallback(() => setIsOpen(true), []);
+  const close = useCallback(() => {
+    setSelectedPostType(undefined);
+    setIsOpen(false);
+  }, []);
 
   return (
     <>
-      <CenterModal
-        maxWidth={540}
-        onClose={() => setOpen(false)}
-        open={open}
-        width="100%"
-      >
-        <CreateNewPostSelector />
+      <CenterModal maxWidth={560} onClose={close} open={isOpen} width="100%">
+        {selectedPostType === 'audio' ? (
+          <AudioPost />
+        ) : selectedPostType === 'images' ? (
+          <ImagesPost />
+        ) : (
+          <CreateNewPostSelector onSelectPostType={setSelectedPostType} />
+        )}
       </CenterModal>
-      <RoundedButton
-        fullWidth
-        onClick={() => setOpen(true)}
-        size="large"
-        variant="contained"
-      >
+      <RoundedButton fullWidth onClick={open} size="large" variant="contained">
         + {t('createNewPost')}
       </RoundedButton>
     </>
