@@ -70,7 +70,6 @@ export const FileUploader = ({
   useEffect(() => {
     if (!acceptedFiles || !acceptedFiles.length || !onRetriveValidFiles) return;
     onRetriveValidFiles(acceptedFiles);
-    removeAll();
   }, [acceptedFiles]);
 
   const { t } = useTranslation();
