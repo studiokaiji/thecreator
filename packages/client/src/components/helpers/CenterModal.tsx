@@ -1,32 +1,28 @@
 import Box from '@mui/material/Box';
-import Modal, { ModalProps } from '@mui/material/Modal';
+import Dialog, { DialogProps } from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
 
-export type CenterModalProps = ModalProps & {
-  width?: string | number;
+export type CenterModalProps = DialogProps & {
   maxWidth?: string | number;
-  height?: string | number;
   maxHeight?: string | number;
 };
 
 export const CenterModal = (props: CenterModalProps) => (
-  <Modal {...props}>
-    <Box
+  <Dialog {...props}>
+    <DialogContent
+      dividers={false}
       sx={{
-        bgcolor: 'background.paper',
-        borderRadius: 1,
-        boxShadow: 12,
-        height: props.height,
-        left: '50%',
-        maxHeight: props.maxHeight,
-        maxWidth: props.maxWidth,
         p: 4,
-        position: 'absolute' as const,
-        top: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: props.width || 640,
       }}
     >
-      {props.children}
-    </Box>
-  </Modal>
+      <Box
+        sx={{
+          maxHeight: props.maxHeight,
+          maxWidth: props.maxWidth,
+        }}
+      >
+        {props.children}
+      </Box>
+    </DialogContent>
+  </Dialog>
 );

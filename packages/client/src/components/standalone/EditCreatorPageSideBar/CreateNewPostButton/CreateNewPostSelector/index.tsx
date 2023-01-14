@@ -5,6 +5,8 @@ import VideoLibraryIcon from '@mui/icons-material/VideoLibraryOutlined';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -20,6 +22,9 @@ export const CreateNewPostSelector = ({
   onSelectPostType,
 }: CreateNewPostSelectorProps) => {
   const { t } = useTranslation();
+
+  const theme = useTheme();
+  const isOverSm = useMediaQuery(theme.breakpoints.up('sm'));
 
   const postTypes: PostTypeButtonLinkProps[] = [
     {
@@ -51,14 +56,14 @@ export const CreateNewPostSelector = ({
   ];
 
   return (
-    <Box>
+    <Box width="100%">
       <Typography sx={{ lineHeight: 1 }} variant="h5">
         {t('createNewPost')}
       </Typography>
       <Typography color="GrayText" fontWeight={600} sx={{ mt: 3 }}>
         {t('postType')}
       </Typography>
-      <Grid container sx={{ mt: 1, width: '100%' }}>
+      <Grid container sx={{ mt: 1, width: isOverSm ? 440 : '100%' }}>
         {postTypes.map((postType) => (
           <Grid
             key={postType.text}
