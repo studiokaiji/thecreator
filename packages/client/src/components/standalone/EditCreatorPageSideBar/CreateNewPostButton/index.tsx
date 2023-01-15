@@ -1,3 +1,4 @@
+import Box from '@mui/material/Box';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -23,14 +24,21 @@ export const CreateNewPostButton = () => {
 
   return (
     <>
-      <CenterModal maxWidth={560} onClose={close} open={isOpen} width="100%">
-        {selectedPostType === 'audio' ? (
-          <AudioPost />
-        ) : selectedPostType === 'images' ? (
-          <ImagesPost />
-        ) : (
-          <CreateNewPostSelector onSelectPostType={setSelectedPostType} />
-        )}
+      <CenterModal
+        fullWidth={!!selectedPostType}
+        maxWidth="sm"
+        onClose={close}
+        open={isOpen}
+      >
+        <Box>
+          {selectedPostType === 'audio' ? (
+            <AudioPost />
+          ) : selectedPostType === 'images' ? (
+            <ImagesPost />
+          ) : (
+            <CreateNewPostSelector onSelectPostType={setSelectedPostType} />
+          )}
+        </Box>
       </CenterModal>
       <RoundedButton fullWidth onClick={open} size="large" variant="contained">
         + {t('createNewPost')}

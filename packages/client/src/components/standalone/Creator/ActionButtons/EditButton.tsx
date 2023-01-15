@@ -42,7 +42,7 @@ export const EditButton = ({
           {t('edit')}
         </RoundedButton>
       )}
-      <CenterModal onClose={close} open={isOpen} width={minimize ? 380 : 560}>
+      <CenterModal fullWidth maxWidth="sm" onClose={close} open={isOpen}>
         <Stack spacing={2}>
           <Typography variant="h5">{t('edit')}</Typography>
           <CreatorProfileEditForm
