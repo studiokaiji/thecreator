@@ -77,8 +77,23 @@ export const ImageCell = ({
         })}
         width="100%"
       >
-        <Stack direction="row" gap={1}>
+        <Stack alignItems="center" direction="row" gap={1}>
           <Typography fontWeight={500}>{index + 1}</Typography>
+          {index < 1 && (
+            <Typography
+              color="white"
+              fontSize={12}
+              fontWeight={500}
+              sx={(theme) => ({
+                backgroundColor: theme.palette.primary.main,
+                borderRadius: 20,
+                px: 1,
+                py: 0.3,
+              })}
+            >
+              {t('thumbnail')}
+            </Typography>
+          )}
         </Stack>
         <Stack direction="row" gap={1}>
           <IconButton disabled={index < 1} onClick={toTop} size="small">

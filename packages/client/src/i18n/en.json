@@ -106,6 +106,7 @@
   "supportingCreatorDoesNotExist": "Supporting Creator Does Not Exist",
   "supportingCreators": "Supporting Creators",
   "text": "Text",
+  "title": "Title",
   "tokenId": "Token ID",
   "total": "Total",
   "uploaderSubMessages": {
@@ -113,6 +114,7 @@
     "images": "Can be drag & drop in batches. maximum of 30 images, 10 MB or less per file, jpeg, png, gif are supported.",
     "thumbnail": "10 MB or less, jpeg, png, gif are supported."
   },
+  "thumbnail": "Thumbnail",
   "userRejectedRequest": "User rejected request",
   "validationErrors": {
     "invalidType": "Invalid type",
