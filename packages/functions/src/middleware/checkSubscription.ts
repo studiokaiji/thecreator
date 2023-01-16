@@ -8,7 +8,7 @@ import {
 } from '@ethersproject/providers';
 
 import { Multicall__factory } from '@contracts';
-import { utils } from 'ethers';
+import { constants, utils } from 'ethers';
 
 export type Subscription = {
   tokenId: BigNumber;
@@ -53,6 +53,10 @@ export const checkSubscription = async (
     throw Error(
       'If process.env.MULTICALL_ADDRESS does not exist, multicallContractAddress is required.'
     );
+  }
+
+  if (!borderLockAddress || borderLockAddress === constants.AddressZero) {
+    return true;
   }
 
   const multicall = new Contract(
