@@ -71,11 +71,11 @@ const fetchUrlsFromCache = async (
 const setUrlsToCache = async (
   cacheRef: database.Reference,
   urls: string[],
-  planId: string,
+  borderLockAddress: string,
   contentsType: string,
   expiry: Date
 ) => {
-  const setVal = { contentsType, expiry, planId, urls };
+  const setVal = { contentsType, expiry, borderLockAddress, urls };
   await cacheRef.set(setVal);
   return setVal;
 };
@@ -176,7 +176,7 @@ export const getDownloadSignedUrls = https.onCall(async (d, context) => {
   await setUrlsToCache(
     cacheRef,
     urls,
-    postData.planId,
+    postData.borderLockAddress,
     postData.contentsType,
     expiry
   ).catch(() => {
@@ -185,7 +185,7 @@ export const getDownloadSignedUrls = https.onCall(async (d, context) => {
 
   return {
     urls,
-    planId: postData.planId,
+    borderLockAddress: postData.borderLockAddress,
     contentsType: postData.contentsType,
     expiry,
   };
