@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
 import { PaginableTable } from '@/components/helpers/PaginableTable';
-import { MainLoading } from '@/components/standalone/MainLoading';
 import { useOnlyValidNetwork } from '@/hooks/useOnlyValidNetwork';
 import { usePublicLockSupporters } from '@/hooks/usePublicLockSupporters';
 import { blockTimestampToDate } from '@/utils/block-timestamp-to-date';
@@ -38,16 +37,13 @@ export const SupportersTable = ({ planId }: SupportersTableProps) => {
 
   const count = supportersData?.totalSupply.toNumber();
 
-  if (!data || typeof count !== 'number') {
-    return <MainLoading />;
-  }
-
   return (
     <PaginableTable
-      data={data}
+      data={data || []}
       headRows={rows}
+      loading={!data || typeof count !== 'number'}
       paging={{
-        count,
+        count: count || 0,
         onPageChange: (_, page) => setSize(page),
         page: size - 1,
       }}
