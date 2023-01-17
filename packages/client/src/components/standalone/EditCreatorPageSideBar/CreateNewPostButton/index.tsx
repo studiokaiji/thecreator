@@ -18,8 +18,8 @@ export const CreateNewPostButton = () => {
 
   const open = useCallback(() => setIsOpen(true), []);
   const close = useCallback(() => {
-    setSelectedPostType(undefined);
     setIsOpen(false);
+    setSelectedPostType(undefined);
   }, []);
 
   return (
