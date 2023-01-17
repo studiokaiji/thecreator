@@ -13,7 +13,7 @@ export const RouteAuthGuard: FC<Partial<PropsWithChildren>> = ({
 }) => {
   const { checking, currentUser } = useCurrentUser();
 
-  if (checking) {
+  if (checking && !currentUser) {
     return <MainLoading />;
   }
 
