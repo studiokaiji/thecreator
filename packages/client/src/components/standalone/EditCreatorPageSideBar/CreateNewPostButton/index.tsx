@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { AudioPost } from './AudioPost';
@@ -17,10 +17,13 @@ export const CreateNewPostButton = () => {
     useState<CreatorPostDocDataContentsType>();
 
   const open = useCallback(() => setIsOpen(true), []);
-  const close = useCallback(() => {
-    setIsOpen(false);
-    setSelectedPostType(undefined);
-  }, []);
+  const close = useCallback(() => setIsOpen(false), []);
+
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedPostType(undefined);
+    }
+  }, [isOpen]);
 
   return (
     <>
