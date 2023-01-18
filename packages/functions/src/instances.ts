@@ -9,7 +9,7 @@ export const s3 = new S3Client({
     accessKeyId: functionsConfig.r2.accountId,
     secretAccessKey: functionsConfig.r2.secretKey,
   },
-  endpoint: functionsConfig.endpoint,
+  endpoint: functionsConfig.r2.endpoint,
   region: 'auto',
 });
 

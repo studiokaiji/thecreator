@@ -9,6 +9,7 @@ import {
 
 import { Multicall__factory } from '@contracts';
 import { constants, utils } from 'ethers';
+import { functionsConfig } from '@/instances';
 
 export type Subscription = {
   tokenId: BigNumber;
@@ -28,14 +29,7 @@ export type Plan = {
 };
 
 const getProviderFromEnv = () => {
-  if (!process.env.CHAIN_RPC_ENDPOINTS) {
-    throw Error('Need process.env.CHAIN_RPC_ENDPOINTS');
-  }
-
-  const endpoints = JSON.parse(
-    process.env.CHAIN_RPC_ENDPOINTS || '[]'
-  ) as string[];
-
+  const endpoints: string[] = functionsConfig.nodeProviderEndpoints;
   return new FallbackProvider(
     endpoints.map((url) => new JsonRpcProvider(url)),
     1
