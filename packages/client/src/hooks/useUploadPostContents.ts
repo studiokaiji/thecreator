@@ -7,15 +7,7 @@ import { functions } from '@/firebase';
 export const useUploadPostContents = () => {
   const { currentUser } = useCurrentUser();
 
-  const upload = async <
-    T extends
-      | 'images'
-      | 'audio'
-      | 'attachedImage'
-      | 'text'
-      | 'profileImage'
-      | 'headerImage'
-  >({
+  const upload = async <T extends ContentsType>({
     contents,
     contentsType,
     isPublic,

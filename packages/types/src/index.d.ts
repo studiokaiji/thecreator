@@ -7,3 +7,4 @@ import './firestore/user';
 import './firestore/user/Notification';
 import './firestore/user/SupportingCreatorPlan';
 import './multicall/MulticallInput';
+import './contents/ContentsType';
