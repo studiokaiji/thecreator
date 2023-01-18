@@ -1,14 +1,15 @@
 import { S3Client } from '@aws-sdk/client-s3';
 import * as firebaseAdmin from 'firebase-admin';
+import * as functions from 'firebase-functions';
+
+export const functionsConfig = functions.config();
 
 export const s3 = new S3Client({
   credentials: {
-    accessKeyId: process.env.R2_ACCOUNT_ID || '',
-    secretAccessKey: 'SECRET_ACCESS_KEY',
+    accessKeyId: functionsConfig.r2.accountId,
+    secretAccessKey: functionsConfig.r2.secretKey,
   },
-  endpoint: `https://${
-    process.env.R2_ACCOUNT_ID || ''
-  }.r2.cloudflarestorage.com`,
+  endpoint: functionsConfig.endpoint,
   region: 'auto',
 });
 
