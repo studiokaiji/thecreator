@@ -1,22 +1,32 @@
-import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
-import { Conditions } from '@aws-sdk/s3-presigned-post/dist-types/types';
 import { https } from 'firebase-functions';
 import { z } from 'zod';
 
 import { db, s3 } from '@/instances';
-import { maxContentSizes } from '@/settings';
+import { getUserId } from '@/middleware/getUserId';
+import {
+  CREATOR_LIMITED_PUBLICATION_BUCKET_NAME,
+  CREATOR_PUBLIC_BUCKET_NAME,
+} from '@/constants';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { PutObjectCommand } from '@aws-sdk/client-s3';
+import {
+  maxContentLengths,
+  postDataContentTypes,
+  validContentTypes,
+  uploadPresignedUrlExpiresIn,
+} from '@/settings';
 
-const Expires = 180;
-
-const postDataContentTypes = [
-  'images',
-  'audio',
-  'text',
-  'attachedImage',
-] as const;
+const contentInfoListSchema = z
+  .object({
+    contentLength: z.number(),
+    contentType: z.string(),
+  })
+  .array()
+  .min(1)
+  .max(30);
 
 const requestPostDataSchema = z.object({
-  contentType: z.union([
+  contentsType: z.union([
     z.literal(postDataContentTypes[0]),
     z.literal(postDataContentTypes[1]),
     z.literal(postDataContentTypes[2]),
@@ -25,32 +35,37 @@ const requestPostDataSchema = z.object({
   creatorId: z.string(),
   isPublic: z.boolean().optional(),
   numOfImages: z.number().min(1).max(30).optional(),
+  contentInfoList: contentInfoListSchema,
   postId: z.string(),
 });
 
 const profileDataContentTypes = ['profileImage', 'headerImage'] as const;
 
 const requestProfileDataSchema = z.object({
-  contentType: z.union([
+  contentsType: z.union([
     z.literal(profileDataContentTypes[0]),
     z.literal(profileDataContentTypes[1]),
   ]),
   creatorId: z.string(),
+  contentInfoList: contentInfoListSchema,
 });
 
 export const getUploadSignedUrl = https.onCall(async (d, context) => {
-  if (!context.auth) {
+  const userId = getUserId(context);
+
+  if (!userId) {
     throw new https.HttpsError('unauthenticated', 'Need auth');
   }
 
-  const requestType = postDataContentTypes.includes(d.contentType || '')
+  // Validation of request
+  const requestType = postDataContentTypes.includes(d.contentsType || '')
     ? 'post'
-    : profileDataContentTypes.includes(d.contentType || '')
+    : profileDataContentTypes.includes(d.contentsType || '')
     ? 'profile'
     : null;
 
   if (!requestType) {
-    throw new https.HttpsError('invalid-argument', 'Invalid contentType');
+    throw new https.HttpsError('invalid-argument', 'Invalid contentsType');
   }
 
   const data = await (requestType === 'post'
@@ -62,6 +77,31 @@ export const getUploadSignedUrl = https.onCall(async (d, context) => {
       throw new https.HttpsError('invalid-argument', 'Invalid argument');
     });
 
+  if (data.contentsType !== 'images' && data.contentInfoList.length > 1) {
+    throw new https.HttpsError('invalid-argument', 'Invalid contents count');
+  }
+
+  // Content check
+  const maxContentLength = maxContentLengths[data.contentsType];
+  const validContentType: string[] = [...validContentTypes[data.contentsType]];
+
+  const contentLengths: number[] = [];
+  const contentTypes: string[] = [];
+
+  for (const { contentLength, contentType } of data.contentInfoList) {
+    const isOk =
+      contentLength <= maxContentLength &&
+      validContentType.includes(contentType);
+
+    if (!isOk) {
+      throw new https.HttpsError('invalid-argument', 'Invalid content info');
+    }
+
+    contentLengths.push(contentLength);
+    contentTypes.push(contentType);
+  }
+
+  // Creator check
   const creatorRef = db.doc(`/creators/${data.creatorId}`);
 
   const creatorSnapshot = await creatorRef.get();
@@ -73,14 +113,14 @@ export const getUploadSignedUrl = https.onCall(async (d, context) => {
     );
   }
 
-  if (creatorData.creatorAddress !== context.auth.uid) {
+  if (creatorData.creatorAddress !== userId) {
     throw new https.HttpsError(
       'permission-denied',
       'Only the creator themselves can access'
     );
   }
 
-  if (!creatorData.isPublic) {
+  if (!creatorData.settings.isPublish) {
     throw new https.HttpsError(
       'permission-denied',
       'Creator page must be public'
@@ -100,39 +140,30 @@ export const getUploadSignedUrl = https.onCall(async (d, context) => {
     }
   }
 
-  const maxContentSize = maxContentSizes[data.contentType];
-  const Conditions: Conditions[] = [
-    ['content-length-range', 1, maxContentSize],
-  ];
-
+  // Generate URL(s)
   if (requestType === 'post') {
     const postData = data as z.infer<typeof requestPostDataSchema>;
 
     const Bucket = postData.isPublic
-      ? process.env.CREATOR_PUBLIC_BUCKET_NAME
-      : process.env.CREATOR_LIMITED_PUBLICATION_BUCKET_NAME;
-
-    if (!Bucket) {
-      console.error(
-        'A valid bucket name does not exist in the environment constants file.'
-      );
-      throw new https.HttpsError('internal', 'Internal server error');
-    }
-
-    const numOfImages: number =
-      postData.contentType === 'images' && postData.numOfImages
-        ? postData.numOfImages
-        : 1;
+      ? CREATOR_PUBLIC_BUCKET_NAME
+      : CREATOR_LIMITED_PUBLICATION_BUCKET_NAME;
 
     const urls: string[] = await Promise.all(
-      [...Array(numOfImages)].map(async (_, i) => {
+      contentLengths.map(async (ContentLength, i) => {
         const Key = `${postData.creatorId}/${postData.postId}/${i}`;
-        const { url } = await createPresignedPost(s3, {
-          Bucket,
-          Conditions,
-          Expires,
-          Key,
-        });
+
+        const ContentType = contentTypes[i];
+
+        const url = await getSignedUrl(
+          s3,
+          new PutObjectCommand({
+            Bucket,
+            Key,
+            ContentLength,
+            ContentType,
+          }),
+          { expiresIn: uploadPresignedUrlExpiresIn }
+        );
         return url;
       })
     );
@@ -142,21 +173,22 @@ export const getUploadSignedUrl = https.onCall(async (d, context) => {
     const profileData = data as z.infer<typeof requestProfileDataSchema>;
 
     const Bucket = process.env.CREATOR_PUBLIC_BUCKET_NAME;
-    if (!Bucket) {
-      console.error(
-        'A valid bucket name does not exist in the environment constants file.'
-      );
-      throw new https.HttpsError('internal', 'Internal server error');
-    }
 
-    const Key = `${profileData.creatorId}/${profileData.contentType}`;
+    const Key = `${profileData.creatorId}/${profileData.contentsType}`;
 
-    const { url } = await createPresignedPost(s3, {
-      Bucket,
-      Conditions,
-      Expires,
-      Key,
-    });
+    const ContentLength = contentLengths[0];
+    const ContentType = contentTypes[0];
+
+    const url = await getSignedUrl(
+      s3,
+      new PutObjectCommand({
+        Bucket,
+        Key,
+        ContentLength,
+        ContentType,
+      }),
+      { expiresIn: uploadPresignedUrlExpiresIn }
+    );
 
     return { urls: [url] };
   }
