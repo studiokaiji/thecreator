@@ -71,6 +71,9 @@ export const ImagesPost = ({ onDone }: ImagesPostProps) => {
       },
       images
     );
+
+    images.map(({ revoke }) => revoke());
+
     onDone();
   };
 
