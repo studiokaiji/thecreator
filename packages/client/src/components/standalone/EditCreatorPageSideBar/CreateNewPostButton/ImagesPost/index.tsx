@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { ImageList } from './ImageList';
 
 import { FileUploader } from '@/components/standalone/FileUploader';
+import { useBeforeUnload } from '@/hooks/useBeforeUnload';
 import { useCreatorPlans } from '@/hooks/useCreatorPlans';
 import { useCreatorPostForWrite } from '@/hooks/useCreatorPostForWrite';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
@@ -73,6 +74,8 @@ export const ImagesPost = ({ onDone }: ImagesPostProps) => {
 
   const { currentUser } = useCurrentUser();
   const { data: plans } = useCreatorPlans(currentUser?.uid);
+
+  useBeforeUnload(uploadStatus === 'uploading');
 
   return (
     <FormProvider {...form}>
