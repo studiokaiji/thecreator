@@ -100,6 +100,7 @@
   "subscribedDate": "Subscribed Date",
   "subscriptionExpired": "Subscription Expired",
   "success": "Success",
+  "successfullyPosted": "Successfully posted.",
   "supportedCreatorNewPost": "Supported Creator New Post",
   "supporter": "Supporter",
   "supporters": "Supporters",
@@ -116,7 +117,6 @@
     "thumbnail": "10 MB or less, jpeg, png, gif are supported."
   },
   "uploading": "Uploading",
-  "successfullyPosted": "Successfully posted.",
   "userRejectedRequest": "User rejected request",
   "validationErrors": {
     "invalidType": "Invalid type",
