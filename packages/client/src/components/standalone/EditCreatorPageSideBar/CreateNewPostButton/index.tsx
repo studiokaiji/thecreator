@@ -8,6 +8,7 @@ import { ImagesPost } from './ImagesPost';
 
 import { CenterModal } from '@/components/helpers/CenterModal';
 import { RoundedButton } from '@/components/helpers/RoundedButton';
+import { useSnackbar } from '@/hooks/useSnackbar';
 
 export const CreateNewPostButton = () => {
   const { t } = useTranslation();
@@ -18,6 +19,12 @@ export const CreateNewPostButton = () => {
 
   const open = useCallback(() => setIsOpen(true), []);
   const close = useCallback(() => setIsOpen(false), []);
+
+  const { open: openSnackbar } = useSnackbar();
+  const done = () => {
+    close();
+    openSnackbar(t('successfullyPosted'));
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -37,7 +44,7 @@ export const CreateNewPostButton = () => {
           {selectedPostType === 'audio' ? (
             <AudioPost />
           ) : selectedPostType === 'images' ? (
-            <ImagesPost />
+            <ImagesPost onDone={done} />
           ) : (
             <CreateNewPostSelector onSelectPostType={setSelectedPostType} />
           )}

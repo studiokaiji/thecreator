@@ -1,4 +1,5 @@
 import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
 import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
@@ -21,7 +22,11 @@ export type ImagesPostFormInput = {
   title: string;
 };
 
-export const ImagesPost = () => {
+type ImagesPostProps = {
+  onDone: () => void;
+};
+
+export const ImagesPost = ({ onDone }: ImagesPostProps) => {
   const { t } = useTranslation();
 
   const [images, setImages] = useState<UseImageData[]>([]);
@@ -39,9 +44,9 @@ export const ImagesPost = () => {
 
   const { postData, uploadContents } = useCreatorPostForWrite();
 
-  const [uploadStatus, setUploadStatus] = useState<
-    'waitingSelectFiles' | 'uploading' | 'done'
-  >('waitingSelectFiles');
+  const [uploadStatus, setUploadStatus] = useState<'typing' | 'uploading'>(
+    'typing'
+  );
 
   const post = async () => {
     const { borderLockAddress, descriptions, title } = form.getValues();
@@ -63,7 +68,7 @@ export const ImagesPost = () => {
       },
       images
     );
-    setUploadStatus('done');
+    onDone();
   };
 
   const { currentUser } = useCurrentUser();
@@ -75,46 +80,58 @@ export const ImagesPost = () => {
         <Typography variant="h5">{t('postImages')}</Typography>
         {images.length ? (
           <>
-            <ImageList images={images} onChangeImages={setImages} />
-            <TextField
-              label={t('title')}
-              variant="standard"
-              {...form.register('title', {
-                required: t('validationErrors.required'),
-              })}
-              required
-              error={!!form.formState.errors.title?.message}
-              helperText={form.formState.errors.title?.message}
-            />
-            <Controller
-              control={form.control}
-              name="borderLockAddress"
-              render={({ field }) => (
+            {uploadStatus === 'typing' ? (
+              <>
+                <ImageList images={images} onChangeImages={setImages} />
                 <TextField
-                  required
-                  select
-                  label={t('plan')}
+                  label={t('title')}
                   variant="standard"
-                  {...field}
-                  defaultValue={plans?.[0].id}
+                  {...form.register('title', {
+                    required: t('validationErrors.required'),
+                  })}
+                  required
+                  error={!!form.formState.errors.title?.message}
+                  helperText={form.formState.errors.title?.message}
+                />
+                <Controller
+                  control={form.control}
+                  name="borderLockAddress"
+                  render={({ field }) => (
+                    <TextField
+                      required
+                      select
+                      label={t('plan')}
+                      variant="standard"
+                      {...field}
+                      defaultValue={plans?.[0].id}
+                    >
+                      {plans?.map((plan) => (
+                        <MenuItem
+                          key={`plan-select-${plan.id}`}
+                          value={plan.id}
+                        >
+                          <>
+                            {plan.name} ({plan.id})
+                          </>
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  )}
+                />
+                <Button
+                  disabled={!form.formState.isValid}
+                  onClick={post}
+                  variant="contained"
                 >
-                  {plans?.map((plan) => (
-                    <MenuItem key={`plan-select-${plan.id}`} value={plan.id}>
-                      <>
-                        {plan.name} ({plan.id})
-                      </>
-                    </MenuItem>
-                  ))}
-                </TextField>
-              )}
-            />
-            <Button
-              disabled={!form.formState.isValid}
-              onClick={post}
-              variant="contained"
-            >
-              {t('post')}
-            </Button>
+                  {t('post')}
+                </Button>
+              </>
+            ) : (
+              <Stack spacing={2} textAlign="center">
+                <CircularProgress sx={{ mx: 'auto' }} />
+                <Typography>{t('uploading')}...</Typography>
+              </Stack>
+            )}
           </>
         ) : (
           <FileUploader

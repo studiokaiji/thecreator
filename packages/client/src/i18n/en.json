@@ -115,6 +115,8 @@
     "images": "Can be drag & drop in batches. maximum of 30 images, 10 MB or less per file, jpeg, png, gif are supported.",
     "thumbnail": "10 MB or less, jpeg, png, gif are supported."
   },
+  "uploading": "Uploading",
+  "successfullyPosted": "Successfully posted.",
   "userRejectedRequest": "User rejected request",
   "validationErrors": {
     "invalidType": "Invalid type",
