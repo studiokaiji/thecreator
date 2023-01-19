@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { PaginableTable } from '@/components/helpers/PaginableTable';
@@ -9,7 +10,7 @@ type SupportersTableProps = {
   planId: string;
 };
 
-export const SupportersTable = ({ planId }: SupportersTableProps) => {
+const BeforeMemonizedSupportersTable = ({ planId }: SupportersTableProps) => {
   useOnlyValidNetwork();
 
   const {
@@ -50,3 +51,5 @@ export const SupportersTable = ({ planId }: SupportersTableProps) => {
     />
   );
 };
+
+export const SupportersTable = memo(BeforeMemonizedSupportersTable);

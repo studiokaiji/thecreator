@@ -1,6 +1,7 @@
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { BigNumber } from 'ethers';
+import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { WithdrawButton } from './WithdrawButton';
@@ -19,7 +20,7 @@ const getStrBalances = (balance: BigNumber, tokenAddress: string) => {
   return `${formatted} ${currency}`;
 };
 
-export const Withdraw = () => {
+const BeforeMemonizedWithdraw = () => {
   const { currentUser } = useCurrentUser();
   const { data: plans } = useCreatorPlans(currentUser?.uid);
   const {
@@ -85,3 +86,5 @@ export const Withdraw = () => {
     </Stack>
   );
 };
+
+export const Withdraw = memo(BeforeMemonizedWithdraw);
