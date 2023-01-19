@@ -8,6 +8,8 @@ import { useState } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
+import { TitleTextField } from '../common/TitleTextField';
+
 import { ImageList } from './ImageList';
 
 import { FileUploader } from '@/components/standalone/FileUploader';
@@ -86,16 +88,7 @@ export const ImagesPost = ({ onDone }: ImagesPostProps) => {
             {uploadStatus === 'typing' ? (
               <>
                 <ImageList images={images} onChangeImages={setImages} />
-                <TextField
-                  label={t('title')}
-                  variant="standard"
-                  {...form.register('title', {
-                    required: t('validationErrors.required'),
-                  })}
-                  required
-                  error={!!form.formState.errors.title?.message}
-                  helperText={form.formState.errors.title?.message}
-                />
+                <TitleTextField />
                 <Controller
                   control={form.control}
                   name="borderLockAddress"
