@@ -13,6 +13,7 @@ import { FileUploader } from '@/components/standalone/FileUploader';
 import { useCreatorPlans } from '@/hooks/useCreatorPlans';
 import { useCreatorPostForWrite } from '@/hooks/useCreatorPostForWrite';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { useImage, UseImageData } from '@/hooks/useImage';
 
 export type ImagesPostFormInput = {
   descriptions: string[];
@@ -23,22 +24,17 @@ export type ImagesPostFormInput = {
 export const ImagesPost = () => {
   const { t } = useTranslation();
 
-  const [fileUrls, setFileUrls] = useState<string[]>([]);
-  const [urlToFile, setUrlToFile] = useState<{ [url: string]: File }>({});
+  const [images, setImages] = useState<UseImageData[]>([]);
 
   const form = useForm<ImagesPostFormInput>({
     mode: 'onChange',
   });
 
+  const { createImage } = useImage();
+
   const onRetriveValidFilesHandler = (files: File[]) => {
-    const urls = files.map((file) => URL.createObjectURL(file));
-    setFileUrls(urls);
-    setUrlToFile(
-      urls.reduce<{ [url: string]: File }>((prev, url, i) => {
-        prev[url] = files[i];
-        return prev;
-      }, {})
-    );
+    const images = files.map((file) => createImage(file, 'images'));
+    setImages(images);
   };
 
   const { postData, uploadContents } = useCreatorPostForWrite();
@@ -52,13 +48,11 @@ export const ImagesPost = () => {
 
     const id = await postData({
       borderLockAddress,
-      contentsCount: fileUrls.length,
+      contentsCount: images.length,
       contentsType: 'images',
       description: JSON.stringify(descriptions),
       title,
     });
-
-    const files = fileUrls.map((url) => urlToFile[url]);
 
     setUploadStatus('uploading');
     await uploadContents(
@@ -67,7 +61,7 @@ export const ImagesPost = () => {
         contentsType: 'images',
         id,
       },
-      files
+      images
     );
     setUploadStatus('done');
   };
@@ -79,9 +73,9 @@ export const ImagesPost = () => {
     <FormProvider {...form}>
       <Stack spacing={3}>
         <Typography variant="h5">{t('postImages')}</Typography>
-        {fileUrls.length ? (
+        {images.length ? (
           <>
-            <ImageList fileUrls={fileUrls} onChangeFileUrls={setFileUrls} />
+            <ImageList images={images} onChangeImages={setImages} />
             <TextField
               label={t('title')}
               variant="standard"

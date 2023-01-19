@@ -1,6 +1,7 @@
 import { constants } from 'ethers';
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
 
+import { UseImageData } from './useImage';
 import { useUploadPostContents } from './useUploadPostContents';
 import { useWallet } from './useWallet';
 
@@ -17,7 +18,7 @@ export const useCreatorPostForWrite = () => {
       borderLockAddress?: string;
       id: string;
     },
-    contents: Blob[]
+    contents: UseImageData[]
   ) => {
     if (!account) {
       throw Error('User wallet does not exist.');
@@ -34,7 +35,7 @@ export const useCreatorPostForWrite = () => {
     data: Omit<
       CreatorPostDocData,
       'updatedAt' | 'createdAt' | 'borderLockAddress'
-    > & { borderLockAddress?: string; }
+    > & { borderLockAddress?: string }
   ) => {
     if (!account) {
       throw Error('User wallet does not exist.');

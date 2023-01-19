@@ -1,6 +1,7 @@
 import { httpsCallable } from 'firebase/functions';
 
 import { useCurrentUser } from './useCurrentUser';
+import { UseImageData } from './useImage';
 
 import { functions } from '@/firebase';
 
@@ -14,7 +15,7 @@ export const useUploadPostContents = () => {
     postId,
   }: {
     contentsType: T;
-    contents: Blob[];
+    contents: UseImageData[];
     postId?: string;
     isPublic?: boolean;
   }) => {
@@ -32,10 +33,14 @@ export const useUploadPostContents = () => {
     const isPost =
       contentsType !== 'headerImage' && contentsType !== 'profileImage';
 
+    const compressedBlobs = await Promise.all(
+      contents.map(async ({ compress }) => await compress())
+    );
+
     const baseData = {
-      contentInfoList: contents.map((blob) => ({
-        contentLength: blob.size,
-        contentType: blob.type,
+      contentInfoList: compressedBlobs.map(({ size, type }) => ({
+        contentLength: size,
+        contentType: type,
       })),
       contentsType,
       creatorId: currentUser?.uid,
@@ -49,9 +54,8 @@ export const useUploadPostContents = () => {
     )(data);
 
     const promises = result.data.urls.map(async (url, i) => {
-      const blob = contents[i];
       await fetch(url, {
-        body: blob,
+        body: compressedBlobs[i],
         method: 'PUT',
       });
     });

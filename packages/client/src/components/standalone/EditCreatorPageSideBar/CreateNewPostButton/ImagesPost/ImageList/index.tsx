@@ -18,27 +18,29 @@ import Box from '@mui/material/Box';
 
 import { ImageCell, ItemCellMoveAction } from './ImageCell';
 
+import { UseImageData } from '@/hooks/useImage';
+
 type ImageListProps = {
-  fileUrls: string[];
-  onChangeFileUrls: (urls: string[]) => void;
+  images: UseImageData[];
+  onChangeImages: (images: UseImageData[]) => void;
 };
 
-export const ImageList = ({ fileUrls, onChangeFileUrls }: ImageListProps) => {
+export const ImageList = ({ images, onChangeImages }: ImageListProps) => {
+  const items = [...images.map((data) => ({ ...data, id: data.url }))];
+
   const onDragEndHandler = ({ active, over }: DragEndEvent) => {
     if (!over) return;
 
-    const items = [...fileUrls];
-
     if (active.id !== over?.id) {
-      const oldIndex = items.indexOf(String(active.id));
-      const newIndex = items.indexOf(String(over?.id));
+      const oldIndex = items.findIndex(({ id }) => active.id === id);
+      const newIndex = items.findIndex(({ id }) => over.id === id);
       const moved = arrayMove(items, oldIndex, newIndex);
-      onChangeFileUrls(moved);
+      onChangeImages(moved);
     }
   };
 
   const remove = (index: number) => {
-    onChangeFileUrls(fileUrls.filter((_, i) => i !== index));
+    onChangeImages(images.filter((_, i) => i !== index));
   };
 
   const move = (action: ItemCellMoveAction, index: number) => {
@@ -46,12 +48,12 @@ export const ImageList = ({ fileUrls, onChangeFileUrls }: ImageListProps) => {
       action === 'top'
         ? 0
         : action === 'bottom'
-        ? fileUrls.length - 1
+        ? images.length - 1
         : action === 'up'
         ? index - 1
         : index + 1;
-    const moved = arrayMove(fileUrls, index, newIndex);
-    onChangeFileUrls(moved);
+    const moved = arrayMove(images, index, newIndex);
+    onChangeImages(moved);
   };
 
   const sensors = useSensors(
@@ -72,15 +74,15 @@ export const ImageList = ({ fileUrls, onChangeFileUrls }: ImageListProps) => {
       onDragEnd={onDragEndHandler}
       sensors={sensors}
     >
-      <SortableContext items={fileUrls} strategy={verticalListSortingStrategy}>
-        {fileUrls.map((src, i) => (
+      <SortableContext items={items} strategy={verticalListSortingStrategy}>
+        {images.map(({ url }, i) => (
           <Box key={`post-images-${i}`} mb={3}>
             <ImageCell
-              imagesLength={fileUrls.length}
+              imagesLength={images.length}
               index={i}
               onRequestDelete={() => remove(i)}
               onRequestMove={(action) => move(action, i)}
-              src={src}
+              src={url}
             />
           </Box>
         ))}
