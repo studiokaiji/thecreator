@@ -4,14 +4,14 @@ export const postDataContentTypes = [
   'images',
   'audio',
   'text',
-  'attachedImage',
+  'thumbnail',
 ] as const;
 
 export const maxContentLengths = {
   images: toBytes(10, 'MB'),
   audio: toBytes(300, 'MB'),
   text: toBytes(10, 'MB'),
-  attachedImage: toBytes(10, 'MB'),
+  thumbnail: toBytes(10, 'MB'),
   profileImage: toBytes(10, 'MB'),
   headerImage: toBytes(20, 'MB'),
 } as const;
@@ -27,7 +27,7 @@ export const validContentTypes = {
   images: imageValidContentTypes,
   audio: ['audio/mp3', 'audio/aac'],
   text: ['text/html', 'text/htm'],
-  attachedImage: imageValidContentTypes,
+  thumbnail: imageValidContentTypes,
   profileImage: imageValidContentTypes,
   headerImage: imageValidContentTypes,
 } as const;

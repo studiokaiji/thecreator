@@ -1,7 +1,7 @@
 type ContentsType =
   | 'images'
   | 'audio'
-  | 'attachedImage'
+  | 'thumbnail'
   | 'text'
   | 'profileImage'
   | 'headerImage';
