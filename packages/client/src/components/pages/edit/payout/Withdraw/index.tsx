@@ -40,10 +40,6 @@ const BeforeMemonizedWithdraw = () => {
     return <pre>{error}</pre>;
   }
 
-  if (!planWithBalanceList) {
-    return <MainLoading />;
-  }
-
   const onWithdrawnHandler = (id: string, balance: BigNumber) => {
     if (!balances || !plans) return;
 
@@ -82,6 +78,7 @@ const BeforeMemonizedWithdraw = () => {
       <Table
         data={tableData}
         headRows={[t('plan'), t('balance'), t('address'), t('withdraw')]}
+        loading={!planWithBalanceList}
       />
     </Stack>
   );
