@@ -30,8 +30,8 @@ export const Table = ({
     <TableContainer component={Paper} elevation={elevation} sx={sx}>
       <MUITable>
         {loading ? (
-          <Stack alignItems="center" justifyContent="center">
-            <CircularProgress sx={{ mb: 4, mt: 2, mx: 'auto' }} />
+          <Stack>
+            <CircularProgress sx={{ mx: 'auto', my: 4 }} />
           </Stack>
         ) : (
           <>
