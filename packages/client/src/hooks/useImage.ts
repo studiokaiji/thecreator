@@ -36,7 +36,12 @@ export const useImage = () => {
 
       if (isHeightLarger) {
         const canvas = document.createElement('canvas');
-        canvas.width = type === 'headerImage' ? 1920 : 1000;
+        canvas.width =
+          type === 'headerImage'
+            ? 1920
+            : type === 'thumbnail' || type === 'profileImage'
+            ? 680
+            : 1000;
         canvas.height =
           image.naturalHeight * (canvas.width / image.naturalWidth);
 
