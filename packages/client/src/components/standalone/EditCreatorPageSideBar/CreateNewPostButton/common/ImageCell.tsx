@@ -13,21 +13,21 @@ import Typography from '@mui/material/Typography';
 import { useFormContext } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { ImagesPostFormInput } from '..';
+import { ImagesPostFormInput } from '../ImagesPost';
 
 export type ItemCellMoveAction = 'up' | 'down' | 'top' | 'bottom';
 
 export type ImageCellProps = {
   src: string;
-  index: number;
-  onRequestDelete: () => void;
-  onRequestMove: (action: ItemCellMoveAction, index: number) => void;
-  imagesLength: number;
+  index?: number;
+  onRequestDelete?: () => void;
+  onRequestMove?: (action: ItemCellMoveAction, index: number) => void;
+  imagesLength?: number;
 };
 
 export const ImageCell = ({
-  imagesLength,
-  index,
+  imagesLength = 1,
+  index = 0,
   onRequestDelete,
   onRequestMove,
   src,
@@ -39,10 +39,10 @@ export const ImageCell = ({
 
   const { t } = useTranslation();
 
-  const toTop = () => onRequestMove('top', index);
-  const toUp = () => onRequestMove('up', index);
-  const toDown = () => onRequestMove('down', index);
-  const toBottom = () => onRequestMove('bottom', index);
+  const toTop = () => onRequestMove && onRequestMove('top', index);
+  const toUp = () => onRequestMove && onRequestMove('up', index);
+  const toDown = () => onRequestMove && onRequestMove('down', index);
+  const toBottom = () => onRequestMove && onRequestMove('bottom', index);
 
   const { attributes, listeners, setNodeRef, transform } = useSortable({
     id: src,
@@ -96,26 +96,30 @@ export const ImageCell = ({
           )}
         </Stack>
         <Stack direction="row" gap={1}>
-          <IconButton disabled={index < 1} onClick={toTop} size="small">
-            <KeyboardDoubleArrowUpIcon />
-          </IconButton>
-          <IconButton disabled={index < 1} onClick={toUp} size="small">
-            <KeyboardArrowUpIcon />
-          </IconButton>
-          <IconButton
-            disabled={imagesLength - 1 <= index}
-            onClick={toDown}
-            size="small"
-          >
-            <KeyboardArrowDownIcon />
-          </IconButton>
-          <IconButton
-            disabled={imagesLength - 1 <= index}
-            onClick={toBottom}
-            size="small"
-          >
-            <KeyboardDoubleArrowDownIcon />
-          </IconButton>
+          {imagesLength > 1 && (
+            <>
+              <IconButton disabled={index < 1} onClick={toTop} size="small">
+                <KeyboardDoubleArrowUpIcon />
+              </IconButton>
+              <IconButton disabled={index < 1} onClick={toUp} size="small">
+                <KeyboardArrowUpIcon />
+              </IconButton>
+              <IconButton
+                disabled={imagesLength - 1 <= index}
+                onClick={toDown}
+                size="small"
+              >
+                <KeyboardArrowDownIcon />
+              </IconButton>
+              <IconButton
+                disabled={imagesLength - 1 <= index}
+                onClick={toBottom}
+                size="small"
+              >
+                <KeyboardDoubleArrowDownIcon />
+              </IconButton>
+            </>
+          )}
           <IconButton onClick={onRequestDelete} size="small">
             <ClearIcon />
           </IconButton>

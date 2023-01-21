@@ -16,7 +16,7 @@ import {
 } from '@dnd-kit/sortable';
 import Box from '@mui/material/Box';
 
-import { ImageCell, ItemCellMoveAction } from './ImageCell';
+import { ImageCell, ItemCellMoveAction } from '../../common/ImageCell';
 
 import { UseImageData } from '@/hooks/useImage';
 
