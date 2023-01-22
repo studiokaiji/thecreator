@@ -16,14 +16,12 @@ import { useBeforeUnload } from '@/hooks/useBeforeUnload';
 import { useCreatorPostForWrite } from '@/hooks/useCreatorPostForWrite';
 import { useImage, UseImageData } from '@/hooks/useImage';
 
-export type ImagesPostFormInput = {
-  descriptions: string[];
-  borderLockAddress: string;
-  title: string;
-};
-
 type ImagesPostProps = {
   onDone: () => void;
+};
+
+type ImagesPostInput = PostFormInput & {
+  descriptions: string[];
 };
 
 export const ImagesPost = ({ onDone }: ImagesPostProps) => {
@@ -31,7 +29,7 @@ export const ImagesPost = ({ onDone }: ImagesPostProps) => {
 
   const [images, setImages] = useState<UseImageData[]>([]);
 
-  const form = useForm<ImagesPostFormInput>({
+  const form = useForm<ImagesPostInput>({
     mode: 'onChange',
   });
 
