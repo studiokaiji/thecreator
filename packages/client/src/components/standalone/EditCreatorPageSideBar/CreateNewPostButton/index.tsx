@@ -42,7 +42,7 @@ export const CreateNewPostButton = () => {
       >
         <Box>
           {selectedPostType === 'audio' ? (
-            <AudioPost />
+            <AudioPost onDone={done} />
           ) : selectedPostType === 'images' ? (
             <ImagesPost onDone={done} />
           ) : (
