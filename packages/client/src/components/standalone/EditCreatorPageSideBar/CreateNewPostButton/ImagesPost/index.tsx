@@ -1,22 +1,19 @@
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
-import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
-import { Controller, FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
+import { PlansSelect } from '../common/PlansSelect';
 import { TitleTextField } from '../common/TitleTextField';
 
 import { ImageList } from './ImageList';
 
 import { FileUploader } from '@/components/standalone/FileUploader';
 import { useBeforeUnload } from '@/hooks/useBeforeUnload';
-import { useCreatorPlans } from '@/hooks/useCreatorPlans';
 import { useCreatorPostForWrite } from '@/hooks/useCreatorPostForWrite';
-import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useImage, UseImageData } from '@/hooks/useImage';
 
 export type ImagesPostFormInput = {
@@ -77,9 +74,6 @@ export const ImagesPost = ({ onDone }: ImagesPostProps) => {
     onDone();
   };
 
-  const { currentUser } = useCurrentUser();
-  const { data: plans } = useCreatorPlans(currentUser?.uid);
-
   useBeforeUnload(uploadStatus === 'uploading');
 
   return (
@@ -92,31 +86,7 @@ export const ImagesPost = ({ onDone }: ImagesPostProps) => {
               <>
                 <ImageList images={images} onChangeImages={setImages} />
                 <TitleTextField />
-                <Controller
-                  control={form.control}
-                  name="borderLockAddress"
-                  render={({ field }) => (
-                    <TextField
-                      required
-                      select
-                      label={t('plan')}
-                      variant="standard"
-                      {...field}
-                      defaultValue={plans?.[0].id}
-                    >
-                      {plans?.map((plan) => (
-                        <MenuItem
-                          key={`plan-select-${plan.id}`}
-                          value={plan.id}
-                        >
-                          <>
-                            {plan.name} ({plan.id})
-                          </>
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  )}
-                />
+                <PlansSelect formKeyName="borderLockAddress" />
                 <Button
                   disabled={!form.formState.isValid}
                   onClick={post}

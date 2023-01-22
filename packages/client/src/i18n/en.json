@@ -55,6 +55,7 @@
   "mypage": "My Page",
   "name": "Name",
   "newEmail": "New Email",
+  "newPostPlansSelectHelperText": "Only supporters of the selected plan or higher plan can view this posting.",
   "notConnectedWallet": "Not Connected Wallet",
   "notification": "Notification",
   "notificationEmail": "Notification Email",
