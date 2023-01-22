@@ -5,17 +5,28 @@ import { UseImageData } from './useImage';
 
 import { functions } from '@/firebase';
 
+const imageContentsTypes = [
+  'thumbnail',
+  'profileImage',
+  'headerImage',
+  'profileImage',
+];
+
 export const useUploadPostContents = () => {
   const { currentUser } = useCurrentUser();
 
   const upload = async <T extends ContentsType>({
     contents,
     contentsType,
-    isPublic,
+    isPublic = false,
     postId,
   }: {
     contentsType: T;
-    contents: UseImageData[];
+    contents: T extends 'images'
+      ? UseImageData[]
+      : T extends 'thumbnail' | 'profileImage' | 'headerImage'
+      ? UseImageData
+      : Blob;
     postId?: string;
     isPublic?: boolean;
   }) => {
@@ -23,19 +34,22 @@ export const useUploadPostContents = () => {
       throw Error('Need user');
     }
 
-    if (
-      (contents.length > 1 && contentsType !== 'images') ||
-      (contents.length > 30 && contents.length < 1)
-    ) {
-      throw Error('Invalid contents length');
-    }
-
     const isPost =
       contentsType !== 'headerImage' && contentsType !== 'profileImage';
 
-    const compressedBlobs = await Promise.all(
-      contents.map(async ({ compress }) => await compress())
-    );
+    const getUploadBlobs = async () => {
+      if (!imageContentsTypes.includes(contentsType)) {
+        return [contents as Blob];
+      }
+      if (Array.isArray(contents)) {
+        const blobs = await Promise.all(
+          contents.map(async ({ compress }) => await compress())
+        );
+        return blobs;
+      }
+      return [await (contents as UseImageData).compress()];
+    };
+    const compressedBlobs = await getUploadBlobs();
 
     const baseData = {
       contentInfoList: compressedBlobs.map(({ size, type }) => ({
