@@ -5,15 +5,17 @@ export const postDataContentTypes = [
   'audio',
   'text',
   'thumbnail',
+  'video',
 ] as const;
 
-export const maxContentLengths = {
+export const maxContentLengths: { [type in ContentsType]: number } = {
   images: toBytes(10, 'MB'),
-  audio: toBytes(300, 'MB'),
+  audio: toBytes(100, 'MB'),
   text: toBytes(10, 'MB'),
   thumbnail: toBytes(10, 'MB'),
   profileImage: toBytes(10, 'MB'),
   headerImage: toBytes(20, 'MB'),
+  video: toBytes(300, 'MB'),
 } as const;
 
 const imageValidContentTypes = [
@@ -21,15 +23,18 @@ const imageValidContentTypes = [
   'image/jpg',
   'image/png',
   'image/gif',
-] as const;
+];
 
-export const validContentTypes = {
+export const validContentTypes: {
+  [type in ContentsType]: string[];
+} = {
   images: imageValidContentTypes,
-  audio: ['audio/mp3', 'audio/aac'],
+  audio: ['audio/mpeg', 'audio/aac'],
   text: ['text/html', 'text/htm'],
   thumbnail: imageValidContentTypes,
   profileImage: imageValidContentTypes,
   headerImage: imageValidContentTypes,
-} as const;
+  video: ['video/mpeg', 'video/mpg', 'video/mp4'],
+};
 
 export const uploadPresignedUrlExpiresIn = 180;

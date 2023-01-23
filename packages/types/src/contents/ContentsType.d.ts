@@ -4,4 +4,5 @@ type ContentsType =
   | 'thumbnail'
   | 'text'
   | 'profileImage'
-  | 'headerImage';
+  | 'headerImage'
+  | 'video';
