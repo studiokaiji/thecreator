@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { Accept, DropzoneOptions, useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
 
-type UploaderType = 'images' | 'thumbnail' | 'audio';
+type UploaderType = 'images' | 'thumbnail' | 'audio' | 'video';
 
 type FileUploaderProps = {
   customMessage?: string;
@@ -42,6 +42,13 @@ const uploaderSettings: {
     },
     maxFiles: 1,
     maxSize: 10485760, // 10MB,
+  },
+  video: {
+    accept: {
+      'video/mp4': ['.mp4'],
+      'video/mpeg': ['.mpg', '.mpeg'],
+      'video/mpg': ['.mpg', '.mpeg'],
+    },
   },
 };
 
