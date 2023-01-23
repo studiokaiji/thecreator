@@ -19,7 +19,8 @@ const uploaderSettings: {
   audio: {
     accept: {
       'audio/aac': ['.aac'],
-      'audio/mp3': ['.mp3'],
+      'audio/mpeg': ['.mp3'],
+      'audio/mpg': ['.mp3'],
     },
     maxFiles: 1,
     maxSize: 104857600, // 100MB
