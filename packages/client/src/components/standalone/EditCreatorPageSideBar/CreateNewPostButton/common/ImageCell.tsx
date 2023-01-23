@@ -13,7 +13,7 @@ import Typography from '@mui/material/Typography';
 import { useFormContext } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { ImagesPostFormInput } from '../ImagesPost';
+import type { ImagesPostFormInput } from '../ImagesPost';
 
 export type ItemCellMoveAction = 'up' | 'down' | 'top' | 'bottom';
 

@@ -20,7 +20,7 @@ type ImagesPostProps = {
   onDone: () => void;
 };
 
-type ImagesPostInput = PostFormInput & {
+export type ImagesPostFormInput = PostFormInput & {
   descriptions: string[];
 };
 
@@ -29,7 +29,7 @@ export const ImagesPost = ({ onDone }: ImagesPostProps) => {
 
   const [images, setImages] = useState<UseImageData[]>([]);
 
-  const form = useForm<ImagesPostInput>({
+  const form = useForm<ImagesPostFormInput>({
     mode: 'onChange',
   });
 
