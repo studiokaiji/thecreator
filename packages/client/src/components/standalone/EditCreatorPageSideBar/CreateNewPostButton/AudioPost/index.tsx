@@ -11,6 +11,7 @@ import { ThumbnailSelector } from '../common/ThumbnailSelector';
 import { TitleTextField } from '../common/TitleTextField';
 
 import { FileUploader } from '@/components/standalone/FileUploader';
+import { useBeforeUnload } from '@/hooks/useBeforeUnload';
 import { useCreatorPostForWrite } from '@/hooks/useCreatorPostForWrite';
 import type { UseImageData } from '@/hooks/useImage';
 
@@ -34,8 +35,12 @@ export const AudioPost = ({ onDone }: AudioPostProps) => {
 
   const { postContents } = useCreatorPostForWrite();
 
+  const [isUploading, setIsUploading] = useState(false);
+
   const post = async () => {
     if (!audioFile || !form.formState.isValid) return;
+
+    setIsUploading(true);
 
     await postContents(
       {
@@ -46,8 +51,12 @@ export const AudioPost = ({ onDone }: AudioPostProps) => {
       thumbnail
     );
 
+    setIsUploading(false);
+
     onDone();
   };
+
+  useBeforeUnload(isUploading);
 
   return (
     <Stack spacing={3}>
