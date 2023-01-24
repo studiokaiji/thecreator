@@ -68,6 +68,7 @@ export const AudioPost = ({ onDone }: AudioPostProps) => {
             <TitleTextField />
             <TextField
               label="description"
+              variant="standard"
               {...form.register('description', {
                 maxLength: {
                   message: t('validationErrors.maxLength', {
@@ -77,7 +78,7 @@ export const AudioPost = ({ onDone }: AudioPostProps) => {
                 },
               })}
             />
-            <PlansSelect formKeyName="" />
+            <PlansSelect />
             <Button onClick={post} variant="contained">
               {t('post')}
             </Button>

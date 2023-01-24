@@ -84,7 +84,7 @@ export const ImagesPost = ({ onDone }: ImagesPostProps) => {
               <>
                 <ImageList images={images} onChangeImages={setImages} />
                 <TitleTextField />
-                <PlansSelect formKeyName="borderLockAddress" />
+                <PlansSelect />
                 <Button
                   disabled={!form.formState.isValid}
                   onClick={post}

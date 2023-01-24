@@ -6,11 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useCreatorPlans } from '@/hooks/useCreatorPlans';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 
-type PlansSelectProps = {
-  formKeyName: string;
-};
-
-export const PlansSelect = ({ formKeyName }: PlansSelectProps) => {
+export const PlansSelect = () => {
   const { currentUser } = useCurrentUser();
   const { data: plans } = useCreatorPlans(currentUser?.uid);
 
@@ -25,7 +21,7 @@ export const PlansSelect = ({ formKeyName }: PlansSelectProps) => {
   return (
     <Controller
       control={form.control}
-      name={formKeyName}
+      name={'borderLockAddress'}
       render={({ field }) => (
         <TextField
           required
