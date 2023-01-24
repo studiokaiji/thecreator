@@ -40,7 +40,7 @@ export const ImagesPost = ({ onDone }: ImagesPostProps) => {
     setImages(images);
   };
 
-  const { postData, uploadContents } = useCreatorPostForWrite();
+  const { postContents } = useCreatorPostForWrite();
 
   const [uploadStatus, setUploadStatus] = useState<'typing' | 'uploading'>(
     'typing'
@@ -49,25 +49,18 @@ export const ImagesPost = ({ onDone }: ImagesPostProps) => {
   const post = async () => {
     const { borderLockAddress, descriptions, title } = form.getValues();
 
-    const id = await postData({
-      borderLockAddress,
-      contentsCount: images.length,
-      contentsType: 'images',
-      description: JSON.stringify(descriptions),
-      title,
-    });
-
-    setUploadStatus('uploading');
-    await uploadContents(
+    await postContents(
       {
-        borderLockAddress: '',
+        borderLockAddress,
+        contentsCount: images.length,
         contentsType: 'images',
-        id,
+        description: JSON.stringify(descriptions),
+        title,
       },
       images
     );
 
-    images.map(({ revoke }) => revoke());
+    images.forEach(({ revoke }) => revoke());
 
     onDone();
   };

@@ -12,26 +12,7 @@ export const useCreatorPostForWrite = () => {
 
   const { upload } = useUploadPostContents();
 
-  const uploadContents = async (
-    data: {
-      contentsType: ContentsType;
-      borderLockAddress?: string;
-      id: string;
-    },
-    contents: UseImageData[]
-  ) => {
-    if (!account) {
-      throw Error('User wallet does not exist.');
-    }
-    await upload({
-      contents,
-      contentsType: data.contentsType,
-      isPublic: !!data.borderLockAddress,
-      postId: data.id,
-    });
-  };
-
-  const postData = async (
+  const postDocument = async (
     data: Omit<
       CreatorPostDocData,
       | 'updatedAt'
@@ -50,7 +31,6 @@ export const useCreatorPostForWrite = () => {
     }
 
     const postsRef = getCreatorPostsCollectionRef(account);
-
     const postDocRef = doc(postsRef);
     const postId = postDocRef.id;
 
@@ -67,5 +47,62 @@ export const useCreatorPostForWrite = () => {
     return postId;
   };
 
-  return { postData, uploadContents };
+  const postContents = async <T extends CreatorPostDocDataContentsType>(
+    data: Omit<
+      CreatorPostDocData,
+      | 'updatedAt'
+      | 'createdAt'
+      | 'borderLockAddress'
+      | 'customUrl'
+      | 'contentsCount'
+      | 'contentsType'
+    > & {
+      borderLockAddress?: string;
+      customUrl?: string;
+      contentsCount?: number;
+      contentsType: T;
+    },
+    contents: T extends 'images'
+      ? UseImageData[]
+      : T extends 'thumbnail' | 'profileImage' | 'headerImage'
+      ? UseImageData
+      : T extends 'video'
+      ? string
+      : Blob,
+    thumbnail?: UseImageData
+  ) => {
+    if (!account) {
+      throw Error('User wallet does not exist.');
+    }
+
+    const postId = await postDocument(data);
+
+    const promises = [];
+
+    if (data.contentsType === 'audio' && thumbnail) {
+      promises.push(
+        upload({
+          contents: thumbnail,
+          contentsType: 'thumbnail',
+        })
+      );
+    }
+
+    if (data.contentsType !== 'video') {
+      promises.push(
+        upload({
+          contents: contents as any,
+          contentsType: data.contentsType,
+          isPublic: !!data.borderLockAddress,
+          postId,
+        })
+      );
+    }
+
+    await Promise.all(promises);
+
+    return postId;
+  };
+
+  return { postContents, postDocument };
 };

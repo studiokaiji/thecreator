@@ -11,8 +11,8 @@ import { ThumbnailSelector } from '../common/ThumbnailSelector';
 import { TitleTextField } from '../common/TitleTextField';
 
 import { FileUploader } from '@/components/standalone/FileUploader';
+import { useCreatorPostForWrite } from '@/hooks/useCreatorPostForWrite';
 import type { UseImageData } from '@/hooks/useImage';
-import { useUploadPostContents } from '@/hooks/useUploadPostContents';
 
 type AudioPostProps = {
   onDone: () => void;
@@ -32,30 +32,19 @@ export const AudioPost = ({ onDone }: AudioPostProps) => {
 
   const form = useForm<AudioPostFormInput>();
 
-  const { upload } = useUploadPostContents();
+  const { postContents } = useCreatorPostForWrite();
 
   const post = async () => {
-    if (!audioFile) return;
+    if (!audioFile || !form.formState.isValid) return;
 
-    const promises = [];
-
-    if (thumbnail) {
-      promises.push(
-        upload({
-          contents: thumbnail,
-          contentsType: 'thumbnail',
-        })
-      );
-    }
-
-    promises.push(
-      upload({
-        contents: audioFile,
+    await postContents(
+      {
         contentsType: 'audio',
-      })
+        ...form.getValues(),
+      },
+      audioFile,
+      thumbnail
     );
-
-    await Promise.all(promises);
 
     onDone();
   };
