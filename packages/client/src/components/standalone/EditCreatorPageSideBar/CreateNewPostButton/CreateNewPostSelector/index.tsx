@@ -43,7 +43,7 @@ export const CreateNewPostSelector = ({
     },
     {
       icon: <VideoLibraryIcon />,
-      onClick: () => null,
+      onClick: () => onSelectPostType('video'),
       text: t('video'),
     },
     {

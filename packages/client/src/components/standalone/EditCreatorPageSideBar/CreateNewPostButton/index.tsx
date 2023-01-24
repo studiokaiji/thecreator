@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { AudioPost } from './AudioPost';
 import { CreateNewPostSelector } from './CreateNewPostSelector';
 import { ImagesPost } from './ImagesPost';
+import { VideoPost } from './VideoPost';
 
 import { CenterModal } from '@/components/helpers/CenterModal';
 import { RoundedButton } from '@/components/helpers/RoundedButton';
@@ -45,6 +46,8 @@ export const CreateNewPostButton = () => {
             <AudioPost onDone={done} />
           ) : selectedPostType === 'images' ? (
             <ImagesPost onDone={done} />
+          ) : selectedPostType === 'video' ? (
+            <VideoPost onDone={done} />
           ) : (
             <CreateNewPostSelector onSelectPostType={setSelectedPostType} />
           )}
