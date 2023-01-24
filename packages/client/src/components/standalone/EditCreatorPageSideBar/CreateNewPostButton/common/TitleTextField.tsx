@@ -15,6 +15,7 @@ export const TitleTextField = (props: TextFieldProps) => {
       })}
       error={!!formState.errors.title?.message}
       helperText={formState.errors.title?.message}
+      variant="standard"
       {...props}
     />
   );
