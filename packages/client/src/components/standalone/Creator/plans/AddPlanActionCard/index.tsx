@@ -46,7 +46,12 @@ export const AddPlanActionCard = ({
           <Typography fontWeight={500}>+ {t('addNewPlan')}</Typography>
         </CardActionArea>
       </Card>
-      <CenterModal onClose={() => setIsOpen(false)} open={isOpen}>
+      <CenterModal
+        fullWidth
+        maxWidth="sm"
+        onClose={() => setIsOpen(false)}
+        open={isOpen}
+      >
         <PlanForm
           buttonChild={t('addNewPlan')}
           onClose={() => setIsOpen(false)}
