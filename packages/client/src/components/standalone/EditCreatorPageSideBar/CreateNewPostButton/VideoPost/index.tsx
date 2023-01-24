@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 import { DescriptionTextField } from '../common/DescriptionTextField';
 import { PlansSelect } from '../common/PlansSelect';
+import { TitleTextField } from '../common/TitleTextField';
 
 import { Iframe } from '@/components/helpers/Iframe';
 import { useCreatorPostForWrite } from '@/hooks/useCreatorPostForWrite';
@@ -49,7 +50,7 @@ export const VideoPost = ({ onDone }: VideoPostProps) => {
         {iframeParam ? (
           <>
             <Iframe {...iframeParam} />
-            <TextField label={t('title')} variant="standard" />
+            <TitleTextField />
             <DescriptionTextField />
             <PlansSelect />
             <Button
