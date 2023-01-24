@@ -10,6 +10,7 @@ const imageContentsTypes = [
   'profileImage',
   'headerImage',
   'profileImage',
+  'images',
 ];
 
 export const useUploadPostContents = () => {
@@ -47,6 +48,7 @@ export const useUploadPostContents = () => {
         );
         return blobs;
       }
+
       return [await (contents as UseImageData).compress()];
     };
     const compressedBlobs = await getUploadBlobs();
