@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
+import { DescriptionTextField } from '../common/DescriptionTextField';
 import { PlansSelect } from '../common/PlansSelect';
 
 import { Iframe } from '@/components/helpers/Iframe';
@@ -49,17 +50,7 @@ export const VideoPost = ({ onDone }: VideoPostProps) => {
           <>
             <Iframe {...iframeParam} />
             <TextField label={t('title')} variant="standard" />
-            <TextField
-              label="description"
-              {...form.register('description', {
-                maxLength: {
-                  message: t('validationErrors.maxLength', {
-                    maxLength: '1000',
-                  }),
-                  value: 1000,
-                },
-              })}
-            />
+            <DescriptionTextField />
             <PlansSelect />
             <Button
               disabled={!form.formState.isValid}

@@ -1,11 +1,11 @@
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
+import { DescriptionTextField } from '../common/DescriptionTextField';
 import { PlansSelect } from '../common/PlansSelect';
 import { ThumbnailSelector } from '../common/ThumbnailSelector';
 import { TitleTextField } from '../common/TitleTextField';
@@ -66,18 +66,7 @@ export const AudioPost = ({ onDone }: AudioPostProps) => {
           <Stack spacing={3}>
             <ThumbnailSelector onDone={setThumbnail} />
             <TitleTextField />
-            <TextField
-              label="description"
-              variant="standard"
-              {...form.register('description', {
-                maxLength: {
-                  message: t('validationErrors.maxLength', {
-                    maxLength: '1000',
-                  }),
-                  value: 1000,
-                },
-              })}
-            />
+            <DescriptionTextField />
             <PlansSelect />
             <Button onClick={post} variant="contained">
               {t('post')}
