@@ -13,7 +13,7 @@ export const maxContentLengths: { [type in ContentsType]: number } = {
   audio: toBytes(100, 'MB'),
   text: toBytes(10, 'MB'),
   thumbnail: toBytes(10, 'MB'),
-  profileImage: toBytes(10, 'MB'),
+  iconImage: toBytes(10, 'MB'),
   headerImage: toBytes(20, 'MB'),
   video: toBytes(300, 'MB'),
 } as const;
@@ -32,7 +32,7 @@ export const validContentTypes: {
   audio: ['audio/mpeg', 'audio/aac'],
   text: ['text/html', 'text/htm'],
   thumbnail: imageValidContentTypes,
-  profileImage: imageValidContentTypes,
+  iconImage: imageValidContentTypes,
   headerImage: imageValidContentTypes,
   video: ['video/mpeg', 'video/mpg', 'video/mp4'],
 };

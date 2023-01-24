@@ -39,7 +39,7 @@ export const useImage = () => {
         canvas.width =
           type === 'headerImage'
             ? 1920
-            : type === 'thumbnail' || type === 'profileImage'
+            : type === 'thumbnail' || type === 'iconImage'
             ? 680
             : 1000;
         canvas.height =

@@ -7,9 +7,8 @@ import { functions } from '@/firebase';
 
 const imageContentsTypes = [
   'thumbnail',
-  'profileImage',
+  'iconImage',
   'headerImage',
-  'profileImage',
   'images',
 ];
 
@@ -25,7 +24,7 @@ export const useUploadPostContents = () => {
     contentsType: T;
     contents: T extends 'images'
       ? UseImageData[]
-      : T extends 'thumbnail' | 'profileImage' | 'headerImage'
+      : T extends 'thumbnail' | 'iconImage' | 'headerImage'
       ? UseImageData
       : Blob;
     postId?: string;
@@ -36,7 +35,7 @@ export const useUploadPostContents = () => {
     }
 
     const isPost =
-      contentsType !== 'headerImage' && contentsType !== 'profileImage';
+      contentsType !== 'headerImage' && contentsType !== 'iconImage';
 
     const getUploadBlobs = async () => {
       if (!imageContentsTypes.includes(contentsType)) {

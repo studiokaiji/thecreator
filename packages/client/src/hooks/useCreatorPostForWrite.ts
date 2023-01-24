@@ -64,7 +64,7 @@ export const useCreatorPostForWrite = () => {
     },
     contents: T extends 'images'
       ? UseImageData[]
-      : T extends 'thumbnail' | 'profileImage' | 'headerImage'
+      : T extends 'thumbnail' | 'iconImage' | 'headerImage'
       ? UseImageData
       : T extends 'video'
       ? string

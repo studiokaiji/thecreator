@@ -39,7 +39,7 @@ const requestPostDataSchema = z.object({
   postId: z.string(),
 });
 
-const profileDataContentTypes = ['profileImage', 'headerImage'] as const;
+const profileDataContentTypes = ['iconImage', 'headerImage'] as const;
 
 const requestProfileDataSchema = z.object({
   contentsType: z.union([

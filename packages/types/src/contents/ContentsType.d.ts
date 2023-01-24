@@ -3,6 +3,6 @@ type ContentsType =
   | 'audio'
   | 'thumbnail'
   | 'text'
-  | 'profileImage'
+  | 'iconImage'
   | 'headerImage'
   | 'video';
