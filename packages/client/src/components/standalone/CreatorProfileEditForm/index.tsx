@@ -68,7 +68,7 @@ export const CreatorProfileEditForm = ({
   const { t } = useTranslation();
 
   return (
-    <Stack component="form" spacing={1.5}>
+    <Stack component="form" spacing={3}>
       <TextField
         {...register('creatorName', {
           maxLength: {
