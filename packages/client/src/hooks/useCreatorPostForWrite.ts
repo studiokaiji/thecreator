@@ -14,7 +14,7 @@ export const useCreatorPostForWrite = () => {
 
   const uploadContents = async (
     data: {
-      contentsType: CreatorPostDocDataContentsType;
+      contentsType: ContentsType;
       borderLockAddress?: string;
       id: string;
     },
