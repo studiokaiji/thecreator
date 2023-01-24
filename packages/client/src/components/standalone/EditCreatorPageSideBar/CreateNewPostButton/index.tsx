@@ -33,12 +33,19 @@ export const CreateNewPostButton = () => {
     }
   }, [isOpen]);
 
+  const onRequestClose = () => {
+    if (selectedPostType) {
+      confirm(t('requestCloseConfirmMessage'));
+    }
+    close();
+  };
+
   return (
     <>
       <CenterModal
         fullWidth={!!selectedPostType}
         maxWidth="sm"
-        onClose={close}
+        onClose={onRequestClose}
         open={isOpen}
       >
         <Box>

@@ -88,6 +88,7 @@
   "publishPageMessage": "Your profile will no longer be displayed in the listings and site search, but your profile will continue to be displayed to supporters. You can change this setting at any time.",
   "receiveToken": "Receive Token",
   "recentPayments": "Recent Payments",
+  "requestCloseConfirmMessage": "If you close here, the changes will not be applied.",
   "save": "Save",
   "saveFailed": "Save Failed.",
   "saveSuccessed": "Save Successed.",
