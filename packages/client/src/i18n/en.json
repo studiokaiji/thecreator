@@ -131,6 +131,7 @@
   },
   "validity": "Validity",
   "video": "Video",
+  "videoUrl": "Video URL",
   "waitingConfirmation": "Waiting confirmation",
   "waitingSendTx": "Waiting for transaction to be sent",
   "walletSelectMessage": "Select a wallet to connect.",
