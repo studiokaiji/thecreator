@@ -34,8 +34,16 @@ export const useCreatorPostForWrite = () => {
   const postData = async (
     data: Omit<
       CreatorPostDocData,
-      'updatedAt' | 'createdAt' | 'borderLockAddress'
-    > & { borderLockAddress?: string }
+      | 'updatedAt'
+      | 'createdAt'
+      | 'borderLockAddress'
+      | 'customUrl'
+      | 'contentsCount'
+    > & {
+      borderLockAddress?: string;
+      customUrl?: string;
+      contentsCount?: number;
+    }
   ) => {
     if (!account) {
       throw Error('User wallet does not exist.');
@@ -49,7 +57,9 @@ export const useCreatorPostForWrite = () => {
     await setDoc(postDocRef, {
       ...data,
       borderLockAddress: data.borderLockAddress || constants.AddressZero,
+      contentsCount: data.contentsCount || 1,
       createdAt: serverTimestamp(),
+      customUrl: data.customUrl || '',
       id: postId,
       updatedAt: serverTimestamp(),
     });
