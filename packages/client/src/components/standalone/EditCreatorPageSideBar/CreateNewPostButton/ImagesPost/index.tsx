@@ -42,12 +42,12 @@ export const ImagesPost = ({ onDone }: ImagesPostProps) => {
 
   const { postContents } = useCreatorPostForWrite();
 
-  const [uploadStatus, setUploadStatus] = useState<'typing' | 'uploading'>(
-    'typing'
-  );
+  const [isUploading, setIsUploading] = useState(false);
 
   const post = async () => {
     const { borderLockAddress, descriptions, title } = form.getValues();
+
+    setIsUploading(true);
 
     await postContents(
       {
@@ -62,10 +62,12 @@ export const ImagesPost = ({ onDone }: ImagesPostProps) => {
 
     images.forEach(({ revoke }) => revoke());
 
+    setIsUploading(false);
+
     onDone();
   };
 
-  useBeforeUnload(uploadStatus === 'uploading');
+  useBeforeUnload(isUploading);
 
   return (
     <FormProvider {...form}>
@@ -73,7 +75,12 @@ export const ImagesPost = ({ onDone }: ImagesPostProps) => {
         <Typography variant="h5">{t('postImages')}</Typography>
         {images.length ? (
           <>
-            {uploadStatus === 'typing' ? (
+            {isUploading ? (
+              <Stack spacing={2} textAlign="center">
+                <CircularProgress sx={{ mx: 'auto' }} />
+                <Typography>{t('uploading')}...</Typography>
+              </Stack>
+            ) : (
               <>
                 <ImageList images={images} onChangeImages={setImages} />
                 <TitleTextField />
@@ -86,11 +93,6 @@ export const ImagesPost = ({ onDone }: ImagesPostProps) => {
                   {t('post')}
                 </Button>
               </>
-            ) : (
-              <Stack spacing={2} textAlign="center">
-                <CircularProgress sx={{ mx: 'auto' }} />
-                <Typography>{t('uploading')}...</Typography>
-              </Stack>
             )}
           </>
         ) : (
