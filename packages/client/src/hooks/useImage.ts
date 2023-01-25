@@ -5,6 +5,7 @@ export type UseImageData = {
   revoke: () => void;
   url: string;
   data: Blob;
+  type: Omit<ContentsType, 'audio' | 'text'>;
 };
 
 export const useImage = () => {
@@ -72,7 +73,7 @@ export const useImage = () => {
       return compressed;
     };
 
-    return { compress, data, revoke, url };
+    return { compress, data, revoke, type, url };
   };
 
   return { createImage };
