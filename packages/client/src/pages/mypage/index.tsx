@@ -13,13 +13,15 @@ export const MyPage = () => {
   const { width } = useWindowSize();
   return (
     <MainSpacingLayout>
-      <Stack spacing={6}>
-        <Typography variant="h1">{t('mypage')}</Typography>
-        <Stack alignItems="flex-start" direction="row" gap={3}>
-          {width > 768 && <MenuCard />}
-          <Card sx={{ width: '100%' }}>
-            <Outlet />
-          </Card>
+      <Stack justifyContent="center" sx={{ maxWidth: 1000, mx: 'auto' }}>
+        <Stack spacing={6}>
+          <Typography variant="h1">{t('mypage')}</Typography>
+          <Stack alignItems="flex-start" direction="row" gap={3}>
+            {width > 768 && <MenuCard />}
+            <Card sx={{ width: '100%' }}>
+              <Outlet />
+            </Card>
+          </Stack>
         </Stack>
       </Stack>
     </MainSpacingLayout>
