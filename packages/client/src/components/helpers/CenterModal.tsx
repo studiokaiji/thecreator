@@ -5,12 +5,14 @@ import DialogContent from '@mui/material/DialogContent';
 export type CenterModalProps = DialogProps;
 
 export const CenterModal = (props: DialogProps) => (
-  <Dialog {...props}>
+  <Dialog {...props} sx={{}}>
     <DialogContent
       dividers={false}
-      sx={{
-        p: 4,
-      }}
+      sx={
+        props.sx || {
+          p: 4,
+        }
+      }
     >
       <Box>{props.children}</Box>
     </DialogContent>
