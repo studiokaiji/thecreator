@@ -6,7 +6,13 @@ import { ReactNode, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { useCreatorForWrite } from '@/hooks/useCreatorForWrite';
+import { PictureUploader } from './PictureUploader';
+
+import {
+  CreatorImageData,
+  useCreatorForWrite,
+} from '@/hooks/useCreatorForWrite';
+import { UseImageData } from '@/hooks/useImage';
 import { useSnackbar } from '@/hooks/useSnackbar';
 
 type EditableCreatorDocDataInputs = {
@@ -16,7 +22,10 @@ type EditableCreatorDocDataInputs = {
 
 type CreatorProfileEditFormProps = {
   data?: WithId<CreatorDocData>;
-  onChangeData?: (data: WithId<CreatorDocData>) => void;
+  onChangeData?: (
+    data: WithId<CreatorDocData>,
+    images: CreatorImageData
+  ) => void;
   onError?: (e: any) => void;
   onEnd: () => void;
   saveButtonChild: ReactNode;
@@ -42,16 +51,29 @@ export const CreatorProfileEditForm = ({
 
   const { open: openSnackbar } = useSnackbar();
 
-  const { addCreator, updateCreator } = useCreatorForWrite();
+  const { addCreator, updateCreator, uploadImages } = useCreatorForWrite();
+
+  const [iconImage, setIconImage] = useState<UseImageData>();
+  const [headerImage, setHeaderImage] = useState<UseImageData>();
 
   const onClickSaveButtonHandler = async () => {
     try {
       setStatus('processing');
       const { creatorName, description } = getValues();
 
+      const images = { header: headerImage, icon: iconImage };
+
       if (data) {
-        onChangeData && onChangeData({ ...data, creatorName, description });
-        await updateCreator({ creatorName, description });
+        onChangeData &&
+          onChangeData({ ...data, creatorName, description }, images);
+        if (
+          creatorName === data.creatorName &&
+          description === data.description
+        ) {
+          await uploadImages(images);
+        } else {
+          await updateCreator({ creatorName, description }, images);
+        }
       } else {
         await addCreator(creatorName, description);
       }
@@ -69,6 +91,10 @@ export const CreatorProfileEditForm = ({
 
   return (
     <Stack component="form" spacing={3}>
+      <PictureUploader
+        onChangeHeader={setHeaderImage}
+        onChangeIcon={setIconImage}
+      />
       <TextField
         {...register('creatorName', {
           maxLength: {
