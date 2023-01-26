@@ -5,14 +5,9 @@ import { UseImageData } from './useImage';
 
 import { functions } from '@/firebase';
 
-const imageContentsTypes = [
-  'thumbnail',
-  'iconImage',
-  'headerImage',
-  'images',
-];
+const imageContentsTypes = ['thumbnail', 'iconImage', 'headerImage', 'images'];
 
-export const useUploadPostContents = () => {
+export const useUploadContents = () => {
   const { currentUser } = useCurrentUser();
 
   const upload = async <T extends ContentsType>({

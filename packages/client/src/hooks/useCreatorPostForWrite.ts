@@ -2,7 +2,7 @@ import { constants } from 'ethers';
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
 
 import { UseImageData } from './useImage';
-import { useUploadPostContents } from './useUploadPostContents';
+import { useUploadContents } from './useUploadContents';
 import { useWallet } from './useWallet';
 
 import { getCreatorPostsCollectionRef } from '@/converters/creatorPostConverter';
@@ -10,7 +10,7 @@ import { getCreatorPostsCollectionRef } from '@/converters/creatorPostConverter'
 export const useCreatorPostForWrite = () => {
   const { account } = useWallet();
 
-  const { upload } = useUploadPostContents();
+  const { upload } = useUploadContents();
 
   const postDocument = async (
     data: Omit<
