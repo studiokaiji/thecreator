@@ -25,6 +25,7 @@ export const useCreatorForWrite = () => {
       description,
       id: '',
       pinningPostId: '',
+      planIds: [],
       settings: {
         isNSFW: false,
         isPublish: true,
