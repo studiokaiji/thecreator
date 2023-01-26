@@ -174,7 +174,9 @@ export const getUploadSignedUrl = https.onCall(async (d, context) => {
 
     const Bucket = process.env.CREATOR_PUBLIC_BUCKET_NAME;
 
-    const Key = `${profileData.creatorId}/${profileData.contentsType}`;
+    const Key = `${profileData.creatorId}/${
+      profileData.contentsType
+    }/${new Date().getTime()}`;
 
     const ContentLength = contentLengths[0];
     const ContentType = contentTypes[0];
