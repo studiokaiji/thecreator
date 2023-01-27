@@ -147,9 +147,11 @@ export const getUploadSignedUrl = https.onCall(async (d, context) => {
       ? CREATOR_PUBLIC_BUCKET_NAME
       : CREATOR_LIMITED_PUBLICATION_BUCKET_NAME;
 
+    const currentTimestamp = new Date().getTime();
+
     const returnData = await Promise.all(
       contentLengths.map(async (ContentLength, i) => {
-        const Key = `${postData.creatorId}/${postData.postId}/${i}`;
+        const Key = `${postData.creatorId}/${postData.postId}/${i}-${currentTimestamp}`;
 
         const ContentType = contentTypes[i];
 
