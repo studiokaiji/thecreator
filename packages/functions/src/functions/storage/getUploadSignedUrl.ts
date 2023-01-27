@@ -147,7 +147,7 @@ export const getUploadSignedUrl = https.onCall(async (d, context) => {
       ? CREATOR_PUBLIC_BUCKET_NAME
       : CREATOR_LIMITED_PUBLICATION_BUCKET_NAME;
 
-    const urls: string[] = await Promise.all(
+    const returnData = await Promise.all(
       contentLengths.map(async (ContentLength, i) => {
         const Key = `${postData.creatorId}/${postData.postId}/${i}`;
 
@@ -163,11 +163,11 @@ export const getUploadSignedUrl = https.onCall(async (d, context) => {
           }),
           { expiresIn: uploadPresignedUrlExpiresIn }
         );
-        return url;
+        return { key: Key, url };
       })
     );
 
-    return { urls };
+    return returnData;
   } else {
     const profileData = data as z.infer<typeof requestProfileDataSchema>;
 
@@ -191,6 +191,6 @@ export const getUploadSignedUrl = https.onCall(async (d, context) => {
       { expiresIn: uploadPresignedUrlExpiresIn }
     );
 
-    return { urls: [url] };
+    return [{ key: Key, url }];
   }
 });
