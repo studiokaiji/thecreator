@@ -34,7 +34,6 @@ const requestPostDataSchema = z.object({
   ]),
   creatorId: z.string(),
   isPublic: z.boolean().optional(),
-  numOfImages: z.number().min(1).max(30).optional(),
   contentInfoList: contentInfoListSchema,
   postId: z.string(),
 });
