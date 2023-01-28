@@ -8,6 +8,8 @@ export type UseImageData = {
   type: Omit<ContentsType, 'audio' | 'text'>;
 };
 
+const fileType = 'image/jpeg';
+
 export const useImage = () => {
   const createImage = (
     imageFile: File,
@@ -30,6 +32,7 @@ export const useImage = () => {
       const isHeightLarger = image.naturalWidth < image.naturalHeight;
 
       const compressed = await imageCompression(data, {
+        fileType,
         maxSizeMB: 10,
         maxWidthOrHeight: isHeightLarger ? undefined : maxWidth,
         useWebWorker: true,
@@ -59,7 +62,7 @@ export const useImage = () => {
             } else {
               reject();
             }
-          })
+          }, fileType)
         );
 
         return resizedBlob;
