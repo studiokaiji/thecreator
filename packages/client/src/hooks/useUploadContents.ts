@@ -58,19 +58,21 @@ export const useUploadContents = () => {
 
     const data = isPost ? { ...baseData, isPublic, postId } : baseData;
 
-    const result = await httpsCallable<unknown, [{ key: string; url: string }]>(
+    const result = await httpsCallable<unknown, GetUploadSignedUrlResponse>(
       functions,
       'getUploadSignedUrl'
     )(data);
 
-    const promises = result.data.map(async ({ url }, i) => {
-      await fetch(url, {
+    const promises = result.data.map(async ({ uploadUrl }, i) => {
+      await fetch(uploadUrl, {
         body: compressedBlobs[i],
         method: 'PUT',
       });
     });
 
     await Promise.all(promises);
+
+    return result.data.map(({ downloadUrl, key }) => ({ downloadUrl, key }));
   };
 
   return { upload };

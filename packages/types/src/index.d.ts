@@ -7,5 +7,6 @@ import './firestore/creator/status/strikes';
 import './firestore/user';
 import './firestore/user/Notification';
 import './firestore/user/SupportingCreatorPlan';
+import './functions/storage/GetUploadSignedUrl';
 import './multicall/MulticallInput';
 import './contents/ContentsType';

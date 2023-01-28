@@ -49,150 +49,159 @@ const requestProfileDataSchema = z.object({
   contentInfoList: contentInfoListSchema,
 });
 
-export const getUploadSignedUrl = https.onCall(async (d, context) => {
-  const userId = getUserId(context);
+export const getUploadSignedUrl = https.onCall(
+  async (d, context): Promise<GetUploadSignedUrlResponse> => {
+    const userId = getUserId(context);
 
-  if (!userId) {
-    throw new https.HttpsError('unauthenticated', 'Need auth');
-  }
-
-  // Validation of request
-  const requestType = postDataContentTypes.includes(d.contentsType || '')
-    ? 'post'
-    : profileDataContentTypes.includes(d.contentsType || '')
-    ? 'profile'
-    : null;
-
-  if (!requestType) {
-    throw new https.HttpsError('invalid-argument', 'Invalid contentsType');
-  }
-
-  const data = await (requestType === 'post'
-    ? requestPostDataSchema
-    : requestProfileDataSchema
-  )
-    .parseAsync(d)
-    .catch(() => {
-      throw new https.HttpsError('invalid-argument', 'Invalid argument');
-    });
-
-  if (data.contentsType !== 'images' && data.contentInfoList.length > 1) {
-    throw new https.HttpsError('invalid-argument', 'Invalid contents count');
-  }
-
-  // Content check
-  const maxContentLength = maxContentLengths[data.contentsType];
-  const validContentType: string[] = [...validContentTypes[data.contentsType]];
-
-  const contentLengths: number[] = [];
-  const contentTypes: string[] = [];
-
-  for (const { contentLength, contentType } of data.contentInfoList) {
-    const isOk =
-      contentLength <= maxContentLength &&
-      validContentType.includes(contentType);
-
-    if (!isOk) {
-      throw new https.HttpsError('invalid-argument', 'Invalid content info');
+    if (!userId) {
+      throw new https.HttpsError('unauthenticated', 'Need auth');
     }
 
-    contentLengths.push(contentLength);
-    contentTypes.push(contentType);
-  }
+    // Validation of request
+    const requestType = postDataContentTypes.includes(d.contentsType || '')
+      ? 'post'
+      : profileDataContentTypes.includes(d.contentsType || '')
+      ? 'profile'
+      : null;
 
-  // Creator check
-  const creatorRef = db.doc(`/creators/${data.creatorId}`);
+    if (!requestType) {
+      throw new https.HttpsError('invalid-argument', 'Invalid contentsType');
+    }
 
-  const creatorSnapshot = await creatorRef.get();
-  const creatorData = creatorSnapshot.data();
-  if (!creatorSnapshot.exists || !creatorData) {
-    throw new https.HttpsError(
-      'permission-denied',
-      'Only creators can execute'
-    );
-  }
+    const data = await (requestType === 'post'
+      ? requestPostDataSchema
+      : requestProfileDataSchema
+    )
+      .parseAsync(d)
+      .catch(() => {
+        throw new https.HttpsError('invalid-argument', 'Invalid argument');
+      });
 
-  if (creatorData.creatorAddress !== userId) {
-    throw new https.HttpsError(
-      'permission-denied',
-      'Only the creator themselves can access'
-    );
-  }
+    if (data.contentsType !== 'images' && data.contentInfoList.length > 1) {
+      throw new https.HttpsError('invalid-argument', 'Invalid contents count');
+    }
 
-  if (!creatorData.settings.isPublish) {
-    throw new https.HttpsError(
-      'permission-denied',
-      'Creator page must be public'
-    );
-  }
+    // Content check
+    const maxContentLength = maxContentLengths[data.contentsType];
+    const validContentType: string[] = [
+      ...validContentTypes[data.contentsType],
+    ];
 
-  const creatorStatusRef = creatorRef.collection('status').doc('strikes');
-  const creatorStatusSnapshot = await creatorStatusRef.get();
+    const contentLengths: number[] = [];
+    const contentTypes: string[] = [];
 
-  if (creatorStatusSnapshot.exists) {
-    const isBanned = creatorStatusSnapshot.get('isBanned');
-    if (isBanned) {
+    for (const { contentLength, contentType } of data.contentInfoList) {
+      const isOk =
+        contentLength <= maxContentLength &&
+        validContentType.includes(contentType);
+
+      if (!isOk) {
+        throw new https.HttpsError('invalid-argument', 'Invalid content info');
+      }
+
+      contentLengths.push(contentLength);
+      contentTypes.push(contentType);
+    }
+
+    // Creator check
+    const creatorRef = db.doc(`/creators/${data.creatorId}`);
+
+    const creatorSnapshot = await creatorRef.get();
+    const creatorData = creatorSnapshot.data();
+    if (!creatorSnapshot.exists || !creatorData) {
       throw new https.HttpsError(
         'permission-denied',
-        'You are not allowed to upload content'
+        'Only creators can execute'
       );
     }
-  }
 
-  // Generate URL(s)
-  if (requestType === 'post') {
-    const postData = data as z.infer<typeof requestPostDataSchema>;
+    if (creatorData.creatorAddress !== userId) {
+      throw new https.HttpsError(
+        'permission-denied',
+        'Only the creator themselves can access'
+      );
+    }
 
-    const Bucket = postData.isPublic
-      ? CREATOR_PUBLIC_BUCKET_NAME
-      : CREATOR_LIMITED_PUBLICATION_BUCKET_NAME;
+    if (!creatorData.settings.isPublish) {
+      throw new https.HttpsError(
+        'permission-denied',
+        'Creator page must be public'
+      );
+    }
 
-    const currentTimestamp = new Date().getTime();
+    const creatorStatusRef = creatorRef.collection('status').doc('strikes');
+    const creatorStatusSnapshot = await creatorStatusRef.get();
 
-    const returnData = await Promise.all(
-      contentLengths.map(async (ContentLength, i) => {
-        const Key = `${postData.creatorId}/${postData.postId}/${i}-${currentTimestamp}`;
-
-        const ContentType = contentTypes[i];
-
-        const url = await getSignedUrl(
-          s3,
-          new PutObjectCommand({
-            Bucket,
-            Key,
-            ContentLength,
-            ContentType,
-          }),
-          { expiresIn: uploadPresignedUrlExpiresIn }
+    if (creatorStatusSnapshot.exists) {
+      const isBanned = creatorStatusSnapshot.get('isBanned');
+      if (isBanned) {
+        throw new https.HttpsError(
+          'permission-denied',
+          'You are not allowed to upload content'
         );
-        return { key: Key, url };
-      })
-    );
+      }
+    }
 
-    return returnData;
-  } else {
-    const profileData = data as z.infer<typeof requestProfileDataSchema>;
+    // Generate URL(s)
+    if (requestType === 'post') {
+      const postData = data as z.infer<typeof requestPostDataSchema>;
 
-    const Bucket = process.env.CREATOR_PUBLIC_BUCKET_NAME;
+      const Bucket = postData.isPublic
+        ? CREATOR_PUBLIC_BUCKET_NAME
+        : CREATOR_LIMITED_PUBLICATION_BUCKET_NAME;
 
-    const Key = `${profileData.creatorId}/${
-      profileData.contentsType
-    }/${new Date().getTime()}`;
+      const currentTimestamp = new Date().getTime();
 
-    const ContentLength = contentLengths[0];
-    const ContentType = contentTypes[0];
+      const returnData = await Promise.all(
+        contentLengths.map(async (ContentLength, i) => {
+          const Key = `${postData.creatorId}/${postData.postId}/${i}-${currentTimestamp}`;
 
-    const url = await getSignedUrl(
-      s3,
-      new PutObjectCommand({
-        Bucket,
-        Key,
-        ContentLength,
-        ContentType,
-      }),
-      { expiresIn: uploadPresignedUrlExpiresIn }
-    );
+          const ContentType = contentTypes[i];
 
-    return [{ key: Key, url }];
+          const uploadUrl = await getSignedUrl(
+            s3,
+            new PutObjectCommand({
+              Bucket,
+              Key,
+              ContentLength,
+              ContentType,
+            }),
+            { expiresIn: uploadPresignedUrlExpiresIn }
+          );
+
+          const downloadUrl = postData.isPublic ? `${Bucket}/${Key}` : '';
+
+          return { key: Key, uploadUrl, downloadUrl };
+        })
+      );
+
+      return returnData;
+    } else {
+      const profileData = data as z.infer<typeof requestProfileDataSchema>;
+
+      const Bucket = process.env.CREATOR_PUBLIC_BUCKET_NAME;
+
+      const Key = `${profileData.creatorId}/${
+        profileData.contentsType
+      }/${new Date().getTime()}`;
+
+      const ContentLength = contentLengths[0];
+      const ContentType = contentTypes[0];
+
+      const uploadUrl = await getSignedUrl(
+        s3,
+        new PutObjectCommand({
+          Bucket,
+          Key,
+          ContentLength,
+          ContentType,
+        }),
+        { expiresIn: uploadPresignedUrlExpiresIn }
+      );
+
+      const downloadUrl = `${Bucket}/${Key}`;
+
+      return [{ key: Key, uploadUrl, downloadUrl }];
+    }
   }
-});
+);
