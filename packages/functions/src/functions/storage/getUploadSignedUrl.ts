@@ -179,7 +179,7 @@ export const getUploadSignedUrl = https.onCall(
     } else {
       const profileData = data as z.infer<typeof requestProfileDataSchema>;
 
-      const Bucket = process.env.CREATOR_PUBLIC_BUCKET_NAME;
+      const Bucket = CREATOR_PUBLIC_BUCKET_NAME;
 
       const Key = `${profileData.creatorId}/${
         profileData.contentsType
