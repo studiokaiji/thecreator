@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 
 import { UseImageData } from './useImage';
 import { setIsCreatorFlag } from './useIsCreator';
-import { UploadContentsResponse, useUploadContents } from './useUploadContents';
+import { useUploadContents } from './useUploadContents';
 import { useWallet } from './useWallet';
 
 import { getCreatorDocRef } from '@/converters/creatorConverter';
@@ -82,7 +82,7 @@ export const useCreatorForWrite = () => {
       header?: string;
       icon?: string;
     } = {};
-    
+
     if (images) {
       downloadUrls = await uploadImages(images);
     }
@@ -115,17 +115,16 @@ export const useCreatorForWrite = () => {
       },
     ];
 
-    const promises: Promise<UploadContentsResponse>[] = [];
+    const promises = images.map(({ contents, contentsType }) => {
+      if (!contents) {
+        return null;
+      }
 
-    for (const { contents, contentsType } of images) {
-      if (!contents) continue;
-      promises.push(
-        upload({
-          contents,
-          contentsType,
-        })
-      );
-    }
+      return upload({
+        contents,
+        contentsType,
+      });
+    });
 
     const [headerRes, iconRes] = await Promise.all(promises);
 
