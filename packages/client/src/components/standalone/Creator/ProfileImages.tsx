@@ -24,6 +24,7 @@ export const ProfileImages = ({
       sx={{
         backgroundColor: 'lightgray',
         height: 400,
+        objectFit: 'cover',
         position: 'absolute',
         width: '100%',
       }}
