@@ -19,8 +19,13 @@ type PictureUploaderProps = {
 const headerImageHeight = 210;
 const creatorIconSize = 120;
 
-export const PictureUploader = ({ header, icon }: PictureUploaderProps) => {
-  const [headerImage, setheaderImage] = useState<UseImageData>();
+export const PictureUploader = ({
+  header,
+  icon,
+  onChangeHeader,
+  onChangeIcon,
+}: PictureUploaderProps) => {
+  const [headerImage, setHeaderImage] = useState<UseImageData>();
   const [iconImage, setIconImage] = useState<UseImageData>();
   const [isCroppingIconImage, setIsCroppingIconImage] = useState(false);
 
@@ -39,13 +44,15 @@ export const PictureUploader = ({ header, icon }: PictureUploaderProps) => {
       setIconImage(image);
       setIsCroppingIconImage(true);
     } else {
-      setheaderImage(image);
+      setHeaderImage(image);
+      onChangeHeader(image);
     }
   };
 
   const onCroppedIconImageHandler = (image: UseImageData) => {
     setIconImage(image);
     setIsCroppingIconImage(false);
+    onChangeIcon(image);
   };
 
   if (isCroppingIconImage && iconImage) {
