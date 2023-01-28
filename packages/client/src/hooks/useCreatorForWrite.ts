@@ -28,8 +28,8 @@ export const useCreatorForWrite = () => {
     if (!docRef || !account) throw refErr;
 
     let downloadUrls: {
-      header: string;
-      icon: string;
+      header?: string;
+      icon?: string;
     } = {
       header: '',
       icon: '',
@@ -43,8 +43,8 @@ export const useCreatorForWrite = () => {
       creatorAddress: account,
       creatorName,
       description,
-      headerImageSrc: downloadUrls.header,
-      iconImageSrc: downloadUrls.icon,
+      headerImageSrc: downloadUrls.header || '',
+      iconImageSrc: downloadUrls.icon || '',
       id: '',
       pinningPostId: '',
       planIds: [],
@@ -129,8 +129,8 @@ export const useCreatorForWrite = () => {
     const [headerRes, iconRes] = await Promise.all(promises);
 
     return {
-      header: headerRes?.[0].downloadUrl || '',
-      icon: iconRes?.[0].downloadUrl || '',
+      header: headerRes?.[0].downloadUrl,
+      icon: iconRes?.[0].downloadUrl,
     };
   };
 
