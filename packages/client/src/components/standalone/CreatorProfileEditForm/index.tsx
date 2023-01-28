@@ -1,4 +1,4 @@
-import Button from '@mui/material/Button';
+import LoadingButton from '@mui/lab/LoadingButton';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
@@ -41,7 +41,9 @@ export const CreatorProfileEditForm = ({
     mode: 'onChange',
   });
 
-  const [status, setStatus] = useState('typing');
+  const [status, setStatus] = useState<'typing' | 'processing' | 'failed'>(
+    'typing'
+  );
 
   const { open: openSnackbar } = useSnackbar();
 
@@ -118,13 +120,14 @@ export const CreatorProfileEditForm = ({
         rows={4}
         variant="standard"
       />
-      <Button
+      <LoadingButton
         disabled={!isValid}
+        loading={status === 'processing'}
         onClick={onClickSaveButtonHandler}
         variant="contained"
       >
         {saveButtonChild}
-      </Button>
+      </LoadingButton>
       {status === 'failed' && (
         <Typography color={'red'}>{t('failed')}</Typography>
       )}
