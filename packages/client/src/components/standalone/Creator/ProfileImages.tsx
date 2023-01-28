@@ -3,17 +3,15 @@ import Box from '@mui/material/Box';
 
 const creatorIconSize = 150;
 
-type ImageData = {
-  src?: string;
-  alt?: string;
-};
-
 type ProfileImagesProps = {
-  background?: ImageData;
-  icon?: ImageData;
+  headerImageSrc?: string;
+  iconImageSrc?: string;
 };
 
-export const ProfileImages = ({ background, icon }: ProfileImagesProps) => (
+export const ProfileImages = ({
+  headerImageSrc,
+  iconImageSrc,
+}: ProfileImagesProps) => (
   <Box
     sx={{
       height: 400,
@@ -22,15 +20,16 @@ export const ProfileImages = ({ background, icon }: ProfileImagesProps) => (
   >
     <Box
       component="img"
+      src={headerImageSrc}
       sx={{
-        backgroundColor: 'lightgray',
+        headerColor: 'lightgray',
         height: 400,
         position: 'absolute',
         width: '100%',
       }}
-      {...background}
     />
     <Avatar
+      src={iconImageSrc}
       sx={{
         border: '3px solid white',
         borderRadius: '50%',
@@ -40,7 +39,6 @@ export const ProfileImages = ({ background, icon }: ProfileImagesProps) => (
         position: 'absolute',
         width: creatorIconSize,
       }}
-      {...icon}
     />
   </Box>
 );
