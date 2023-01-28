@@ -91,6 +91,8 @@ export const useCreatorPostForWrite = () => {
         upload({
           contents: thumbnail,
           contentsType: 'thumbnail',
+          isPublic: true,
+          postId,
         })
       );
     }
@@ -100,7 +102,7 @@ export const useCreatorPostForWrite = () => {
         upload({
           contents: contents as any,
           contentsType: data.contentsType,
-          isPublic: !!data.borderLockAddress,
+          isPublic: !data.borderLockAddress,
           postId,
         })
       );
