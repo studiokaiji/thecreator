@@ -6,6 +6,7 @@ import { getUserId } from '@/middleware/getUserId';
 import {
   CREATOR_LIMITED_PUBLICATION_BUCKET_NAME,
   CREATOR_PUBLIC_BUCKET_NAME,
+  CREATOR_PUBLIC_BUCKET_ACCESS_URL_BASE,
 } from '@/constants';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { PutObjectCommand } from '@aws-sdk/client-s3';
@@ -48,6 +49,10 @@ const requestProfileDataSchema = z.object({
   creatorId: z.string(),
   contentInfoList: contentInfoListSchema,
 });
+
+const getPublicDownloadUrl = (key: string) => {
+  return `${CREATOR_PUBLIC_BUCKET_ACCESS_URL_BASE}/${key}`;
+};
 
 export const getUploadSignedUrl = https.onCall(
   async (d, context): Promise<GetUploadSignedUrlResponse> => {
@@ -169,7 +174,9 @@ export const getUploadSignedUrl = https.onCall(
             { expiresIn: uploadPresignedUrlExpiresIn }
           );
 
-          const downloadUrl = postData.isPublic ? `${Bucket}/${Key}` : '';
+          const downloadUrl = postData.isPublic
+            ? getPublicDownloadUrl(Key)
+            : '';
 
           return { key: Key, uploadUrl, downloadUrl };
         })
@@ -199,7 +206,7 @@ export const getUploadSignedUrl = https.onCall(
         { expiresIn: uploadPresignedUrlExpiresIn }
       );
 
-      const downloadUrl = `${Bucket}/${Key}`;
+      const downloadUrl = getPublicDownloadUrl(Key);
 
       return [{ key: Key, uploadUrl, downloadUrl }];
     }
