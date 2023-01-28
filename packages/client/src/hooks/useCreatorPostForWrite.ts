@@ -12,7 +12,7 @@ export const useCreatorPostForWrite = () => {
 
   const { upload } = useUploadContents();
 
-  const postDocument = async (
+  const postOnlyDocument = async (
     data: Omit<
       CreatorPostDocData,
       | 'updatedAt'
@@ -75,7 +75,7 @@ export const useCreatorPostForWrite = () => {
       throw Error('User wallet does not exist.');
     }
 
-    const postId = await postDocument(data);
+    const postId = await postOnlyDocument(data);
 
     const promises = [];
 
@@ -104,5 +104,5 @@ export const useCreatorPostForWrite = () => {
     return postId;
   };
 
-  return { postContents, postDocument };
+  return { postContents, postOnlyDocument };
 };

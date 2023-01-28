@@ -30,7 +30,7 @@ export const VideoPost = ({ onDone }: VideoPostProps) => {
   const customUrl = form.watch('customUrl');
   const iframeParam = useVideoIframeParam({ height: 300, src: customUrl });
 
-  const { postDocument } = useCreatorPostForWrite();
+  const { postOnlyDocument } = useCreatorPostForWrite();
 
   const post = async () => {
     if (!form.formState.isValid) {
@@ -38,7 +38,7 @@ export const VideoPost = ({ onDone }: VideoPostProps) => {
     }
 
     const value = form.getValues();
-    await postDocument({ ...value, contentsType: 'video' });
+    await postOnlyDocument({ ...value, contentsType: 'video' });
 
     onDone();
   };
