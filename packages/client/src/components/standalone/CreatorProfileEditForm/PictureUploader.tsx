@@ -1,6 +1,6 @@
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
-import Avatar, { AvatarProps } from '@mui/material/Avatar';
-import Box, { BoxProps } from '@mui/material/Box';
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
@@ -10,8 +10,8 @@ import { ImageCropper } from '@/components/helpers/ImageCropper';
 import { useImage, UseImageData } from '@/hooks/useImage';
 
 type PictureUploaderProps = {
-  header?: BoxProps<'img'>;
-  icon?: AvatarProps;
+  headerImageSrc?: string;
+  iconImageSrc?: string;
   onChangeHeader: (header: UseImageData) => void;
   onChangeIcon: (icon: UseImageData) => void;
 };
@@ -20,8 +20,8 @@ const headerImageHeight = 210;
 const creatorIconSize = 120;
 
 export const PictureUploader = ({
-  header,
-  icon,
+  headerImageSrc,
+  iconImageSrc,
   onChangeHeader,
   onChangeIcon,
 }: PictureUploaderProps) => {
@@ -95,8 +95,7 @@ export const PictureUploader = ({
       >
         <Box
           component="img"
-          {...header}
-          src={headerImage?.url || header?.src}
+          src={headerImage?.url || headerImageSrc}
           sx={{ height: '100%', objectFit: 'cover', width: '100%' }}
         />
         <AddPhotoIconButton
@@ -117,13 +116,12 @@ export const PictureUploader = ({
         }}
       >
         <Avatar
+          src={iconImage?.url || iconImageSrc}
           sx={{
             border: '2px solid white',
             height: '100%',
             width: '100%',
           }}
-          {...icon}
-          src={iconImage?.url || icon?.src}
         />
         <AddPhotoIconButton
           name="icon"

@@ -90,6 +90,7 @@ export const CreatorProfileEditForm = ({
       <PictureUploader
         onChangeHeader={setHeaderImage}
         onChangeIcon={setIconImage}
+        {...data}
       />
       <TextField
         {...register('creatorName', {
