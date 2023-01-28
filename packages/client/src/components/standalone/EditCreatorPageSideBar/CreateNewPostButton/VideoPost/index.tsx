@@ -15,7 +15,7 @@ import { useVideoIframeParam } from '@/hooks/useVideoIframeParam';
 
 type VideoPostFormInput = {
   customUrl: string;
-  description: string;
+  description?: string;
 } & PostFormInput;
 
 type VideoPostProps = {

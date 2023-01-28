@@ -24,7 +24,7 @@ export const useCreatorPostForWrite = () => {
     > & {
       borderLockAddress?: string;
       customUrl?: string;
-      contentUrls?: string[];
+      contents?: { url: string; description?: string }[];
       thumbnailUrl?: string;
       id?: string;
     }
@@ -40,7 +40,7 @@ export const useCreatorPostForWrite = () => {
     await setDoc(postDocRef, {
       ...data,
       borderLockAddress: data.borderLockAddress || constants.AddressZero,
-      contentUrls: data.contentUrls || [],
+      contents: data.contents || [],
       createdAt: serverTimestamp(),
       customUrl: data.customUrl || '',
       id: postId,
@@ -58,14 +58,16 @@ export const useCreatorPostForWrite = () => {
       | 'createdAt'
       | 'borderLockAddress'
       | 'customUrl'
-      | 'contentsCount'
       | 'contentsType'
+      | 'thumbnailUrl'
+      | 'contents'
     > & {
       borderLockAddress?: string;
       customUrl?: string;
-      contentsCount?: number;
       contentsType: T;
-    },
+    } & (T extends 'images'
+        ? { descriptions?: string[] }
+        : { description?: string }),
     contents: T extends 'images'
       ? UseImageData[]
       : T extends 'thumbnail' | 'iconImage' | 'headerImage'
@@ -109,11 +111,24 @@ export const useCreatorPostForWrite = () => {
     const existThumbnail = responses.length > 1;
 
     const thumbnailUrl = existThumbnail ? responses[0][0].downloadUrl : '';
-    const contentUrls = responses[existThumbnail ? 1 : 0].map(
-      ({ downloadUrl }) => downloadUrl
+    const contentsData = (responses[existThumbnail ? 1 : 0] || []).map(
+      ({ downloadUrl }, i) => ({
+        description:
+          data.contentsType === 'images'
+            ? (data as { descriptions: string[] })?.descriptions?.[i] || ''
+            : (data as { description: string })?.description || '',
+        url: downloadUrl,
+      })
     );
 
-    await postOnlyDocument({ ...data, contentUrls, thumbnailUrl });
+    if (
+      data.contentsType === 'images' &&
+      (data as { descriptions: string[] })?.descriptions
+    ) {
+      (data as { descriptions: string[] | undefined }).descriptions = undefined;
+    }
+
+    await postOnlyDocument({ ...data, contents: contentsData, thumbnailUrl });
 
     return postId;
   };

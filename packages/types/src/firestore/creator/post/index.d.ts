@@ -1,9 +1,11 @@
 type CreatorPostDocData = {
   contentsType: CreatorPostDocDataContentsType;
-  contentUrls: string[];
+  contents: {
+    url: string;
+    description?: string;
+  }[];
   thumbnailUrl: string;
   title: string;
-  description: string;
   updatedAt: Date;
   createdAt: Date;
   borderLockAddress: string;

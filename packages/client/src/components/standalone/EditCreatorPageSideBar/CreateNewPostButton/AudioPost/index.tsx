@@ -19,7 +19,7 @@ type AudioPostProps = {
   onDone: () => void;
 };
 
-type AudioPostFormInput = PostFormInput & { description: string };
+type AudioPostFormInput = PostFormInput & { description?: string };
 
 export const AudioPost = ({ onDone }: AudioPostProps) => {
   const { t } = useTranslation();
@@ -31,7 +31,9 @@ export const AudioPost = ({ onDone }: AudioPostProps) => {
 
   const [thumbnail, setThumbnail] = useState<UseImageData>();
 
-  const form = useForm<AudioPostFormInput>();
+  const form = useForm<AudioPostFormInput>({
+    mode: 'onChange',
+  });
 
   const { postContents } = useCreatorPostForWrite();
 
@@ -59,26 +61,30 @@ export const AudioPost = ({ onDone }: AudioPostProps) => {
   useBeforeUnload(isUploading);
 
   return (
-    <Stack spacing={3}>
-      <Typography variant="h5">{t('postAudio')}</Typography>
-      {audioFile ? (
-        <FormProvider {...form}>
+    <FormProvider {...form}>
+      <Stack spacing={3}>
+        <Typography variant="h5">{t('postAudio')}</Typography>
+        {audioFile ? (
           <Stack spacing={3}>
             <ThumbnailSelector onDone={setThumbnail} />
             <TitleTextField />
             <DescriptionTextField />
             <PlansSelect />
-            <Button onClick={post} variant="contained">
+            <Button
+              disabled={!form.formState.isValid}
+              onClick={post}
+              variant="contained"
+            >
               {t('post')}
             </Button>
           </Stack>
-        </FormProvider>
-      ) : (
-        <FileUploader
-          onRetriveValidFiles={onRetriveValidFilesHandler}
-          type="audio"
-        />
-      )}
-    </Stack>
+        ) : (
+          <FileUploader
+            onRetriveValidFiles={onRetriveValidFilesHandler}
+            type="audio"
+          />
+        )}
+      </Stack>
+    </FormProvider>
   );
 };

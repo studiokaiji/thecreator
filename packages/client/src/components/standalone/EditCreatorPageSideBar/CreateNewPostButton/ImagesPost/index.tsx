@@ -52,9 +52,8 @@ export const ImagesPost = ({ onDone }: ImagesPostProps) => {
     await postContents(
       {
         borderLockAddress,
-        contentsCount: images.length,
         contentsType: 'images',
-        description: JSON.stringify(descriptions),
+        descriptions,
         title,
       },
       images
