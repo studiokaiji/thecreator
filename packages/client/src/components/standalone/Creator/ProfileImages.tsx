@@ -22,7 +22,7 @@ export const ProfileImages = ({
       component="img"
       src={headerImageSrc}
       sx={{
-        headerColor: 'lightgray',
+        backgroundColor: 'lightgray',
         height: 400,
         position: 'absolute',
         width: '100%',
