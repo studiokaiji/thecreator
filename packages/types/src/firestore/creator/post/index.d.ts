@@ -1,6 +1,7 @@
 type CreatorPostDocData = {
   contentsType: CreatorPostDocDataContentsType;
-  contentsCount: number;
+  contentUrls: string[];
+  thumbnailUrl: string;
   title: string;
   description: string;
   updatedAt: Date;

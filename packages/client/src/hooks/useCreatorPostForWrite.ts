@@ -2,7 +2,7 @@ import { constants } from 'ethers';
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
 
 import { UseImageData } from './useImage';
-import { useUploadContents } from './useUploadContents';
+import { UploadContentsResponse, useUploadContents } from './useUploadContents';
 import { useWallet } from './useWallet';
 
 import { getCreatorPostsCollectionRef } from '@/converters/creatorPostConverter';
@@ -19,11 +19,14 @@ export const useCreatorPostForWrite = () => {
       | 'createdAt'
       | 'borderLockAddress'
       | 'customUrl'
-      | 'contentsCount'
+      | 'contents'
+      | 'thumbnailUrl'
     > & {
       borderLockAddress?: string;
       customUrl?: string;
-      contentsCount?: number;
+      contentUrls?: string[];
+      thumbnailUrl?: string;
+      id?: string;
     }
   ) => {
     if (!account) {
@@ -31,16 +34,17 @@ export const useCreatorPostForWrite = () => {
     }
 
     const postsRef = getCreatorPostsCollectionRef(account);
-    const postDocRef = doc(postsRef);
+    const postDocRef = data.id ? doc(postsRef, data.id) : doc(postsRef);
     const postId = postDocRef.id;
 
     await setDoc(postDocRef, {
       ...data,
       borderLockAddress: data.borderLockAddress || constants.AddressZero,
-      contentsCount: data.contentsCount || 1,
+      contentUrls: data.contentUrls || [],
       createdAt: serverTimestamp(),
       customUrl: data.customUrl || '',
       id: postId,
+      thumbnailUrl: data.thumbnailUrl || '',
       updatedAt: serverTimestamp(),
     });
 
@@ -75,9 +79,10 @@ export const useCreatorPostForWrite = () => {
       throw Error('User wallet does not exist.');
     }
 
-    const postId = await postOnlyDocument(data);
+    const postDocRef = doc(getCreatorPostsCollectionRef(account));
+    const postId = postDocRef.id;
 
-    const promises = [];
+    const promises: Promise<UploadContentsResponse>[] = [];
 
     if (data.contentsType === 'audio' && thumbnail) {
       promises.push(
@@ -99,7 +104,16 @@ export const useCreatorPostForWrite = () => {
       );
     }
 
-    await Promise.all(promises);
+    const responses = await Promise.all(promises);
+
+    const existThumbnail = responses.length > 1;
+
+    const thumbnailUrl = existThumbnail ? responses[0][0].downloadUrl : '';
+    const contentUrls = responses[existThumbnail ? 1 : 0].map(
+      ({ downloadUrl }) => downloadUrl
+    );
+
+    await postOnlyDocument({ ...data, contentUrls, thumbnailUrl });
 
     return postId;
   };
