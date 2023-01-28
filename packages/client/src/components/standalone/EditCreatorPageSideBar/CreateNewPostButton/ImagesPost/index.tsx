@@ -1,4 +1,4 @@
-import Button from '@mui/material/Button';
+import LoadingButton from '@mui/lab/LoadingButton';
 import CircularProgress from '@mui/material/CircularProgress';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -84,13 +84,14 @@ export const ImagesPost = ({ onDone }: ImagesPostProps) => {
                 <ImageList images={images} onChangeImages={setImages} />
                 <TitleTextField />
                 <PlansSelect />
-                <Button
+                <LoadingButton
                   disabled={!form.formState.isValid}
+                  loading={isUploading}
                   onClick={post}
                   variant="contained"
                 >
                   {t('post')}
-                </Button>
+                </LoadingButton>
               </>
             )}
           </>

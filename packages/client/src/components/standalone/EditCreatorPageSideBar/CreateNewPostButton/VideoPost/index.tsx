@@ -1,7 +1,8 @@
-import Button from '@mui/material/Button';
+import LoadingButton from '@mui/lab/LoadingButton';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
@@ -23,7 +24,9 @@ type VideoPostProps = {
 };
 
 export const VideoPost = ({ onDone }: VideoPostProps) => {
-  const form = useForm<VideoPostFormInput>();
+  const form = useForm<VideoPostFormInput>({
+    mode: 'onChange',
+  });
 
   const { t } = useTranslation();
 
@@ -32,13 +35,18 @@ export const VideoPost = ({ onDone }: VideoPostProps) => {
 
   const { postOnlyDocument } = useCreatorPostForWrite();
 
+  const [isUploading, setIsUploading] = useState(false);
+
   const post = async () => {
     if (!form.formState.isValid) {
       return;
     }
 
     const value = form.getValues();
+
+    setIsUploading(true);
     await postOnlyDocument({ ...value, contentsType: 'video' });
+    setIsUploading(false);
 
     onDone();
   };
@@ -53,13 +61,14 @@ export const VideoPost = ({ onDone }: VideoPostProps) => {
             <TitleTextField />
             <DescriptionTextField />
             <PlansSelect />
-            <Button
+            <LoadingButton
               disabled={!form.formState.isValid}
+              loading={isUploading}
               onClick={post}
               variant="contained"
             >
               {t('post')}
-            </Button>
+            </LoadingButton>
           </>
         ) : (
           <TextField

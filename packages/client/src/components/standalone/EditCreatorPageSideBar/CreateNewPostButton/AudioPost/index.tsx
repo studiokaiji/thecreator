@@ -1,4 +1,4 @@
-import Button from '@mui/material/Button';
+import LoadingButton from '@mui/lab/LoadingButton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
@@ -70,13 +70,14 @@ export const AudioPost = ({ onDone }: AudioPostProps) => {
             <TitleTextField />
             <DescriptionTextField />
             <PlansSelect />
-            <Button
+            <LoadingButton
               disabled={!form.formState.isValid}
+              loading={isUploading}
               onClick={post}
               variant="contained"
             >
               {t('post')}
-            </Button>
+            </LoadingButton>
           </Stack>
         ) : (
           <FileUploader
