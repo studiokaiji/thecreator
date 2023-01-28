@@ -20,7 +20,7 @@ export const ProfileImages = ({
   >
     <Box
       component="img"
-      src={headerImageSrc}
+      src={headerImageSrc || undefined}
       sx={{
         backgroundColor: 'lightgray',
         height: 400,
