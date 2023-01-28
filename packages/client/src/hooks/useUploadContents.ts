@@ -18,7 +18,7 @@ export const useUploadContents = () => {
   const upload = async <T extends ContentsType>({
     contents,
     contentsType,
-    isPublic = false,
+    isPublic,
     postId,
   }: {
     contentsType: T;
@@ -32,6 +32,14 @@ export const useUploadContents = () => {
   }): Promise<UploadContentsResponse> => {
     if (!currentUser) {
       throw Error('Need user');
+    }
+
+    if (
+      contentsType === 'headerImage' ||
+      contentsType === 'iconImage' ||
+      contentsType === 'thumbnail'
+    ) {
+      isPublic = true;
     }
 
     const isPost =
