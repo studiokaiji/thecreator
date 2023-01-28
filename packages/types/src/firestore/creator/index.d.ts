@@ -7,6 +7,8 @@ type CreatorDocData = {
   createdAt: Date;
   settings: CreatorDocSettings;
   planIds: string[];
+  headerImageSrc: string;
+  iconImageSrc: string;
 };
 
 type CreatorDocSettings = {

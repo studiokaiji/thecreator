@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 
 import { UseImageData } from './useImage';
 import { setIsCreatorFlag } from './useIsCreator';
-import { useUploadContents } from './useUploadContents';
+import { UploadContentsResponse, useUploadContents } from './useUploadContents';
 import { useWallet } from './useWallet';
 
 import { getCreatorDocRef } from '@/converters/creatorConverter';
@@ -27,11 +27,24 @@ export const useCreatorForWrite = () => {
   ) => {
     if (!docRef || !account) throw refErr;
 
+    let downloadUrls: {
+      header: string;
+      icon: string;
+    } = {
+      header: '',
+      icon: '',
+    };
+    if (images) {
+      downloadUrls = await uploadImages(images);
+    }
+
     await setDoc(docRef, {
       createdAt: new Date(),
       creatorAddress: account,
       creatorName,
       description,
+      headerImageSrc: downloadUrls.header,
+      iconImageSrc: downloadUrls.icon,
       id: '',
       pinningPostId: '',
       planIds: [],
@@ -43,10 +56,6 @@ export const useCreatorForWrite = () => {
     });
 
     setIsCreatorFlag(account, true);
-
-    if (images) {
-      await uploadImages(images);
-    }
   };
 
   const updateCreator = async (
@@ -56,22 +65,40 @@ export const useCreatorForWrite = () => {
       pinningPostId,
       settings,
     }: Partial<
-      Omit<CreatorDocData, 'id' | 'creatorAddress' | 'updatedAt' | 'createdAt'>
+      Omit<
+        CreatorDocData,
+        | 'creatorAddress'
+        | 'updatedAt'
+        | 'createdAt'
+        | 'headerImageSrc'
+        | 'iconImageSrc'
+      >
     >,
     images?: CreatorImageData
   ) => {
     if (!docRef || !account) throw refErr;
 
-    await updateDoc(docRef, {
+    let downloadUrls: {
+      header?: string;
+      icon?: string;
+    } = {};
+    
+    if (images) {
+      downloadUrls = await uploadImages(images);
+    }
+
+    const updateData = {
       creatorName,
       description,
+      headerImageSrc: downloadUrls.header,
+      iconImageSrc: downloadUrls.icon,
       pinningPostId,
       settings,
-    });
+    };
 
-    if (images) {
-      await uploadImages(images);
-    }
+    await updateDoc(docRef, updateData);
+
+    return updateData;
   };
 
   const { upload } = useUploadContents();
@@ -88,10 +115,10 @@ export const useCreatorForWrite = () => {
       },
     ];
 
-    const promises = [];
+    const promises: Promise<UploadContentsResponse>[] = [];
 
     for (const { contents, contentsType } of images) {
-      if (!contents) return;
+      if (!contents) continue;
       promises.push(
         upload({
           contents,
@@ -100,7 +127,12 @@ export const useCreatorForWrite = () => {
       );
     }
 
-    await Promise.all(promises);
+    const [headerRes, iconRes] = await Promise.all(promises);
+
+    return {
+      header: headerRes?.[0].downloadUrl || '',
+      icon: iconRes?.[0].downloadUrl || '',
+    };
   };
 
   return { addCreator, docRef, updateCreator, uploadImages };

@@ -7,6 +7,11 @@ import { functions } from '@/firebase';
 
 const imageContentsTypes = ['thumbnail', 'iconImage', 'headerImage', 'images'];
 
+export type UploadContentsResponse = {
+  downloadUrl: string;
+  key: string;
+}[];
+
 export const useUploadContents = () => {
   const { currentUser } = useCurrentUser();
 
@@ -24,7 +29,7 @@ export const useUploadContents = () => {
       : Blob;
     postId?: string;
     isPublic?: boolean;
-  }) => {
+  }): Promise<UploadContentsResponse> => {
     if (!currentUser) {
       throw Error('Need user');
     }
@@ -72,7 +77,13 @@ export const useUploadContents = () => {
 
     await Promise.all(promises);
 
-    return result.data.map(({ downloadUrl, key }) => ({ downloadUrl, key }));
+    if (contentsType === 'images') {
+      return result.data.map(({ downloadUrl, key }) => ({ downloadUrl, key }));
+    }
+
+    const { downloadUrl, key } = result.data[0];
+
+    return [{ downloadUrl, key }];
   };
 
   return { upload };

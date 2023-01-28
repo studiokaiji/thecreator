@@ -8,10 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 import { PictureUploader } from './PictureUploader';
 
-import {
-  CreatorImageData,
-  useCreatorForWrite,
-} from '@/hooks/useCreatorForWrite';
+import { useCreatorForWrite } from '@/hooks/useCreatorForWrite';
 import { UseImageData } from '@/hooks/useImage';
 import { useSnackbar } from '@/hooks/useSnackbar';
 
@@ -22,10 +19,7 @@ type EditableCreatorDocDataInputs = {
 
 type CreatorProfileEditFormProps = {
   data?: WithId<CreatorDocData>;
-  onChangeData?: (
-    data: WithId<CreatorDocData>,
-    images: CreatorImageData
-  ) => void;
+  onChangeData?: (data: WithId<CreatorDocData>) => void;
   onError?: (e: any) => void;
   onEnd: () => void;
   saveButtonChild: ReactNode;
@@ -51,7 +45,7 @@ export const CreatorProfileEditForm = ({
 
   const { open: openSnackbar } = useSnackbar();
 
-  const { addCreator, updateCreator, uploadImages } = useCreatorForWrite();
+  const { addCreator, updateCreator } = useCreatorForWrite();
 
   const [iconImage, setIconImage] = useState<UseImageData>();
   const [headerImage, setHeaderImage] = useState<UseImageData>();
@@ -64,16 +58,18 @@ export const CreatorProfileEditForm = ({
       const images = { header: headerImage, icon: iconImage };
 
       if (data) {
+        const updated = await updateCreator(
+          { creatorName, description },
+          images
+        );
         onChangeData &&
-          onChangeData({ ...data, creatorName, description }, images);
-        if (
-          creatorName === data.creatorName &&
-          description === data.description
-        ) {
-          await uploadImages(images);
-        } else {
-          await updateCreator({ creatorName, description }, images);
-        }
+          onChangeData({
+            ...data,
+            creatorName: creatorName || data.creatorName,
+            description: description || data.description,
+            headerImageSrc: updated.headerImageSrc || data.headerImageSrc,
+            iconImageSrc: updated.iconImageSrc || data.iconImageSrc,
+          });
       } else {
         await addCreator(creatorName, description);
       }
