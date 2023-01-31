@@ -1,31 +1,47 @@
 import {
-  collection,
   getDocs,
   limit,
   orderBy,
   query,
-  QueryConstraint,
+  startAfter,
+  Timestamp,
 } from 'firebase/firestore';
-import useSWR from 'swr';
+import useSWRInfinite, { SWRInfiniteKeyLoader } from 'swr/infinite';
 
-import { creatorConverter } from '@/converters/creatorConverter';
-import { db } from '@/firebase';
+import { getCreatorPostsCollectionRef } from '@/converters/creatorPostConverter';
 
 export const useCreatorPosts = (
   creatorContractAddress: string,
-  queries: QueryConstraint[] = [limit(10), orderBy('createdAt', 'desc')]
+  fetchLimit = 10
 ) => {
-  const postsRef = collection(
-    db,
-    `/creators/${creatorContractAddress}/posts`
-  ).withConverter(creatorConverter);
+  const postsRef = getCreatorPostsCollectionRef(creatorContractAddress);
 
-  const fetcher = async () => {
-    const docsSnapshot = await getDocs(query(postsRef, ...queries));
-    return docsSnapshot.docs.map((doc) => doc.data);
+  const fetcher = async (_: string, createdAt?: Date) => {
+    const docsSnapshot = await getDocs(
+      query(
+        postsRef,
+        orderBy('createdAt', 'desc'),
+        limit(fetchLimit),
+        startAfter(createdAt ? Timestamp.fromDate(createdAt) : Timestamp.now())
+      )
+    );
+    return docsSnapshot.docs.map((doc) => doc.data());
   };
 
-  return useSWR(postsRef.path, fetcher, {
+  const getKey: SWRInfiniteKeyLoader = (
+    _,
+    data?: WithId<CreatorPostDocData>[]
+  ) => {
+    return [postsRef.path, data?.slice(-1)[0].createdAt];
+  };
+
+  const swr = useSWRInfinite(getKey, fetcher, {
     revalidateOnFocus: false,
   });
+
+  const loadMore = () => {
+    swr.setSize(swr.size + 1);
+  };
+
+  return { ...swr, loadMore };
 };
