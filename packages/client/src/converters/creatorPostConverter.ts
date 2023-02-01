@@ -20,7 +20,17 @@ export const creatorPostConverter: FirestoreDataConverter<
   },
   toFirestore: (data) => {
     const updatedAt = serverTimestamp();
-    return { ...data, updatedAt };
+    return {
+      borderLockAddress: data.borderLockAddress,
+      contents: data.contents,
+      contentsType: data.contentsType,
+      createdAt: data.createdAt,
+      customUrl: data.customUrl,
+      description: data.description,
+      thumbnailUrl: data.thumbnailUrl,
+      title: data.title,
+      updatedAt,
+    };
   },
 };
 
