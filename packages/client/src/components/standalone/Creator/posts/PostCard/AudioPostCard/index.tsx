@@ -10,6 +10,8 @@ import { TitleTypography } from '../common/TitleTypography';
 
 import { AudioPlayer } from './AudioPlayer';
 
+import { MinimalLink } from '@/components/helpers/MinimalLink';
+
 const height = 165;
 
 export const AudioPostCard = ({
@@ -18,20 +20,25 @@ export const AudioPostCard = ({
   defaultThumbnailUrl,
   thumbnailUrl,
   title,
+  to,
 }: PostCardPropsBase) => {
   return (
     <Card sx={{ display: 'flex', height }}>
-      <CardMedia
-        component="img"
-        image={thumbnailUrl || defaultThumbnailUrl}
-        sx={{ height, objectFit: 'cover', width: height }}
-      />
+      <MinimalLink to={to}>
+        <CardMedia
+          component="img"
+          image={thumbnailUrl || defaultThumbnailUrl}
+          sx={{ height, objectFit: 'cover', width: height }}
+        />
+      </MinimalLink>
       <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column' }}>
         <CardContent sx={{ flex: '1 0 auto', textAlign: 'left' }}>
           <Stack spacing={1}>
             <Box>
-              <TitleTypography title={title} />
-              <CreatedAtTypography createdAt={createdAt} />
+              <MinimalLink to={to}>
+                <TitleTypography title={title} />
+                <CreatedAtTypography createdAt={createdAt} />
+              </MinimalLink>
             </Box>
             <Stack spacing={1}>
               <AudioPlayer url={contents[0].url} />

@@ -7,10 +7,13 @@ import { TitleTypography } from './common/TitleTypography';
 
 import { PostCardPropsBase } from '.';
 
+import { MinimalLink } from '@/components/helpers/MinimalLink';
+
 export const ImagePostCard = ({
   contents,
   createdAt,
   title,
+  to,
 }: PostCardPropsBase) => {
   return (
     <Card>
@@ -20,8 +23,10 @@ export const ImagePostCard = ({
         sx={{ height: 'auto', width: '100%' }}
       />
       <CardContent sx={{ textAlign: 'left' }}>
-        <TitleTypography title={title} />
-        <CreatedAtTypography createdAt={createdAt} />
+        <MinimalLink to={to}>
+          <TitleTypography title={title} />
+          <CreatedAtTypography createdAt={createdAt} />
+        </MinimalLink>
       </CardContent>
     </Card>
   );
