@@ -34,7 +34,7 @@ export const validContentTypes: {
   thumbnail: imageValidContentTypes,
   iconImage: imageValidContentTypes,
   headerImage: imageValidContentTypes,
-  video: ['video/mpeg', 'video/mpg', 'video/mp4'],
+  video: ['video/mpeg', 'video/mpg', 'video/mp4', 'text/plain'],
 };
 
 export const uploadPresignedUrlExpiresIn = 180;

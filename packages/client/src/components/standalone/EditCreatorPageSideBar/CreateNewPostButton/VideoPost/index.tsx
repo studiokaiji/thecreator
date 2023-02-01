@@ -33,7 +33,7 @@ export const VideoPost = ({ onDone }: VideoPostProps) => {
   const customUrl = form.watch('customUrl');
   const iframeParam = useVideoIframeParam({ height: 300, src: customUrl });
 
-  const { postOnlyDocument } = useCreatorPostForWrite();
+  const { postContents } = useCreatorPostForWrite();
 
   const [isUploading, setIsUploading] = useState(false);
 
@@ -42,10 +42,19 @@ export const VideoPost = ({ onDone }: VideoPostProps) => {
       return;
     }
 
-    const value = form.getValues();
+    const { borderLockAddress, customUrl, description, title } =
+      form.getValues();
 
     setIsUploading(true);
-    await postOnlyDocument({ ...value, contentsType: 'video' });
+    await postContents(
+      {
+        borderLockAddress: borderLockAddress,
+        contentsType: 'video',
+        description: description,
+        title: title,
+      },
+      customUrl
+    );
     setIsUploading(false);
 
     onDone();

@@ -26,6 +26,8 @@ export const useUploadContents = () => {
       ? UseImageData[]
       : T extends 'thumbnail' | 'iconImage' | 'headerImage'
       ? UseImageData
+      : T extends 'video'
+      ? string | Blob
       : Blob;
     postId?: string;
     isPublic?: boolean;
@@ -46,6 +48,10 @@ export const useUploadContents = () => {
       contentsType !== 'headerImage' && contentsType !== 'iconImage';
 
     const getUploadBlobs = async () => {
+      if (contentsType === 'video' && typeof contents === 'string') {
+        return [new Blob([contents], { type: 'text/plain' })];
+      }
+
       if (!imageContentsTypes.includes(contentsType)) {
         return [contents as Blob];
       }
@@ -59,6 +65,8 @@ export const useUploadContents = () => {
       return [await (contents as UseImageData).compress()];
     };
     const compressedBlobs = await getUploadBlobs();
+
+    console.log(compressedBlobs);
 
     const baseData = {
       contentInfoList: compressedBlobs.map(({ size, type }) => ({

@@ -97,16 +97,14 @@ export const useCreatorPostForWrite = () => {
       );
     }
 
-    if (data.contentsType !== 'video') {
-      promises.push(
-        upload({
-          contents: contents as any,
-          contentsType: data.contentsType,
-          isPublic: !data.borderLockAddress,
-          postId,
-        })
-      );
-    }
+    promises.push(
+      upload({
+        contents: contents as any,
+        contentsType: data.contentsType,
+        isPublic: !data.borderLockAddress,
+        postId,
+      })
+    );
 
     const responses = await Promise.all(promises);
 
