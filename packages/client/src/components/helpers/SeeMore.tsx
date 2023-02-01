@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import { PropsWithChildren, useRef, useState } from 'react';
 
-type SeeMoreProps = {
+type SeeMoreProps<T = 'display' | 'link'> = {
   heightOnMinimized: number;
   onClickSeeMoreButton?: () => void;
   onClickCloseButton?: () => void;
@@ -10,6 +10,8 @@ type SeeMoreProps = {
   customCloseButtonText?: string;
   displayAll?: boolean;
   color?: string;
+  mode?: T;
+  href?: T extends 'link' ? string : undefined;
 } & PropsWithChildren;
 
 export const SeeMore = ({
@@ -18,6 +20,8 @@ export const SeeMore = ({
   customCloseButtonText = 'Close',
   customSeeMoreButtonText = 'See More',
   heightOnMinimized,
+  href,
+  mode = 'display',
   onClickCloseButton,
   onClickSeeMoreButton,
 }: SeeMoreProps) => {
@@ -39,6 +43,12 @@ export const SeeMore = ({
   const isDisplayButton = !!(
     childrenHeight && heightOnMinimized <= childrenHeight
   );
+
+  const onClickSeeMoreButtonHandler = () => {
+    if (mode === 'display') {
+      displaySwitch();
+    }
+  };
 
   return (
     <Box sx={{ margin: 'auto', position: 'relative', width: '100%' }}>
@@ -65,7 +75,10 @@ export const SeeMore = ({
       </Box>
       {isDisplayButton && (
         <Box sx={{ textAlign: 'center' }}>
-          <Button onClick={displaySwitch}>
+          <Button
+            href={mode === 'link' ? href : undefined}
+            onClick={onClickSeeMoreButtonHandler}
+          >
             {isOpen ? customCloseButtonText : customSeeMoreButtonText}
           </Button>
         </Box>
