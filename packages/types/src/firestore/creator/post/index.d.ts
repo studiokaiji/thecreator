@@ -10,6 +10,7 @@ type CreatorPostDocData = {
   createdAt: Date;
   borderLockAddress: string;
   customUrl: string;
+  description?: string;
 };
 
 type CreatorPostDocDataContentsType = 'audio' | 'text' | 'images' | 'video';
