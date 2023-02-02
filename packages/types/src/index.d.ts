@@ -8,5 +8,6 @@ import './firestore/user';
 import './firestore/user/Notification';
 import './firestore/user/SupportingCreatorPlan';
 import './functions/storage/GetUploadSignedUrl';
+import './functions/storage/GetDownloadSignedUrl';
 import './multicall/MulticallInput';
 import './contents/ContentsType';

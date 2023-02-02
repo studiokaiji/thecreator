@@ -1,7 +1,8 @@
 type CreatorPostDocData = {
   contentsType: CreatorPostDocDataContentsType;
   contents: {
-    url: string;
+    url?: string;
+    key?: string;
     description?: string;
   }[];
   thumbnailUrl: string;
@@ -9,8 +10,6 @@ type CreatorPostDocData = {
   updatedAt: Date;
   createdAt: Date;
   borderLockAddress: string;
-  customUrl: string;
-  description?: string;
 };
 
 type CreatorPostDocDataContentsType = 'audio' | 'text' | 'images' | 'video';

@@ -7,9 +7,9 @@ import {
   JsonRpcProvider,
 } from '@ethersproject/providers';
 
-import { Multicall__factory } from '@contracts';
 import { constants, utils } from 'ethers';
 import { functionsConfig } from '@/instances';
+import { MULTICALL } from '@/abis';
 
 export type Subscription = {
   tokenId: BigNumber;
@@ -30,8 +30,10 @@ export type Plan = {
 
 const getProviderFromEnv = () => {
   const endpoints: string[] = functionsConfig.nodeProviderEndpoints;
+  const chainId = functionsConfig.chainId;
+
   return new FallbackProvider(
-    endpoints.map((url) => new JsonRpcProvider(url)),
+    endpoints.map((url) => new JsonRpcProvider(url, chainId)),
     1
   );
 };
@@ -41,11 +43,11 @@ export const checkSubscription = async (
   holderLockAddress: string,
   borderLockAddress: string,
   provider: BaseProvider = getProviderFromEnv(),
-  multicallContractAddress = process.env.MULTICALL_ADDRESS
+  multicallContractAddress = functionsConfig.contracts.multicall
 ) => {
   if (!multicallContractAddress) {
     throw Error(
-      'If process.env.MULTICALL_ADDRESS does not exist, multicallContractAddress is required.'
+      'If contracts.multicall does not exist, multicallContractAddress is required.'
     );
   }
 
@@ -53,11 +55,7 @@ export const checkSubscription = async (
     return true;
   }
 
-  const multicall = new Contract(
-    multicallContractAddress,
-    Multicall__factory.abi,
-    provider
-  );
+  const multicall = new Contract(multicallContractAddress, MULTICALL, provider);
 
   const lockIface = new utils.Interface(PublicLockV11.abi);
 
