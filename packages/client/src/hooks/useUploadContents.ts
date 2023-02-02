@@ -26,8 +26,8 @@ export const useUploadContents = () => {
       ? UseImageData[]
       : T extends 'thumbnail' | 'iconImage' | 'headerImage'
       ? UseImageData
-      : T extends 'video'
-      ? string | Blob
+      : T extends 'embedVideo'
+      ? string
       : Blob;
     postId?: string;
     isPublic?: boolean;
@@ -48,7 +48,7 @@ export const useUploadContents = () => {
       contentsType !== 'headerImage' && contentsType !== 'iconImage';
 
     const getUploadBlobs = async () => {
-      if (contentsType === 'video' && typeof contents === 'string') {
+      if (contentsType === 'embedVideo' && typeof contents === 'string') {
         return [new Blob([contents], { type: 'text/plain' })];
       }
 

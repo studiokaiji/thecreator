@@ -19,7 +19,7 @@ export const Posts = ({ id }: PostsProps) => {
   if (data && creatorData) {
     return (
       <Stack spacing={3}>
-        {data[0].map((d) => (
+        {data.map((d) => (
           <PostCard
             {...d}
             key={d.id}

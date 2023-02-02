@@ -49,7 +49,7 @@ export const VideoPost = ({ onDone }: VideoPostProps) => {
     await postContents(
       {
         borderLockAddress: borderLockAddress,
-        contentsType: 'video',
+        contentsType: 'embedVideo',
         description: description,
         title: title,
       },

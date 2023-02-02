@@ -5,4 +5,5 @@ type ContentsType =
   | 'text'
   | 'iconImage'
   | 'headerImage'
-  | 'video';
+  | 'video'
+  | 'embedVideo';

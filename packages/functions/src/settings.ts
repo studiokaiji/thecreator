@@ -16,6 +16,7 @@ export const maxContentLengths: { [type in ContentsType]: number } = {
   iconImage: toBytes(10, 'MB'),
   headerImage: toBytes(20, 'MB'),
   video: toBytes(300, 'MB'),
+  embedVideo: toBytes(1, 'MB'),
 } as const;
 
 const imageValidContentTypes = [
@@ -34,7 +35,8 @@ export const validContentTypes: {
   thumbnail: imageValidContentTypes,
   iconImage: imageValidContentTypes,
   headerImage: imageValidContentTypes,
-  video: ['video/mpeg', 'video/mpg', 'video/mp4', 'text/plain'],
+  video: ['video/mpeg', 'video/mpg', 'video/mp4'],
+  embedVideo: ['text/plain'],
 };
 
 export const uploadPresignedUrlExpiresIn = 180;

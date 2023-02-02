@@ -18,12 +18,10 @@ export const useCreatorPostForWrite = () => {
       | 'updatedAt'
       | 'createdAt'
       | 'borderLockAddress'
-      | 'customUrl'
       | 'contents'
       | 'thumbnailUrl'
     > & {
       borderLockAddress?: string;
-      customUrl?: string;
       contents?: { url: string; description?: string }[];
       thumbnailUrl?: string;
       id?: string;
@@ -42,7 +40,6 @@ export const useCreatorPostForWrite = () => {
       borderLockAddress: data.borderLockAddress || constants.AddressZero,
       contents: data.contents || [],
       createdAt: serverTimestamp(),
-      customUrl: data.customUrl || '',
       id: postId,
       thumbnailUrl: data.thumbnailUrl || '',
       updatedAt: serverTimestamp(),
@@ -51,13 +48,14 @@ export const useCreatorPostForWrite = () => {
     return postId;
   };
 
-  const postContents = async <T extends CreatorPostDocDataContentsType>(
+  const postContents = async <
+    T extends CreatorPostDocDataContentsType | 'embedVideo'
+  >(
     data: Omit<
       CreatorPostDocData,
       | 'updatedAt'
       | 'createdAt'
       | 'borderLockAddress'
-      | 'customUrl'
       | 'contentsType'
       | 'thumbnailUrl'
       | 'contents'
@@ -72,7 +70,7 @@ export const useCreatorPostForWrite = () => {
       ? UseImageData[]
       : T extends 'thumbnail' | 'iconImage' | 'headerImage'
       ? UseImageData
-      : T extends 'video'
+      : T extends 'embedVideo'
       ? string
       : Blob,
     thumbnail?: UseImageData
@@ -112,11 +110,12 @@ export const useCreatorPostForWrite = () => {
 
     const thumbnailUrl = existThumbnail ? responses[0][0].downloadUrl : '';
     const contentsData = (responses[existThumbnail ? 1 : 0] || []).map(
-      ({ downloadUrl }, i) => ({
+      ({ downloadUrl, key }, i) => ({
         description:
           data.contentsType === 'images'
             ? (data as { descriptions: string[] })?.descriptions?.[i] || ''
             : (data as { description: string })?.description || '',
+        key,
         url: downloadUrl,
       })
     );
@@ -128,7 +127,13 @@ export const useCreatorPostForWrite = () => {
       (data as { descriptions: string[] | undefined }).descriptions = undefined;
     }
 
-    await postOnlyDocument({ ...data, contents: contentsData, thumbnailUrl });
+    await postOnlyDocument({
+      borderLockAddress: data.borderLockAddress,
+      contents: contentsData,
+      contentsType: data.contentsType,
+      thumbnailUrl,
+      title: data.title,
+    });
 
     return postId;
   };

@@ -13,7 +13,7 @@ export const PostCard = (props: PostCardPropsBase) => {
     <>
       {contentsType === 'audio' ? (
         <AudioPostCard {...props} />
-      ) : contentsType === 'video' ? (
+      ) : contentsType === 'embedVideo' ? (
         <VideoPostCard {...props} />
       ) : (
         <ImagePostCard {...props} />

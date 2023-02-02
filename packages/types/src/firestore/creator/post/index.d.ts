@@ -12,4 +12,9 @@ type CreatorPostDocData = {
   borderLockAddress: string;
 };
 
-type CreatorPostDocDataContentsType = 'audio' | 'text' | 'images' | 'video';
+type CreatorPostDocDataContentsType =
+  | 'audio'
+  | 'text'
+  | 'images'
+  | 'video'
+  | 'embedVideo';
