@@ -1,4 +1,5 @@
 import Stack from '@mui/material/Stack';
+import { memo } from 'react';
 
 import { PostCard } from './PostCard';
 
@@ -7,7 +8,7 @@ import { useCreatorPosts } from '@/hooks/useCreatorPosts';
 
 type PostsProps = { id: string };
 
-export const Posts = ({ id }: PostsProps) => {
+const BeforeMemonizedPosts = ({ id }: PostsProps) => {
   const { data: creatorData } = useCreator({ id });
 
   const { data, error } = useCreatorPosts(id);
@@ -33,3 +34,5 @@ export const Posts = ({ id }: PostsProps) => {
 
   return <></>;
 };
+
+export const Posts = memo(BeforeMemonizedPosts);
