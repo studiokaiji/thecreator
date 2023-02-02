@@ -1,36 +1,70 @@
 import {
+  CollectionReference,
   getDocs,
   limit,
   orderBy,
   query,
   startAfter,
   Timestamp,
+  where,
 } from 'firebase/firestore';
 import { httpsCallable } from 'firebase/functions';
+import { useMemo } from 'react';
 import useSWRInfinite, { SWRInfiniteKeyLoader } from 'swr/infinite';
 
-import { useAccessibleCreatorPlans } from './useAccessibleCreatorPlans';
+import { useCreatorPlans } from './useCreatorPlans';
+import { useWallet } from './useWallet';
 
 import { getCreatorPostsCollectionRef } from '@/converters/creatorPostConverter';
+import { getUserSupportingCreatorPlansCollectionRef } from '@/converters/userSupportingCreatorConverter';
 import { functions } from '@/firebase';
 import { Plan } from '@/utils/get-plans-from-chain';
 
+const getAllowedPlans = async (
+  plans: Plan[],
+  creatorId: string,
+  ref: CollectionReference<WithId<SupportingCreatorPlanDocData>>
+) => {
+  const supportingCreatorDocsSnapshot = await getDocs(
+    query(ref, where('creatorId', '==', creatorId))
+  );
+  if (supportingCreatorDocsSnapshot.empty) {
+    return [];
+  }
+
+  const { lockAddress } = supportingCreatorDocsSnapshot.docs[0].data();
+
+  const supportingPlan = plans.filter(({ id }) => id === lockAddress)[0];
+
+  const allowedPlans = plans.filter(
+    ({ keyPrice }) => keyPrice <= supportingPlan.keyPrice
+  );
+
+  return allowedPlans;
+};
+
+const checkBorder = (allowedPlans: Plan[], borderLockAddress: string) => {
+  return !!allowedPlans.find(({ id }) => id === borderLockAddress);
+};
+
 export const useCreatorPosts = (creatorId: string, fetchLimit = 10) => {
+  const { account } = useWallet();
+
+  const supportingCreatorPlansColRef = useMemo(() => {
+    if (!account) return null;
+    return getUserSupportingCreatorPlansCollectionRef(account);
+  }, [account]);
+
+  const { data: basePlans } = useCreatorPlans(creatorId);
+
   const postsRef = getCreatorPostsCollectionRef(creatorId);
 
-  const { data: accessibleCreatorPlans } = useAccessibleCreatorPlans(creatorId);
-
-  const checkBorder = (plans: Plan[], borderLockAddress: string) => {
-    if (!plans) throw Error();
-    return plans.map(({ id }) => id).includes(borderLockAddress);
-  };
-
   const fetcher = async (
-    _: string,
-    createdAt?: Date,
-    accessiblePlans?: Plan[]
+    plans: Plan[],
+    colRef: CollectionReference<WithId<SupportingCreatorPlanDocData>>,
+    createdAt?: Date
   ) => {
-    if (!accessiblePlans) return [];
+    const allowedPlans = await getAllowedPlans(plans, creatorId, colRef);
 
     const docsSnapshot = await getDocs(
       query(
@@ -50,7 +84,7 @@ export const useCreatorPosts = (creatorId: string, fetchLimit = 10) => {
     posts
       .filter((d) => d.contents[0].key)
       .forEach(({ borderLockAddress, id }) => {
-        if (!checkBorder(accessiblePlans, borderLockAddress)) {
+        if (!checkBorder(allowedPlans, borderLockAddress)) {
           return;
         }
         getDownloadSignedUrlsRequest.posts.push({
@@ -75,7 +109,6 @@ export const useCreatorPosts = (creatorId: string, fetchLimit = 10) => {
         url: urls[i],
       }));
       posts[postIndex] = post;
-      console.log('post', post);
     });
 
     return posts;
@@ -85,10 +118,12 @@ export const useCreatorPosts = (creatorId: string, fetchLimit = 10) => {
     _,
     data?: WithId<CreatorPostDocData>[]
   ) => {
+    if (!basePlans || !supportingCreatorPlansColRef) return null;
     return [
-      postsRef.path,
+      basePlans,
+      supportingCreatorPlansColRef,
       data?.slice(-1)[0].createdAt,
-      accessibleCreatorPlans,
+      `${postsRef.path}?limit=${limit}`,
     ];
   };
 
