@@ -1,5 +1,8 @@
 import { styled } from '@mui/system';
+import { memo } from 'react';
 
-export const Iframe = styled('iframe')({
+const BeforeMemonizedIframe = styled('iframe')({
   border: 0,
 });
+
+export const Iframe = memo(BeforeMemonizedIframe);
