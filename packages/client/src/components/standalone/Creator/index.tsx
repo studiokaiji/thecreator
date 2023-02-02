@@ -1,3 +1,4 @@
+import { useMediaQuery } from '@mui/material';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -11,7 +12,6 @@ import { Plans } from './plans';
 import { Posts } from './posts';
 
 import { useCreator } from '@/hooks/useCreator';
-import { useWindowSize } from '@/hooks/useWindowSize';
 
 type CreatorProps = {
   editable: boolean;
@@ -26,8 +26,9 @@ export const Creator = ({
   id,
   onError,
 }: CreatorProps) => {
-  const { width } = useWindowSize();
-  const minimize = editable ? width < 620 : width < 320;
+  const minimizeWidth = editable ? 620 : 320;
+
+  const minimize = useMediaQuery(`(max-width:${minimizeWidth}px)`);
 
   const { data, error, mutate } = useCreator({
     creatorAddress: creatorAddress,
@@ -70,7 +71,7 @@ export const Creator = ({
               <Plans creatorId={data.id} editable={editable} />
             </Box>
             <Box sx={{ maxWidth: 640, mx: 'auto', width: '100%' }}>
-              <Posts editable={editable} id={data.id || ''} />
+              <Posts id={data.id || ''} />
             </Box>
           </Stack>
         </Box>

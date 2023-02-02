@@ -1,3 +1,4 @@
+import { useMediaQuery } from '@mui/material';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -6,18 +7,17 @@ import { Outlet } from 'react-router-dom';
 
 import { MainSpacingLayout } from '@/components/layout/MainSpacingLayout';
 import { MenuCard } from '@/components/pages/mypage/MenuCard';
-import { useWindowSize } from '@/hooks/useWindowSize';
 
 export const MyPage = () => {
   const { t } = useTranslation();
-  const { width } = useWindowSize();
+  const displayMenuCard = useMediaQuery('(max-width:768px)');
   return (
     <MainSpacingLayout>
       <Stack justifyContent="center" sx={{ maxWidth: 1000, mx: 'auto' }}>
         <Stack spacing={6}>
           <Typography variant="h1">{t('mypage')}</Typography>
           <Stack alignItems="flex-start" direction="row" gap={3}>
-            {width > 768 && <MenuCard />}
+            {displayMenuCard && <MenuCard />}
             <Card sx={{ width: '100%' }}>
               <Outlet />
             </Card>
