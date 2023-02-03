@@ -57,7 +57,7 @@ export const useCreatorPosts = (creatorId: string, fetchLimit = 10) => {
 
   const { data: basePlans } = useCreatorPlans(creatorId);
 
-  const postsRef = getCreatorPostsCollectionRef(creatorId);
+  const postsColRef = getCreatorPostsCollectionRef(creatorId);
 
   const isLastRef = useRef(false);
 
@@ -66,11 +66,9 @@ export const useCreatorPosts = (creatorId: string, fetchLimit = 10) => {
     colRef: CollectionReference<WithId<SupportingCreatorPlanDocData>>,
     createdAt?: Date
   ) => {
-    const allowedPlans = await getAllowedPlans(plans, creatorId, colRef);
-
     const docsSnapshot = await getDocs(
       query(
-        postsRef,
+        postsColRef,
         orderBy('createdAt', 'desc'),
         limit(fetchLimit),
         startAfter(createdAt ? Timestamp.fromDate(createdAt) : Timestamp.now())
@@ -82,6 +80,12 @@ export const useCreatorPosts = (creatorId: string, fetchLimit = 10) => {
     if (docsSnapshot.empty || posts.length < fetchLimit) {
       isLastRef.current = true;
     }
+
+    if (docsSnapshot.empty) {
+      return [];
+    }
+
+    const allowedPlans = await getAllowedPlans(plans, creatorId, colRef);
 
     const getDownloadSignedUrlsRequest: {
       posts: { creatorId: string; postId: string }[];
@@ -125,11 +129,13 @@ export const useCreatorPosts = (creatorId: string, fetchLimit = 10) => {
     data?: WithId<CreatorPostDocData>[]
   ) => {
     if (!basePlans || !supportingCreatorPlansColRef) return null;
+
+    const createdAt = data?.slice(-1)[0].createdAt || null;
     return [
       basePlans,
       supportingCreatorPlansColRef,
-      data?.slice(-1)[0].createdAt,
-      `${postsRef.path}?limit=${fetchLimit}`,
+      createdAt,
+      `${postsColRef.path}?limit=${fetchLimit}&createdAt_startAfter=${createdAt}`,
     ];
   };
 
@@ -139,9 +145,12 @@ export const useCreatorPosts = (creatorId: string, fetchLimit = 10) => {
 
   const data = useMemo(() => swr.data?.flat(), [swr.data]);
 
+  const isLast = isLastRef.current;
+
   const loadMore = () => {
+    if (isLast) return;
     swr.setSize(swr.size + 1);
   };
 
-  return { ...swr, data, isLast: isLastRef.current, loadMore };
+  return { ...swr, data, isLast, loadMore };
 };

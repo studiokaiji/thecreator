@@ -1,5 +1,8 @@
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
 import Stack from '@mui/material/Stack';
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 import { PostCard } from './PostCard';
 
@@ -11,7 +14,17 @@ type PostsProps = { id: string };
 const BeforeMemonizedPosts = ({ id }: PostsProps) => {
   const { data: creatorData } = useCreator({ id });
 
-  const { data, error } = useCreatorPosts(id);
+  const { data, error, isLast, loadMore } = useCreatorPosts(id, 2);
+
+  const { inView, ref } = useInView({
+    rootMargin: '10px',
+  });
+
+  useEffect(() => {
+    if (inView && !isLast) {
+      loadMore();
+    }
+  }, [inView]);
 
   if (error) {
     console.log(error);
@@ -28,6 +41,12 @@ const BeforeMemonizedPosts = ({ id }: PostsProps) => {
             to={`/c/${id}/posts/${d.id}`}
           />
         ))}
+        <Box ref={ref} />
+        {inView && !isLast && (
+          <Box>
+            <CircularProgress sx={{ mx: 'auto' }} />
+          </Box>
+        )}
       </Stack>
     );
   }
