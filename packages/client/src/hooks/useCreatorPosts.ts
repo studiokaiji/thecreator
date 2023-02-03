@@ -9,7 +9,7 @@ import {
   where,
 } from 'firebase/firestore';
 import { httpsCallable } from 'firebase/functions';
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import useSWRInfinite, { SWRInfiniteKeyLoader } from 'swr/infinite';
 
 import { useCreatorPlans } from './useCreatorPlans';
@@ -59,6 +59,8 @@ export const useCreatorPosts = (creatorId: string, fetchLimit = 10) => {
 
   const postsRef = getCreatorPostsCollectionRef(creatorId);
 
+  const isLastRef = useRef(false);
+
   const fetcher = async (
     plans: Plan[],
     colRef: CollectionReference<WithId<SupportingCreatorPlanDocData>>,
@@ -76,6 +78,10 @@ export const useCreatorPosts = (creatorId: string, fetchLimit = 10) => {
     );
 
     const posts = docsSnapshot.docs.map((doc) => doc.data());
+
+    if (docsSnapshot.empty || posts.length < fetchLimit) {
+      isLastRef.current = true;
+    }
 
     const getDownloadSignedUrlsRequest: {
       posts: { creatorId: string; postId: string }[];
@@ -123,7 +129,7 @@ export const useCreatorPosts = (creatorId: string, fetchLimit = 10) => {
       basePlans,
       supportingCreatorPlansColRef,
       data?.slice(-1)[0].createdAt,
-      `${postsRef.path}?limit=${limit}`,
+      `${postsRef.path}?limit=${fetchLimit}`,
     ];
   };
 
@@ -131,11 +137,11 @@ export const useCreatorPosts = (creatorId: string, fetchLimit = 10) => {
     revalidateOnFocus: false,
   });
 
-  const data = swr.data?.flat();
+  const data = useMemo(() => swr.data?.flat(), [swr.data]);
 
   const loadMore = () => {
     swr.setSize(swr.size + 1);
   };
 
-  return { ...swr, data, loadMore };
+  return { ...swr, data, isLast: isLastRef.current, loadMore };
 };
