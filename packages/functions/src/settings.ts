@@ -6,6 +6,7 @@ export const postDataContentTypes = [
   'text',
   'thumbnail',
   'video',
+  'embedVideo'
 ] as const;
 
 export const maxContentLengths: { [type in ContentsType]: number } = {

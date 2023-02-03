@@ -33,6 +33,7 @@ const requestPostDataSchema = z.object({
     z.literal(postDataContentTypes[2]),
     z.literal(postDataContentTypes[3]),
     z.literal(postDataContentTypes[4]),
+    z.literal(postDataContentTypes[5]),
   ]),
   creatorId: z.string(),
   isPublic: z.boolean().optional(),
