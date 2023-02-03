@@ -57,7 +57,6 @@ export const VideoPostCard = ({
     }
     const loadListener = () => {
       setIsLoadingIframe(false);
-      console.log('loaded');
     };
     iframeRef.current.removeEventListener('load', loadListener);
     iframeRef.current.addEventListener('load', loadListener);

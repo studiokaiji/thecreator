@@ -66,8 +66,6 @@ export const useUploadContents = () => {
     };
     const compressedBlobs = await getUploadBlobs();
 
-    console.log(compressedBlobs);
-
     const baseData = {
       contentInfoList: compressedBlobs.map(({ size, type }) => ({
         contentLength: size,
