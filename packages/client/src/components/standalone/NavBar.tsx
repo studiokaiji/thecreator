@@ -13,11 +13,12 @@ import logoPath from '@/assets/TheCreator.svg';
 export const NavBar = () => {
   return (
     <AppBar
-      position="static"
+      position="sticky"
       sx={(theme) => ({
         background: theme.palette.background.paper,
         color: theme.palette.text.primary,
         height: 64,
+        paddingBottom: '64px',
       })}
     >
       <Toolbar>
