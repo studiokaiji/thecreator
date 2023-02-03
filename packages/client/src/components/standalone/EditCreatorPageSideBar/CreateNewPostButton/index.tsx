@@ -35,7 +35,8 @@ export const CreateNewPostButton = () => {
 
   const onRequestClose = () => {
     if (selectedPostType) {
-      confirm(t('requestCloseConfirmMessage'));
+      const isConfirmed = confirm(t('requestCloseConfirmMessage'));
+      if (!isConfirmed) return;
     }
     close();
   };
