@@ -5,7 +5,6 @@ import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
 import InputAdornment from '@mui/material/InputAdornment';
-import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
@@ -14,19 +13,19 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { BigNumber, BigNumberish, constants } from 'ethers';
 import { ReactNode, useCallback, useState } from 'react';
-import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
+import { useFieldArray, useForm} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { FeatureTextField } from './FeatureTextField';
 
-import { currencies } from '@/constants';
 import { useCreatorPlanForWrite } from '@/hooks/useCreatorPlanForWrite';
 import { currencyToTokenAddress } from '@/utils/currency-converter';
 import { Plan } from '@/utils/get-plans-from-chain';
 import { parseWeiUnits } from '@/utils/wei-units-converter';
 
+const currency = 'USDC';
+
 export type PlanFormValues = {
-  currency: typeof currencies[number];
   priceEthPerMonth: number;
   name: string;
   description: string;
@@ -48,12 +47,6 @@ type PlanFormProps = {
   publicLockAddress?: string;
 };
 
-const pricePlaceholders: { [key in typeof currencies[number]]: string } = {
-  MATIC: '10',
-  USDC: '10',
-  WETH: '0.01',
-};
-
 export const PlanForm = ({
   buttonChild,
   defaultValues = { id: '' },
@@ -63,8 +56,6 @@ export const PlanForm = ({
   title,
   update,
 }: PlanFormProps) => {
-  defaultValues.currency ??= 'USDC';
-
   if (!defaultValues.features || defaultValues.features.length < 1) {
     defaultValues.features = [{ feature: '' }];
   }
@@ -78,11 +69,6 @@ export const PlanForm = ({
   } = useForm<PlanFormValues>({
     defaultValues,
     mode: 'onChange',
-  });
-
-  const selectedCurrency = useWatch({
-    control,
-    name: 'currency',
   });
 
   const { append, fields, remove } = useFieldArray({
@@ -113,7 +99,6 @@ export const PlanForm = ({
       setActiveStep(1);
 
       const {
-        currency,
         description,
         features,
         maxNumberOfMembers,
@@ -272,27 +257,6 @@ export const PlanForm = ({
 
           <Stack spacing={1.5}>
             <Divider>{t('price')}</Divider>
-            {!update && (
-              <Controller
-                control={control}
-                name="currency"
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    required
-                    select
-                    label={t('currency')}
-                    variant="standard"
-                  >
-                    {currencies.map((c) => (
-                      <MenuItem key={c} value={c}>
-                        {c}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                )}
-              />
-            )}
             <TextField
               required
               {...register('priceEthPerMonth', {
@@ -303,18 +267,14 @@ export const PlanForm = ({
                 required: valT('required'),
               })}
               InputProps={{
-                endAdornment: update ? (
-                  <InputAdornment position="end">
-                    {selectedCurrency}
-                  </InputAdornment>
-                ) : (
-                  <></>
+                endAdornment: (
+                  <InputAdornment position="end">{currency}</InputAdornment>
                 ),
               }}
               error={!!errors.priceEthPerMonth}
               helperText={errors.priceEthPerMonth?.message}
               label={t('pricePerMonth')}
-              placeholder={`${t('ex')}: ${pricePlaceholders[selectedCurrency]}`}
+              placeholder={`${t('ex')}: 10`}
               type="number"
               variant="standard"
             />
