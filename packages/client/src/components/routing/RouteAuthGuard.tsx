@@ -32,12 +32,7 @@ export const RouteAuthGuard: FC<Partial<PropsWithChildren>> = ({
   }
 
   if (children) {
-    return (
-      <>
-        {children}
-        <Outlet />
-      </>
-    );
+    return <>{children}</>;
   }
 
   return <Outlet />;

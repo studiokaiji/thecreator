@@ -4,6 +4,8 @@ import { providers } from 'ethers';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import '@/firebase';
 
+import { EditLayout } from './components/layout/EditLayout';
+import { TopBarLayout } from './components/layout/TopBarLayout';
 import { RouteAuthGuard } from './components/routing/RouteAuthGuard';
 import { SnackbarProvider } from './contexts/SnackbarContext';
 import { NotFound } from './pages/404';
@@ -16,7 +18,6 @@ import { SupportingCreatorsPage } from './pages/mypage/supporting-creators';
 import { CreatorPage } from './pages/u/[id]';
 import { SubscribePage } from './pages/u/[id]/subscribe/[planId]';
 
-import { NavLayout } from '@/components/layout/NavLayout';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { IndexPage } from '@/pages';
 import { CreatePage } from '@/pages/create';
@@ -36,9 +37,11 @@ function App() {
           <CssBaseline />
           <SnackbarProvider>
             <BrowserRouter>
-              <NavLayout>
-                <Routes>
-                  <Route element={<IndexPage />} path="/" />
+              <Routes>
+                <Route element={<TopBarLayout />}>
+                  <Route path="/">
+                    <Route index element={<IndexPage />} />
+                  </Route>
                   <Route path="/c">
                     <Route index element={<NotFound />} />
                     <Route path=":id">
@@ -48,27 +51,6 @@ function App() {
                         <Route element={<SubscribePage />} path=":planId" />
                       </Route>
                     </Route>
-                  </Route>
-                  <Route
-                    element={
-                      <RouteAuthGuard>
-                        <CreatePage />
-                      </RouteAuthGuard>
-                    }
-                    path="/create"
-                  />
-                  <Route element={<RouteAuthGuard />} path="/edit">
-                    <Route
-                      index
-                      element={<Navigate replace to="profile#posts" />}
-                    />
-                    <Route
-                      element={<EditCreatorProfilePage />}
-                      path="profile"
-                    />
-                    <Route element={<PayoutPage />} path="payout" />
-                    <Route element={<SettingsPage />} path="settings" />
-                    <Route element={<SupportersPage />} path="supporters" />
                   </Route>
                   <Route element={<MyPage />} path="/mypage">
                     <Route
@@ -85,9 +67,31 @@ function App() {
                       path="notifications"
                     />
                   </Route>
-                  <Route element={<NotFound />} path="/*" />
-                </Routes>
-              </NavLayout>
+                </Route>
+                <Route
+                  element={
+                    <RouteAuthGuard>
+                      <CreatePage />
+                    </RouteAuthGuard>
+                  }
+                  path="/create"
+                />
+                <Route
+                  element={
+                    <EditLayout>
+                      <RouteAuthGuard />
+                    </EditLayout>
+                  }
+                  path="/edit"
+                >
+                  <Route index element={<Navigate replace to="profile" />} />
+                  <Route element={<EditCreatorProfilePage />} path="profile" />
+                  <Route element={<PayoutPage />} path="payout" />
+                  <Route element={<SettingsPage />} path="settings" />
+                  <Route element={<SupportersPage />} path="supporters" />
+                </Route>
+                <Route element={<NotFound />} path="/*" />
+              </Routes>
             </BrowserRouter>
           </SnackbarProvider>
         </CustomThemeProvider>
