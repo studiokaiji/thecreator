@@ -8,6 +8,15 @@ const h = (fontSize: string, fontWeight = 600) => ({
 });
 
 const theme = createTheme({
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          backgroundColor: '#F9F9FA',
+        },
+      },
+    },
+  },
   palette: {
     primary: {
       main: '#000',

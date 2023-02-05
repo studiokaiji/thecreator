@@ -41,9 +41,5 @@ export const NavLayout: FC<{ children: ReactNode }> = ({ children }) => {
     );
   };
 
-  return (
-    <Box sx={{ backgroundColor: '#F9F9FA', minHeight: '100vh', width: '100%' }}>
-      <Component />
-    </Box>
-  );
+  return <Component />;
 };
