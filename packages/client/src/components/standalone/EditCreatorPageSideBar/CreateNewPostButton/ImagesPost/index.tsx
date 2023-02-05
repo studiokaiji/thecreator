@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { PlansSelect } from '../common/PlansSelect';
+import { CreateNewPostPlansSelect } from '../common/CreateNewPostPlansSelect';
 import { TitleTextField } from '../common/TitleTextField';
 
 import { ImageList } from './ImageList';
@@ -83,7 +83,7 @@ export const ImagesPost = ({ onDone }: ImagesPostProps) => {
               <>
                 <ImageList images={images} onChangeImages={setImages} />
                 <TitleTextField />
-                <PlansSelect />
+                <CreateNewPostPlansSelect />
                 <LoadingButton
                   disabled={!form.formState.isValid}
                   loading={isUploading}

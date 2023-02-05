@@ -5,8 +5,8 @@ import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
+import { CreateNewPostPlansSelect } from '../common/CreateNewPostPlansSelect';
 import { DescriptionTextField } from '../common/DescriptionTextField';
-import { PlansSelect } from '../common/PlansSelect';
 import { ThumbnailSelector } from '../common/ThumbnailSelector';
 import { TitleTextField } from '../common/TitleTextField';
 
@@ -69,7 +69,7 @@ export const AudioPost = ({ onDone }: AudioPostProps) => {
             <ThumbnailSelector onDone={setThumbnail} />
             <TitleTextField />
             <DescriptionTextField />
-            <PlansSelect />
+            <CreateNewPostPlansSelect />
             <LoadingButton
               disabled={!form.formState.isValid}
               loading={isUploading}

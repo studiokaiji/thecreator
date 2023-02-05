@@ -1,16 +1,13 @@
 import MenuItem from '@mui/material/MenuItem';
-import TextField from '@mui/material/TextField';
-import { useFormContext } from 'react-hook-form';
+import TextField, { TextFieldProps } from '@mui/material/TextField';
 import { useTranslation } from 'react-i18next';
 
 import { useCreatorPlans } from '@/hooks/useCreatorPlans';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 
-export const PlansSelect = () => {
+export const PlansSelect = (props: TextFieldProps) => {
   const { currentUser } = useCurrentUser();
   const { data: plans } = useCreatorPlans(currentUser?.uid);
-
-  const form = useFormContext();
 
   const { t } = useTranslation();
 
@@ -25,10 +22,10 @@ export const PlansSelect = () => {
       helperText={t('newPostPlansSelectHelperText')}
       label={t('plan')}
       variant="standard"
-      {...form.register('borderLockAddress')}
-      defaultValue={plans?.[0].id}
+      {...props}
+      defaultValue={plans[0].id}
     >
-      {plans?.map((plan) => (
+      {plans.map((plan) => (
         <MenuItem key={`plan-select-${plan.id}`} value={plan.id}>
           <>
             {plan.name} ({plan.id})
