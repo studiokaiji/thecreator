@@ -51,5 +51,9 @@ export const Posts = ({ id }: PostsProps) => {
     );
   }
 
-  return <></>;
+  return (
+    <Box>
+      <CircularProgress sx={{ mx: 'auto' }} />
+    </Box>
+  );
 };
