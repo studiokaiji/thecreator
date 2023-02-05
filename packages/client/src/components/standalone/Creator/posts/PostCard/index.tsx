@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 import { AudioPostCard } from './AudioPostCard';
 import { ImagePostCard } from './ImagePostCard';
 import { VideoPostCard } from './VideoPostCard';
@@ -7,7 +9,7 @@ export type PostCardPropsBase = WithId<CreatorPostDocData> & {
   to: string;
 };
 
-export const PostCard = (props: PostCardPropsBase) => {
+const BeforeMemonizedPostCard = (props: PostCardPropsBase) => {
   const { contentsType } = props;
   return (
     <>
@@ -21,3 +23,5 @@ export const PostCard = (props: PostCardPropsBase) => {
     </>
   );
 };
+
+export const PostCard = memo(BeforeMemonizedPostCard);

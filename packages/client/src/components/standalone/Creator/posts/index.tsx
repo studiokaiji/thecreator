@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Stack from '@mui/material/Stack';
-import { memo, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 import { PostCard } from './PostCard';
@@ -11,7 +11,7 @@ import { useCreatorPosts } from '@/hooks/useCreatorPosts';
 
 type PostsProps = { id: string };
 
-const BeforeMemonizedPosts = ({ id }: PostsProps) => {
+export const Posts = ({ id }: PostsProps) => {
   const { data: creatorData } = useCreator({ id });
 
   const { data, error, isLast, loadMore } = useCreatorPosts(id, 2);
@@ -53,5 +53,3 @@ const BeforeMemonizedPosts = ({ id }: PostsProps) => {
 
   return <></>;
 };
-
-export const Posts = memo(BeforeMemonizedPosts);
