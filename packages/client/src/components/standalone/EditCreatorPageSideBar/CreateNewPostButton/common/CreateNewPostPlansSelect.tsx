@@ -1,4 +1,5 @@
 import { useFormContext } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
 import { PlansSelect } from '@/components/PlansSelect';
 import { useCreatorPlans } from '@/hooks/useCreatorPlans';
@@ -10,9 +11,16 @@ export const CreateNewPostPlansSelect = () => {
 
   const form = useFormContext();
 
+  const { t } = useTranslation();
+
   if (!plans) {
     return <></>;
   }
 
-  return <PlansSelect {...form.register('borderLockAddress')} />;
+  return (
+    <PlansSelect
+      {...form.register('borderLockAddress')}
+      helperText={t('newPostPlansSelectHelperText')}
+    />
+  );
 };

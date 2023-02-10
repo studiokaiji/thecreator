@@ -17,9 +17,7 @@ export const PlansSelect = (props: TextFieldProps) => {
 
   return (
     <TextField
-      required
       select
-      helperText={t('newPostPlansSelectHelperText')}
       label={t('plan')}
       variant="standard"
       {...props}

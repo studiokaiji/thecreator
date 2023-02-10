@@ -7,7 +7,7 @@ import { usePublicLockSupporters } from '@/hooks/usePublicLockSupporters';
 import { blockTimestampToDate } from '@/utils/block-timestamp-to-date';
 
 type SupportersTableProps = {
-  planId: string;
+  planId?: string;
 };
 
 const BeforeMemonizedSupportersTable = ({ planId }: SupportersTableProps) => {

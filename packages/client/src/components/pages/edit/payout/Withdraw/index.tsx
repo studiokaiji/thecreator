@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next';
 import { WithdrawButton } from './WithdrawButton';
 
 import { Table } from '@/components/helpers/Table';
-import { MainLoading } from '@/components/standalone/MainLoading';
 import { useCreatorPlans } from '@/hooks/useCreatorPlans';
 import { useCreatorPlansBalanceList } from '@/hooks/useCreatorPlansBalanceList';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
