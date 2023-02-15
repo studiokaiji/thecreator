@@ -126,16 +126,13 @@ export const ImageCropper = ({
           image={image.url}
           onCropChange={setCrop}
           onCropComplete={onCropCompleteHandler}
-          onMediaLoaded={(mediaSize) => {
-            setZoom(600 / mediaSize.naturalHeight);
-          }}
           onZoomChange={setZoom}
           zoom={zoom}
         />
       </Box>
       <Stack pb={3} pt={4} px={4} spacing={2}>
         <Slider
-          defaultValue={0}
+          defaultValue={1}
           max={5}
           min={1}
           onChange={(_, v) => setZoom(Number(v))}
