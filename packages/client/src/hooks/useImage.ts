@@ -24,7 +24,7 @@ export const useImage = () => {
     let revoke = () => URL.revokeObjectURL(url);
 
     const compress = async (): Promise<Blob> => {
-      const maxWidth = type === 'headerImage' ? 1920 : 640;
+      const maxWidth = type === 'headerImage' ? 1920 : 960;
 
       const image = new Image();
       image.src = url;
@@ -44,8 +44,8 @@ export const useImage = () => {
           type === 'headerImage'
             ? 1920
             : type === 'thumbnail' || type === 'iconImage'
-            ? 680
-            : 1000;
+            ? 640
+            : 960;
         canvas.height =
           image.naturalHeight * (canvas.width / image.naturalWidth);
 
