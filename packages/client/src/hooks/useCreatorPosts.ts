@@ -94,7 +94,10 @@ export const useCreatorPosts = (creatorId: string, fetchLimit = 10) => {
     posts
       .filter((d) => d.contents[0].key)
       .forEach(({ borderLockAddress, id }) => {
-        if (!checkBorder(allowedPlans, borderLockAddress)) {
+        if (
+          account !== creatorId &&
+          !checkBorder(allowedPlans, borderLockAddress)
+        ) {
           return;
         }
         getDownloadSignedUrlsRequest.posts.push({
