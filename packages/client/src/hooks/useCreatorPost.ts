@@ -5,10 +5,12 @@ import useSWR from 'swr';
 import { getCreatorPostDocRef } from '@/converters/creatorPostConverter';
 import { functions } from '@/firebase';
 
-export const useCreatorPost = (creatorId: string, postId: string) => {
-  const ref = getCreatorPostDocRef(creatorId, postId);
-
+export const useCreatorPost = (creatorId?: string, postId?: string) => {
   const fetcher = async () => {
+    if (!creatorId || !postId) return null;
+
+    const ref = getCreatorPostDocRef(creatorId, postId);
+
     const docSnapshot = await getDoc(ref);
     if (!docSnapshot.exists()) {
       return null;
