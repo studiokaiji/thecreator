@@ -161,7 +161,14 @@ export const getUploadSignedUrl = https.onCall(
 
       const returnData = await Promise.all(
         contentLengths.map(async (ContentLength, i) => {
-          const Key = `${postData.creatorId}/${postData.postId}/${i}-${currentTimestamp}`;
+          let Key = `${postData.creatorId}/${postData.postId}/${i}`;
+
+          if (
+            postData.contentsType === 'images' ||
+            postData.contentsType === 'thumbnail'
+          ) {
+            Key += `-${currentTimestamp}`;
+          }
 
           const ContentType = contentTypes[i];
 
