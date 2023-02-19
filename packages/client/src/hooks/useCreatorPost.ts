@@ -38,5 +38,7 @@ export const useCreatorPost = (creatorId?: string, postId?: string) => {
     }
   };
 
-  return useSWR(`/c/${creatorId}/posts/${postId}`, fetcher);
+  return useSWR(`/c/${creatorId}/posts/${postId}`, fetcher, {
+    revalidateOnFocus: false,
+  });
 };
