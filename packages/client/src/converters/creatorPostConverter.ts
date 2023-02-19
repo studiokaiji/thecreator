@@ -25,6 +25,7 @@ export const creatorPostConverter: FirestoreDataConverter<
       contents: data.contents,
       contentsType: data.contentsType,
       createdAt: data.createdAt,
+      isPublic: data.isPublic,
       thumbnailUrl: data.thumbnailUrl,
       title: data.title,
       updatedAt,

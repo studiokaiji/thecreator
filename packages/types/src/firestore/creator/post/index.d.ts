@@ -10,6 +10,7 @@ type CreatorPostDocData = {
   updatedAt: Date;
   createdAt: Date;
   borderLockAddress: string;
+  isPublic: boolean;
 };
 
 type CreatorPostDocDataContentsType =
