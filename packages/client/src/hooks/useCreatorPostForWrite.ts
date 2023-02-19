@@ -70,7 +70,7 @@ export const useCreatorPostForWrite = () => {
       ? UseImageData[]
       : T extends 'thumbnail' | 'iconImage' | 'headerImage'
       ? UseImageData
-      : T extends 'embedVideo'
+      : T extends 'embedVideo' | 'text'
       ? string
       : Blob,
     thumbnail?: UseImageData
