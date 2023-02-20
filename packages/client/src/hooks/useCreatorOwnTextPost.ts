@@ -1,36 +1,37 @@
-import useSWR from 'swr';
-
-import { useCreatorPost } from './useCreatorPost';
 import { useCreatorPostForWrite } from './useCreatorPostForWrite';
+import { useCreatorTextPost } from './useCreatorTextPost';
 import { useWallet } from './useWallet';
+
+import { EditorData } from '@/components/standalone/EditCreatorPageSideBar/CreateNewPostButton/TextPost/Editor';
 
 export const useCreatorOwnTextPost = (postId?: string) => {
   const { account } = useWallet();
-  const { data: post, error: creatorPostErr } = useCreatorPost(account, postId);
+
+  const creatorTextPostSWR = useCreatorTextPost(account, postId);
+
+  const {
+    data: post,
+    error: creatorPostErr,
+    mutate,
+    mutatePostDocument,
+  } = creatorTextPostSWR;
+
   const { postContents, postOnlyDocument, updateContents, updateOnlyDocument } =
     useCreatorPostForWrite();
 
-  const { data: contentsHtml } = useSWR(
-    `/c/${account}/posts/${postId}?contents`,
-    async () => {
-      const url = post?.contents?.[0].url;
-      if (!url) {
-        return null;
-      }
-
-      const res = await fetch(url);
-
-      const text = await res.text();
-      return text;
+  const save = async (
+    args: {
+      isPublic?: boolean;
+    } & Partial<EditorData>
+  ) => {
+    if (!account || (postId && !post && !creatorPostErr) || creatorPostErr) {
+      throw (
+        creatorPostErr ||
+        Error(
+          'An error was returned because the account cannot be retrieved or is in the process of retrieving submissions.'
+        )
+      );
     }
-  );
-
-  const save = (args: {
-    title?: string;
-    isPublic?: boolean;
-    contentsHtml?: string;
-  }) => {
-    if (!account || creatorPostErr) return;
 
     const data = {
       contentsType: 'text',
@@ -43,20 +44,24 @@ export const useCreatorOwnTextPost = (postId?: string) => {
       title: args?.title || post?.title || '',
     } as const;
 
-    if (args?.contentsHtml && args?.contentsHtml !== contentsHtml) {
+    if (args?.bodyHtml && args?.bodyHtml !== post?.bodyHtml) {
       if (postId) {
-        updateContents({ ...data, id: postId }, args?.contentsHtml);
+        await updateContents({ ...data, id: postId }, args?.bodyHtml);
       } else {
-        postContents(data, args?.contentsHtml);
+        postId = await postContents(data, args?.bodyHtml);
       }
     } else {
       if (postId) {
-        updateOnlyDocument({ ...data, id: postId });
+        await updateOnlyDocument({ ...data, id: postId });
       } else {
-        postOnlyDocument(data);
+        postId = await postOnlyDocument(data);
       }
     }
+
+    await Promise.allSettled([mutatePostDocument, mutate]);
+
+    return postId;
   };
 
-  return { save };
+  return { save, ...creatorTextPostSWR };
 };
