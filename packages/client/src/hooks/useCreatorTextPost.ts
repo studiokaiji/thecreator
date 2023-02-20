@@ -3,21 +3,17 @@ import useSWR from 'swr';
 import { useCreatorPost } from './useCreatorPost';
 
 export const useCreatorTextPost = (creatorId?: string, postId?: string) => {
-  const { data: post, error: creatorPostErr } = useCreatorPost(
-    creatorId,
-    postId
-  );
+  const {
+    data: post,
+    error: creatorPostErr,
+    mutate: mutatePostDocument,
+  } = useCreatorPost(creatorId, postId);
 
-  const handler = async () => {
+  const handler = async (url?: string) => {
     if (creatorPostErr) {
       throw creatorPostErr;
     }
 
-    if (!creatorId || !postId || !post) {
-      return null;
-    }
-
-    const url = post?.contents?.[0].url;
     if (!url) {
       return null;
     }
@@ -28,15 +24,17 @@ export const useCreatorTextPost = (creatorId?: string, postId?: string) => {
     return text;
   };
 
-  const swr = useSWR(
-    [`/c/${creatorId}/posts/${postId}/contents`, post],
-    handler,
-    {
-      revalidateOnFocus: false,
-    }
-  );
+  const swr = useSWR(post?.contents[0].url, handler, {
+    revalidateOnFocus: false,
+  });
 
-  const data = post ? { ...post, textHtml: swr.data } : null;
+  // If content exists, return null until data after content fetch is assigned.
+  const data =
+    post && post?.contents[0].url && swr.data
+      ? { ...post, bodyHtml: swr.data }
+      : post && !post?.contents[0].url
+      ? { ...post, bodyHtml: '' }
+      : null;
 
-  return { ...swr, data };
+  return { ...swr, data, mutatePostDocument };
 };
