@@ -11,8 +11,17 @@ export type UseImageData = {
 const fileType = 'image/jpeg';
 
 export const useImage = () => {
+  const createImageFromUrl = async (
+    imageSrc: string,
+    type: Omit<ContentsType, 'audio' | 'text'>
+  ) => {
+    const res = await fetch(imageSrc);
+    const blob = await res.blob();
+    return createImage(blob, type);
+  };
+
   const createImage = (
-    imageFile: File,
+    imageFile: Blob,
     type: Omit<ContentsType, 'audio' | 'text'>
   ): UseImageData => {
     if (imageFile.type.split('/')[0] !== 'image') {
@@ -31,7 +40,7 @@ export const useImage = () => {
 
       const isHeightLarger = image.naturalWidth < image.naturalHeight;
 
-      const compressed = await imageCompression(data, {
+      const compressed = await imageCompression(data as File, {
         fileType,
         maxSizeMB: 10,
         maxWidthOrHeight: isHeightLarger ? undefined : maxWidth,
@@ -79,5 +88,5 @@ export const useImage = () => {
     return { compress, data, revoke, type, url };
   };
 
-  return { createImage };
+  return { createImage, createImageFromUrl };
 };
