@@ -53,7 +53,7 @@ export const useImage = () => {
           type === 'headerImage'
             ? 1920
             : type === 'thumbnail' || type === 'iconImage'
-            ? 640
+            ? 740
             : 960;
         canvas.height =
           image.naturalHeight * (canvas.width / image.naturalWidth);
