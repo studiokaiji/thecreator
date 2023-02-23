@@ -15,8 +15,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { Editor, EditorData } from './Editor';
 
-import { LoaderWithMessage } from '@/components/standalone/LoaderWithMessage';
-import { MainLoading } from '@/components/standalone/MainLoading';
 import { useCreatorOwnTextPost } from '@/hooks/useCreatorOwnTextPost';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useSnackbar } from '@/hooks/useSnackbar';
