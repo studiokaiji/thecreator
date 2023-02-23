@@ -1,5 +1,8 @@
+import { useMemo } from 'react';
+import useSWR from 'swr';
+
+import { useCreatorPost } from './useCreatorPost';
 import { useCreatorPostForWrite } from './useCreatorPostForWrite';
-import { useCreatorTextPost } from './useCreatorTextPost';
 import { useWallet } from './useWallet';
 
 import { EditorData } from '@/components/standalone/EditCreatorPageSideBar/CreateNewPostButton/TextPost/Editor';
@@ -7,14 +10,36 @@ import { EditorData } from '@/components/standalone/EditCreatorPageSideBar/Creat
 export const useCreatorOwnTextPost = (postId?: string) => {
   const { account } = useWallet();
 
-  const creatorTextPostSWR = useCreatorTextPost(account, postId);
+  const creatorPostSWR = useCreatorPost(account, postId);
+
+  const { data: post, error: creatorPostErr, mutate } = creatorPostSWR;
 
   const {
-    data: post,
-    error: creatorPostErr,
-    mutate,
-    mutatePostDocument,
-  } = creatorTextPostSWR;
+    data: bodyHtml,
+    error: bodyHtmlErr,
+    mutate: mutateBodyHtml,
+  } = useSWR(
+    post?.contents[0].url,
+    async (url?: string) => {
+      if (!url) return null;
+      const res = await fetch(url);
+      return res.text();
+    },
+    {
+      revalidateOnFocus: false,
+    }
+  );
+
+  const returnData = useMemo(() => {
+    if (!post || (post?.contents[0].url && !bodyHtml)) {
+      return null;
+    }
+    return { ...post, bodyHtml };
+  }, [bodyHtml]);
+
+  const returnErr = useMemo(() => {
+    return { bodyHtml: bodyHtmlErr, post: creatorPostErr };
+  }, [bodyHtmlErr]);
 
   const { postContents, postOnlyDocument, updateContents, updateOnlyDocument } =
     useCreatorPostForWrite();
@@ -24,7 +49,13 @@ export const useCreatorOwnTextPost = (postId?: string) => {
       isPublic?: boolean;
     } & Partial<EditorData>
   ) => {
-    if (!account || (postId && !post && !creatorPostErr) || creatorPostErr) {
+    if (
+      !account ||
+      (postId && !post && !creatorPostErr) ||
+      (post?.contents[0] && !bodyHtml && !bodyHtmlErr) ||
+      creatorPostErr ||
+      bodyHtmlErr
+    ) {
       throw (
         creatorPostErr ||
         Error(
@@ -44,7 +75,7 @@ export const useCreatorOwnTextPost = (postId?: string) => {
       title: args?.title || post?.title || '',
     } as const;
 
-    if (args?.bodyHtml && args?.bodyHtml !== post?.bodyHtml) {
+    if (args?.bodyHtml && args?.bodyHtml !== bodyHtml) {
       if (postId) {
         await updateContents({ ...data, id: postId }, args?.bodyHtml);
       } else {
@@ -58,10 +89,15 @@ export const useCreatorOwnTextPost = (postId?: string) => {
       }
     }
 
-    await Promise.allSettled([mutatePostDocument, mutate]);
+    await Promise.allSettled([mutateBodyHtml, mutate]);
 
     return postId;
   };
 
-  return { save, ...creatorTextPostSWR };
+  return {
+    save,
+    ...creatorPostSWR,
+    data: returnData,
+    error: returnErr,
+  };
 };
