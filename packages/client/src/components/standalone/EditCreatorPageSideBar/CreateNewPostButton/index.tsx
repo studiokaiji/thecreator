@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Navigate } from 'react-router-dom';
 
 import { AudioPost } from './AudioPost';
 import { CreateNewPostSelector } from './CreateNewPostSelector';
@@ -50,7 +51,11 @@ export const CreateNewPostButton = () => {
         open={isOpen}
       >
         <Box>
-          {selectedPostType === 'audio' ? (
+          {selectedPostType === 'text' ? (
+            <Box onClick={close}>
+              <Navigate to="/edit/post/text" />
+            </Box>
+          ) : selectedPostType === 'audio' ? (
             <AudioPost onDone={done} />
           ) : selectedPostType === 'images' ? (
             <ImagesPost onDone={done} />

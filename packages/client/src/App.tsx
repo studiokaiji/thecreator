@@ -10,6 +10,7 @@ import { RouteAuthGuard } from './components/routing/RouteAuthGuard';
 import { SnackbarProvider } from './contexts/SnackbarContext';
 import { NotFound } from './pages/404';
 import { PayoutPage } from './pages/edit/payout';
+import { TextPostPage } from './pages/edit/post/text';
 import { SettingsPage } from './pages/edit/settings';
 import { MyPage } from './pages/mypage';
 import { NotificationsPage } from './pages/mypage/notifications';
@@ -89,6 +90,17 @@ function App() {
                   <Route element={<PayoutPage />} path="payout" />
                   <Route element={<SettingsPage />} path="settings" />
                   <Route element={<SupportersPage />} path="supporters" />
+                </Route>
+                <Route
+                  element={
+                    <RouteAuthGuard>
+                      <TextPostPage />
+                    </RouteAuthGuard>
+                  }
+                  path="/edit/post/text"
+                >
+                  <Route index />
+                  <Route path=":postId" />
                 </Route>
                 <Route element={<NotFound />} path="/*" />
               </Routes>
