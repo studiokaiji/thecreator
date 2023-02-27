@@ -17,6 +17,7 @@ import { NotificationsPage } from './pages/mypage/notifications';
 import { UserSettingsPage } from './pages/mypage/settings';
 import { SupportingCreatorsPage } from './pages/mypage/supporting-creators';
 import { CreatorPage } from './pages/u/[id]';
+import { PostPage } from './pages/u/[id]/posts/[postId]';
 import { SubscribePage } from './pages/u/[id]/subscribe/[planId]';
 
 import { AuthProvider } from '@/contexts/AuthContext';
@@ -50,6 +51,10 @@ function App() {
                       <Route path="subscribe">
                         <Route index element={<NotFound />} />
                         <Route element={<SubscribePage />} path=":planId" />
+                      </Route>
+                      <Route path="posts">
+                        <Route index element={<NotFound />} />
+                        <Route element={<PostPage />} path=":postId" />
                       </Route>
                     </Route>
                   </Route>

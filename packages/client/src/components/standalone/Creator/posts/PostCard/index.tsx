@@ -5,7 +5,7 @@ import { ImagePostCard } from './ImagePostCard';
 import { VideoPostCard } from './VideoPostCard';
 
 export type PostCardPropsBase = WithId<CreatorPostDocData> & {
-  defaultThumbnailUrl: string;
+  defaultThumbnailUrl?: string;
   to: string;
 };
 

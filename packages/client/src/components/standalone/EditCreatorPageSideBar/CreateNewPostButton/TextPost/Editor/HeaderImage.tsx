@@ -16,6 +16,7 @@ type PictureUploaderProps = {
 
 export const EditorHeaderImage = ({ onChange, src }: PictureUploaderProps) => {
   const [headerImage, setHeaderImage] = useState<UseImageData | null>(null);
+  const [isRemovedHeader, setIsRemovedHeader] = useState(false);
   const [isCroppingImage, setIsCroppingImage] = useState(false);
 
   const { createImage } = useImage();
@@ -26,6 +27,7 @@ export const EditorHeaderImage = ({ onChange, src }: PictureUploaderProps) => {
 
     const image = createImage(file, 'images');
     setHeaderImage(image);
+    setIsRemovedHeader(false);
 
     setIsCroppingImage(true);
   };
@@ -38,10 +40,14 @@ export const EditorHeaderImage = ({ onChange, src }: PictureUploaderProps) => {
 
   const onCancelCrop = () => {
     setHeaderImage(null);
+    setIsRemovedHeader(true);
     setIsCroppingImage(false);
   };
 
-  const removeHeaderImage = () => setHeaderImage(null);
+  const removeHeaderImage = () => {
+    setHeaderImage(null);
+    setIsRemovedHeader(true);
+  };
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -81,9 +87,12 @@ export const EditorHeaderImage = ({ onChange, src }: PictureUploaderProps) => {
         <Box sx={{ position: 'relative' }}>
           <Box
             component="img"
-            src={src || headerImage?.url}
+            src={isRemovedHeader ? '' : headerImage?.url || src}
             sx={{
-              display: headerImage ? 'block' : 'hidden',
+              display:
+                !isRemovedHeader && (headerImage?.url || src)
+                  ? 'block'
+                  : 'hidden',
               objectFit: 'cover',
               width: '100%',
             }}

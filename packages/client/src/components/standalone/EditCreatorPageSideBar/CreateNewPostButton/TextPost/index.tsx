@@ -49,7 +49,7 @@ export const TextPost = (props: TextPostProps) => {
   const { open: openSnackbar } = useSnackbar();
 
   const [editorData, setEditorData] = useState<EditorData>({
-    bodyHtml: postData?.bodyHtml || '',
+    bodyMarkdown: postData?.bodyMarkdown || '',
     title: postData?.title || '',
   });
 
@@ -74,7 +74,7 @@ export const TextPost = (props: TextPostProps) => {
     navigate(`/c/${currentUser?.uid}/posts/${postId}`);
   };
 
-  if (postDataErr) {
+  if (postDataErr.bodyMarkdown || postDataErr.post) {
     return <div>{JSON.stringify(postDataErr)}</div>;
   }
 
@@ -116,7 +116,7 @@ export const TextPost = (props: TextPostProps) => {
         <Editor
           onChange={setEditorData}
           saved={{
-            bodyHtml: postData?.bodyHtml || '',
+            bodyMarkdown: postData?.bodyMarkdown || '',
             thumbnailUrl: postData?.thumbnailUrl || '',
             title: postData?.title || '',
           }}

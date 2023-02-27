@@ -1,7 +1,7 @@
 import { CodeHighlightNode, CodeNode } from '@lexical/code';
 import { AutoLinkNode, LinkNode } from '@lexical/link';
 import { ListItemNode, ListNode } from '@lexical/list';
-import { TRANSFORMERS } from '@lexical/markdown';
+import { $convertFromMarkdownString, TRANSFORMERS } from '@lexical/markdown';
 import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
@@ -17,43 +17,49 @@ import Box from '@mui/material/Box';
 import { useTranslation } from 'react-i18next';
 
 import { ImageNode } from './nodes/ImageNode';
-import { ExportHtmlPlugin } from './plugins/ExportHtmlPlugin';
+import { ConvertToMarkdownPlugin } from './plugins/ConvertToMarkdownPlugin';
 import { ImagePlugin } from './plugins/ImagePlugin';
-import { ImportHtmlPlugin } from './plugins/ImportHtmlPlugin';
 import { ToolbarPlugin } from './plugins/ToolBarPlugin';
 import { theme } from './theme';
 
-const editorConfig = {
-  namespace: '',
-  nodes: [
-    HeadingNode,
-    ListNode,
-    ImageNode,
-    ListItemNode,
-    QuoteNode,
-    CodeNode,
-    CodeHighlightNode,
-    TableNode,
-    TableCellNode,
-    TableRowNode,
-    AutoLinkNode,
-    LinkNode,
-  ],
-  onError(error: Error) {
-    throw error;
-  },
-  theme,
-};
-
 type EditorBodyProps = {
-  defaultBodyHtml?: string;
-  onChangeBodyHtml: (html: string) => void;
+  defaultBodyMarkdown?: string;
+  onChangeBodyMarkdown: (md: string) => void;
 };
 
 export const EditorBody = ({
-  defaultBodyHtml,
-  onChangeBodyHtml,
+  defaultBodyMarkdown = '',
+  onChangeBodyMarkdown,
 }: EditorBodyProps) => {
+  const editorConfig = {
+    editorState: defaultBodyMarkdown
+      ? () =>
+          $convertFromMarkdownString(
+            defaultBodyMarkdown,
+            TRANSFORMERS
+          )
+      : undefined,
+    namespace: '',
+    nodes: [
+      HeadingNode,
+      ListNode,
+      ImageNode,
+      ListItemNode,
+      QuoteNode,
+      CodeNode,
+      CodeHighlightNode,
+      TableNode,
+      TableCellNode,
+      TableRowNode,
+      AutoLinkNode,
+      LinkNode,
+    ],
+    onError(error: Error) {
+      throw error;
+    },
+    theme,
+  };
+
   const { t } = useTranslation();
 
   return (
@@ -105,8 +111,7 @@ export const EditorBody = ({
             <LinkPlugin />
             <ImagePlugin />
             <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
-            <ImportHtmlPlugin defaultContentAsHTML={defaultBodyHtml} />
-            <ExportHtmlPlugin exportAsHTML={onChangeBodyHtml} />
+            <ConvertToMarkdownPlugin exportAsMarkdown={onChangeBodyMarkdown} />
           </Box>
         </Box>
       </Box>

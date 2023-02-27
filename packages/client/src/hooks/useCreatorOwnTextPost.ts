@@ -15,9 +15,9 @@ export const useCreatorOwnTextPost = (postId?: string) => {
   const { data: post, error: creatorPostErr, mutate } = creatorPostSWR;
 
   const {
-    data: bodyHtml,
-    error: bodyHtmlErr,
-    mutate: mutateBodyHtml,
+    data: bodyMarkdown,
+    error: bodyMarkdownErr,
+    mutate: mutatebodyMarkdown,
   } = useSWR(
     post?.contents[0].url,
     async (url?: string) => {
@@ -31,15 +31,15 @@ export const useCreatorOwnTextPost = (postId?: string) => {
   );
 
   const returnData = useMemo(() => {
-    if (!post || (post?.contents[0].url && !bodyHtml)) {
+    if (!post || (post?.contents[0].url && !bodyMarkdown)) {
       return null;
     }
-    return { ...post, bodyHtml };
-  }, [bodyHtml]);
+    return { ...post, bodyMarkdown };
+  }, [bodyMarkdown]);
 
   const returnErr = useMemo(() => {
-    return { bodyHtml: bodyHtmlErr, post: creatorPostErr };
-  }, [bodyHtmlErr]);
+    return { bodyMarkdown: bodyMarkdownErr, post: creatorPostErr };
+  }, [bodyMarkdownErr]);
 
   const { postContents, postOnlyDocument, updateContents, updateOnlyDocument } =
     useCreatorPostForWrite();
@@ -52,9 +52,9 @@ export const useCreatorOwnTextPost = (postId?: string) => {
     if (
       !account ||
       (postId && !post && !creatorPostErr) ||
-      (post?.contents[0] && !bodyHtml && !bodyHtmlErr) ||
+      (post?.contents[0] && !bodyMarkdown && !bodyMarkdownErr) ||
       creatorPostErr ||
-      bodyHtmlErr
+      bodyMarkdownErr
     ) {
       throw (
         creatorPostErr ||
@@ -75,11 +75,11 @@ export const useCreatorOwnTextPost = (postId?: string) => {
       title: args?.title || post?.title || '',
     } as const;
 
-    if (args?.bodyHtml && args?.bodyHtml !== bodyHtml) {
+    if (args?.bodyMarkdown && args?.bodyMarkdown !== bodyMarkdown) {
       if (postId) {
-        await updateContents({ ...data, id: postId }, args?.bodyHtml);
+        await updateContents({ ...data, id: postId }, args?.bodyMarkdown);
       } else {
-        postId = await postContents(data, args?.bodyHtml);
+        postId = await postContents(data, args?.bodyMarkdown);
       }
     } else {
       if (postId) {
@@ -89,7 +89,7 @@ export const useCreatorOwnTextPost = (postId?: string) => {
       }
     }
 
-    await Promise.allSettled([mutateBodyHtml, mutate]);
+    await Promise.allSettled([mutatebodyMarkdown, mutate]);
 
     return postId;
   };

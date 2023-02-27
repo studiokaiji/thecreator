@@ -8,7 +8,7 @@ import { EditorTitle } from './Title';
 import { UseImageData } from '@/hooks/useImage';
 
 export type EditorData = {
-  bodyHtml: string;
+  bodyMarkdown: string;
   thumbnail?: UseImageData;
   title: string;
 };
@@ -20,15 +20,15 @@ type EditorProps = {
 
 export const Editor = ({
   onChange,
-  saved = { bodyHtml: '', thumbnailUrl: '', title: '' },
+  saved = { bodyMarkdown: '', thumbnailUrl: '', title: '' },
 }: EditorProps) => {
   const [headerImage, setHeaderImage] = useState<UseImageData | undefined>();
   const [title, setTitle] = useState(saved.title || '');
-  const [bodyHtml, setBodyHtml] = useState(saved.bodyHtml || '');
+  const [bodyMarkdown, setBodyMarkdown] = useState(saved.bodyMarkdown || '');
 
   const onChangeHeaderImageHandler = (image: UseImageData) => {
     setHeaderImage(image);
-    onChange({ bodyHtml, thumbnail: image, title });
+    onChange({ bodyMarkdown, thumbnail: image, title });
   };
 
   const onChangeTitleHandler = (
@@ -36,12 +36,12 @@ export const Editor = ({
   ) => {
     const newTitle = e.target.value;
     setTitle(newTitle);
-    onChange({ bodyHtml, thumbnail: headerImage, title: newTitle });
+    onChange({ bodyMarkdown, thumbnail: headerImage, title: newTitle });
   };
 
   const onChangeBodyHandler = (newBody: string) => {
-    setBodyHtml(newBody);
-    onChange({ bodyHtml: newBody, thumbnail: headerImage, title });
+    setBodyMarkdown(newBody);
+    onChange({ bodyMarkdown: newBody, thumbnail: headerImage, title });
   };
 
   return (
@@ -52,8 +52,8 @@ export const Editor = ({
       />
       <EditorTitle onChange={onChangeTitleHandler} value={title} />
       <EditorBody
-        defaultBodyHtml={saved.bodyHtml}
-        onChangeBodyHtml={onChangeBodyHandler}
+        defaultBodyMarkdown={saved.bodyMarkdown}
+        onChangeBodyMarkdown={onChangeBodyHandler}
       />
     </Stack>
   );
