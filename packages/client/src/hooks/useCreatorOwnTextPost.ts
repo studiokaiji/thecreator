@@ -19,7 +19,7 @@ export const useCreatorOwnTextPost = (postId?: string) => {
     error: bodyMarkdownErr,
     mutate: mutatebodyMarkdown,
   } = useSWR(
-    post?.contents[0].url,
+    post?.contents.length ? post?.contents[0].url : '',
     async (url?: string) => {
       if (!url) return null;
       const res = await fetch(url);
@@ -31,7 +31,10 @@ export const useCreatorOwnTextPost = (postId?: string) => {
   );
 
   const returnData = useMemo(() => {
-    if (!post || (post?.contents[0].url && !bodyMarkdown)) {
+    if (
+      !post ||
+      (post?.contents.length && post?.contents[0].url && !bodyMarkdown)
+    ) {
       return null;
     }
     return { ...post, bodyMarkdown };
@@ -52,7 +55,10 @@ export const useCreatorOwnTextPost = (postId?: string) => {
     if (
       !account ||
       (postId && !post && !creatorPostErr) ||
-      (post?.contents[0] && !bodyMarkdown && !bodyMarkdownErr) ||
+      (post?.contents.length &&
+        post?.contents[0] &&
+        !bodyMarkdown &&
+        !bodyMarkdownErr) ||
       creatorPostErr ||
       bodyMarkdownErr
     ) {

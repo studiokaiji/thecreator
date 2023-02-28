@@ -9,7 +9,7 @@ import DialogContent from '@mui/material/DialogContent';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
@@ -32,12 +32,21 @@ export const TextPost = (props: TextPostProps) => {
 
   const [postId, setPostId] = useState(props.postId);
 
+  useEffect(() => {
+    if (!postId) {
+      save(false, false);
+    }
+    if (postId && postId !== props.postId) {
+      navigate(`/edit/post/text/${postId}`);
+    }
+  }, [postId]);
+
   const back = async () => {
     await save();
     if (!currentUser?.uid) {
       navigate(-1);
     }
-    navigate(`/c/${currentUser?.uid}/posts/${'POST_ID'}`);
+    navigate(`/c/${currentUser?.uid}/posts/${postId}`);
   };
 
   const {
@@ -56,29 +65,27 @@ export const TextPost = (props: TextPostProps) => {
   const [isSaving, setIsSaving] = useState(false);
   const [errMessage, setErrMessage] = useState('');
 
-  const save = async (publish?: boolean) => {
+  const save = async (publish?: boolean, snackbar = true) => {
     setIsSaving(true);
     try {
-      setPostId(
-        await saveTextPost({
-          ...editorData,
-          isPublic: publish || postData?.isPublic,
-        })
-      );
+      const id = await saveTextPost({
+        ...editorData,
+        isPublic: publish || postData?.isPublic,
+      });
+      setPostId(id);
     } catch (e) {
       setErrMessage(String(e));
       return;
     }
-    openSnackbar(t('saveSuccessed'));
+    snackbar && openSnackbar(t('saveSuccessed'));
     setIsSaving(false);
-    navigate(`/c/${currentUser?.uid}/posts/${postId}`);
   };
 
   if (postDataErr.bodyMarkdown || postDataErr.post) {
     return <div>{JSON.stringify(postDataErr)}</div>;
   }
 
-  const isLoading = props.postId && !postData && !postDataErr;
+  const isLoading = !postId || (!postData && !postDataErr);
   if (isLoading) {
     return <></>;
   }
