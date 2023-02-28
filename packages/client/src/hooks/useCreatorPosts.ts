@@ -66,14 +66,17 @@ export const useCreatorPosts = (creatorId: string, fetchLimit = 10) => {
     colRef: CollectionReference<WithId<SupportingCreatorPlanDocData>>,
     createdAt?: Date
   ) => {
-    const docsSnapshot = await getDocs(
-      query(
-        postsColRef,
-        orderBy('createdAt', 'desc'),
-        limit(fetchLimit),
-        startAfter(createdAt ? Timestamp.fromDate(createdAt) : Timestamp.now())
-      )
-    );
+    const queries = [
+      orderBy('createdAt', 'desc'),
+      limit(fetchLimit),
+      startAfter(createdAt ? Timestamp.fromDate(createdAt) : Timestamp.now()),
+    ];
+
+    if (account !== creatorId) {
+      queries.unshift(where('isPublic', '==', true));
+    }
+
+    const docsSnapshot = await getDocs(query(postsColRef, ...queries));
 
     const posts = docsSnapshot.docs.map((doc) => doc.data());
 
