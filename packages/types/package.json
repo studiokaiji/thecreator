@@ -1,0 +1,5 @@
+{
+  "name": "@types/thecreator",
+  "types": "src/index.d.ts",
+  "private": true
+}

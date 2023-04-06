@@ -1,0 +1,17 @@
+{
+  "backToInput": "入力画面に戻る",
+  "becomeACreator": "クリエイターになる",
+  "create": "作成",
+  "creatorConsole": "クリエイターページの管理",
+  "creatorName": "クリエイター名",
+  "deployed": "デプロイが完了しました",
+  "deploying": "デプロイ中",
+  "failedToSendTx": "トランザクションの送信に失敗しました",
+  "goToCreatorConsole": "管理画面へ進む",
+  "notConnectedWallet": "ウォレット未接続",
+  "receiveToken": "受け取るトークン",
+  "settings": "設定",
+  "supportingCreators": "サポート中のクリエイター",
+  "waitingSendTx": "トランザクションの送信を待っています",
+  "walletSelectMessage": "接続するウォレットを選択してください。"
+}

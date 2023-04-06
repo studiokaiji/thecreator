@@ -7,5 +7,46 @@
       "packages/*"
     ]
   },
-  "packageManager": "yarn@3.2.0"
+  "scripts": {
+    "lint": "yarn run lint:eslint && yarn run lint:",
+    "lint:eslint": "eslint .",
+    "lint:prettier": "prettier --check .",
+    "fix": "yarn run fix:prettier && yarn run fix:eslint",
+    "fix:eslint": "yarn run lint:eslint -- --fix",
+    "fix:prettier": "yarn run lint:prettier -- --write",
+    "node:hardhat": "yarn workspace hardhat hardhat node",
+    "local-setup:hardhat": "yarn workspace hardhat hardhat local-setup --network localhost",
+    "compile:hardhat": "yarn workspace hardhat hardhat compile",
+    "test:hardhat": "yarn workspace hardhat hardhat test",
+    "deploy:hardhat": "yarn workspace hardhat hardhat deploy",
+    "dev:client": "yarn workspace client run dev",
+    "build:client": "yarn workspace clien run build",
+    "preview:client": "yarn workspace client run preview",
+    "emulator:firebase": "firebase emulators:start --import ./packages/client/emulator-data --export-on-exit",
+    "ganache": "ganache --chain.chainId 31337 -m 'test test test test test test test test test test test junk'",
+    "build:functions": "yarn workspace functions build",
+    "watch:functions": "yarn workspace functions build:watch",
+    "deploy:functions": "yarn worksapce functions deploy",
+    "functions": "yarn workspace functions",
+    "hardhat": "yarn workspace hardhat",
+    "client": "yarn workspace client"
+  },
+  "packageManager": "yarn@3.2.4",
+  "devDependencies": {
+    "@types/wavesurfer.js": "^6.0.3",
+    "@typescript-eslint/eslint-plugin": "^5.40.1",
+    "@typescript-eslint/parser": "^5.40.1",
+    "eslint": "^8.25.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-import-resolver-typescript": "^3.5.2",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-react": "^7.31.10",
+    "eslint-plugin-sort": "^2.4.0",
+    "prettier": "^2.7.1",
+    "prettier-plugin-sort-json": "^0.0.3",
+    "typescript": "^4.8.4"
+  },
+  "include": [
+    "./typechain-types"
+  ]
 }
