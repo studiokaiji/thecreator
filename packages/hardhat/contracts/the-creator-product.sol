@@ -82,6 +82,12 @@ contract TheCreatorProduct is Product, ERC1155Holder {
         subscribeAndDeposit(_planId, _tokenId, _baseTokenAmount);
     }
 
+    function getAllPlans() public view virtual returns (Plan[] memory plans) {
+        for (uint256 i = 0; i < plansCounter; i++) {
+            plans[i] = _plans[i];
+        }
+    }
+
     function supportsInterface(bytes4 interfaceId)
         public
         view

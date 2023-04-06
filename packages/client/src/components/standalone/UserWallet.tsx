@@ -1,8 +1,9 @@
-import WalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
-import GroupIcon from '@mui/icons-material/Group';
-import LoyaltyIcon from '@mui/icons-material/Loyalty';
-import SettingsIcon from '@mui/icons-material/Settings';
+import WalletIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
+import AppRegistrationIcon from '@mui/icons-material/AppRegistrationOutlined';
+import GroupIcon from '@mui/icons-material/GroupOutlined';
+import LoyaltyIcon from '@mui/icons-material/LoyaltyOutlined';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNoneOutlined';
+import SettingsIcon from '@mui/icons-material/SettingsOutlined';
 import { PopoverOrigin } from '@mui/material';
 import Box from '@mui/material/Box';
 import ButtonBase from '@mui/material/ButtonBase';
@@ -14,7 +15,7 @@ import Paper from '@mui/material/Paper';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import metamaskLogoPath from '@/assets/metamask-logo.svg';
@@ -22,6 +23,7 @@ import walletConnectLogoPath from '@/assets/walletconnect-logo.svg';
 import { MinimalLink } from '@/components/helpers/MinimalLink';
 import { useAuth } from '@/hooks/useAuth';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { useIsCreator } from '@/hooks/useIsCreator';
 
 type UserWalletProps = {
   width?: number | string;
@@ -61,24 +63,29 @@ const UserWalletMenuBody = ({
       {
         icon: <GroupIcon />,
         text: t('supportingCreators'),
-        to: '/supporing-creators',
+        to: '/mypage/supporting-creators',
+      },
+      {
+        icon: <NotificationsNoneIcon />,
+        text: t('notifications'),
+        to: '/mypage/notifications',
       },
       {
         icon: <SettingsIcon />,
         text: t('settings'),
-        to: '/settings',
+        to: '/mypage/settings',
       },
       'Creator',
       isCreator
         ? {
             icon: <AppRegistrationIcon />,
             text: t('creatorConsole'),
-            to: '/edit/profile',
+            to: '/edit/profile#posts',
           }
         : {
             icon: <LoyaltyIcon />,
             text: t('becomeACreator'),
-            to: '/become-a-creator',
+            to: '/create',
           },
     ],
     notConnected: [
@@ -163,6 +170,13 @@ export const UserWallet = ({
 
   const { t } = useTranslation();
 
+  const { data: isCreator } = useIsCreator(currentUser?.uid);
+
+  const loading = useMemo(
+    () => checking || typeof isCreator !== 'boolean',
+    [checking, isCreator]
+  );
+
   return (
     <Box>
       <ButtonBase
@@ -185,7 +199,7 @@ export const UserWallet = ({
             sx={{ width: '100%' }}
           >
             <WalletIcon htmlColor="gray" />
-            {checking ? (
+            {loading ? (
               <Stack sx={{ width: '100%' }}>
                 <Skeleton sx={{ fontSize: '1rem' }} variant="text" />
                 <Skeleton sx={{ fontSize: '0.875rem' }} variant="text" />
@@ -231,7 +245,7 @@ export const UserWallet = ({
       >
         <UserWalletMenuBody
           isConnected={!!currentUser}
-          isCreator={true}
+          isCreator={!!isCreator}
           width={width}
         />
       </Menu>

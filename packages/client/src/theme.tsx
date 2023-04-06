@@ -2,12 +2,21 @@ import { createTheme, ThemeProvider } from '@mui/material';
 import { blue } from '@mui/material/colors';
 import { FC, ReactNode } from 'react';
 
-const h = (fontSize: string) => ({
+const h = (fontSize: string, fontWeight = 600) => ({
   fontSize,
-  fontWeight: 600,
+  fontWeight,
 });
 
 const theme = createTheme({
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          backgroundColor: '#F9F9FA',
+        },
+      },
+    },
+  },
   palette: {
     primary: {
       main: '#000',
@@ -29,7 +38,7 @@ const theme = createTheme({
       '"Segoe UI Emoji"',
       '"Segoe UI Symbol"',
     ].join(','),
-    h1: h('4rem'),
+    h1: h('3.5rem', 700),
     h2: h('3rem'),
     h3: h('2.5rem'),
     h4: h('2rem'),

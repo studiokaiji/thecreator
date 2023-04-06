@@ -1,49 +1,61 @@
+import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import { ReactNode, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { MinimalLink } from '../../helpers/MinimalLink';
+import { MainLoading } from '../MainLoading';
 
-type SectionsProps = {
-  postsSection: ReactNode;
-  plansSection: ReactNode;
+import { MinimalLink } from '@/components/helpers/MinimalLink';
+
+type Section = {
+  component: ReactNode;
+  i18nKey: string;
+  hash?: string;
 };
 
-export const Sections = ({ plansSection, postsSection }: SectionsProps) => {
+type SectionsProps = {
+  sections: Section[];
+};
+
+export const Sections = ({ sections }: SectionsProps) => {
+  const validHashes = sections.map(
+    ({ hash, i18nKey }) => hash || `#${i18nKey}`
+  );
+
   const { hash } = useLocation();
   const navigate = useNavigate();
 
   const { t } = useTranslation();
 
   useEffect(() => {
-    if (!hash || hash === '#' || (hash !== '#posts' && hash !== '#plans')) {
-      return navigate('#posts');
+    if (!hash || hash === '#' || !validHashes.includes(hash)) {
+      return navigate(validHashes[0]);
     }
   }, [hash]);
 
-  return (
-    <Stack spacing={5}>
-      <Stack direction="row" spacing={2} sx={{ fontWeight: 500, mx: 'auto' }}>
-        <MinimalLink
-          sx={{
-            borderBottom: hash === '#posts' ? '2px solid black' : '',
-          }}
-          to="#posts"
-        >
-          {t('posts')}
-        </MinimalLink>
-        <MinimalLink
-          sx={{
-            borderBottom: hash === '#plans' ? '2px solid black' : '',
-          }}
-          to="#plans"
-        >
-          {t('plans')}
-        </MinimalLink>
+  const selectedSectionIndex = validHashes.findIndex((h) => h === hash);
+
+  if (selectedSectionIndex >= 0) {
+    return (
+      <Stack spacing={5} sx={{ width: '100%' }}>
+        <Stack direction="row" spacing={2} sx={{ fontWeight: 500, mx: 'auto' }}>
+          {sections.map((section, i) => (
+            <MinimalLink
+              key={`section-selector-${section.i18nKey}`}
+              sx={{
+                borderBottom: hash === validHashes[i] ? '2px solid black' : '',
+              }}
+              to={validHashes[i]}
+            >
+              {t(section.i18nKey)}
+            </MinimalLink>
+          ))}
+        </Stack>
+        <Box>{sections[selectedSectionIndex].component}</Box>
       </Stack>
-      {hash === '#posts' && postsSection}
-      {hash === '#plans' && plansSection}
-    </Stack>
-  );
+    );
+  }
+
+  return <MainLoading />;
 };

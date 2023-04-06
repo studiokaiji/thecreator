@@ -1,3 +1,4 @@
+import { useMediaQuery } from '@mui/material';
 import Box from '@mui/material/Box';
 import { FC, ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -5,39 +6,40 @@ import { useLocation } from 'react-router-dom';
 import { EditCreatorPageSideBar } from '../standalone/EditCreatorPageSideBar';
 import { NavBar } from '../standalone/NavBar';
 
-import { useWindowSize } from '@/hooks/useWindowSize';
-
 export const NavLayout: FC<{ children: ReactNode }> = ({ children }) => {
   const { pathname } = useLocation();
 
-  const { width } = useWindowSize();
+  const matchesMinimize = useMediaQuery('(max-width:1000px)');
 
-  if (pathname.split('/')[1] === 'edit') {
-    const minimize = width < 1000;
-    return (
-      <Box sx={{ display: minimize ? 'block' : 'flex' }}>
-        <Box
-          sx={
-            minimize
-              ? {
-                  position: 'absolute',
-                  top: 0,
-                  zIndex: 10,
-                }
-              : {}
-          }
-        >
-          <EditCreatorPageSideBar minimize={minimize} />
+  const Component = () => {
+    if (pathname.split('/')[1] === 'edit') {
+      return (
+        <Box sx={{ display: matchesMinimize ? 'block' : 'flex' }}>
+          <Box
+            sx={
+              matchesMinimize
+                ? {
+                    position: 'absolute',
+                    top: 0,
+                    zIndex: 10,
+                  }
+                : {}
+            }
+          >
+            <EditCreatorPageSideBar minimize={matchesMinimize} />
+          </Box>
+          <Box sx={{ flexGrow: 1 }}>{children}</Box>
         </Box>
-        <Box sx={{ flexGrow: 1 }}>{children}</Box>
+      );
+    }
+
+    return (
+      <Box>
+        <NavBar />
+        {children}
       </Box>
     );
-  }
+  };
 
-  return (
-    <Box>
-      <NavBar />
-      {children}
-    </Box>
-  );
+  return <Component />;
 };

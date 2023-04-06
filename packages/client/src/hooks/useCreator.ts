@@ -1,25 +1,45 @@
-import { getDoc } from 'firebase/firestore';
+import { getDoc, getDocs, limit, query, where } from 'firebase/firestore';
 import useSWR from 'swr';
 
-import { useCurrentUser } from './useCurrentUser';
+import {
+  getCreatorDocRef,
+  getCreatorsCollectionRef,
+} from '@/converters/creatorConverter';
 
-import { getCreatorDocRef } from '@/converters/creators';
+export type UseCreatorOpts = {
+  id?: string;
+  creatorAddress?: string;
+};
 
-export const useCreator = (address?: string) => {
-  if (!address) {
-    const { currentUser } = useCurrentUser();
-    if (currentUser) {
-      address = currentUser.uid;
-    } else if (currentUser === null) {
-      throw Error();
+export const useCreator = (opts: UseCreatorOpts) => {
+  const fetcher = async ({ creatorAddress, id }: UseCreatorOpts = {}) => {
+    if (!id && !creatorAddress) {
+      return null;
     }
-  }
 
-  const fetcher = async (addr: string) => {
-    const ref = getCreatorDocRef(addr);
-    const snapshot = await getDoc(ref);
-    return snapshot.data();
+    if (id) {
+      const creatorRef = getCreatorDocRef(id);
+      const snapshot = await getDoc(creatorRef);
+      const data = snapshot.data();
+      if (!data) {
+        throw Error('Creator data does not exist');
+      }
+      return data;
+    } else {
+      const creatorsCollectionRef = getCreatorsCollectionRef();
+      const creatorQuery = query(
+        creatorsCollectionRef,
+        where('creatorAddress', '==', creatorAddress),
+        limit(1)
+      );
+      const snapshot = await getDocs(creatorQuery);
+      const data = snapshot.docs[0].data();
+      if (!data) {
+        throw Error('Creator data does not exist');
+      }
+      return data;
+    }
   };
 
-  return useSWR(() => address, fetcher, { revalidateOnFocus: false });
+  return useSWR(opts, fetcher, { revalidateOnFocus: false });
 };

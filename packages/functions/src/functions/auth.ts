@@ -1,106 +1,113 @@
 import { randomUUID } from 'crypto';
 
 import { recoverPersonalSignature } from '@metamask/eth-sig-util';
-import * as corsLib from 'cors';
-import * as firebaseAdmin from 'firebase-admin';
-import * as functions from 'firebase-functions';
+import { https } from 'firebase-functions';
 
-const admin = firebaseAdmin.initializeApp();
-const cors = corsLib();
+import { auth, db } from '../instances';
 
 const NONCE_MESSAGE = 'Please sign for TheCreator account authentication.';
 
-export const getNonceToSign = functions.https.onRequest((request, response) =>
-  cors(request, response, async () => {
-    try {
-      if (request.method !== 'POST') {
-        return response.sendStatus(403);
-      }
-      if (!request.body.address) {
-        return response.sendStatus(400);
-      }
-      // Get the user document for that address
-      const userDoc: FirebaseFirestore.DocumentSnapshot = await admin
-        .firestore()
-        .collection('users')
-        .doc(request.body.address)
-        .get();
+const toSignMessage = (nonce: string) => `${NONCE_MESSAGE}\n${nonce}`;
 
-      if (userDoc.exists) {
-        // The user document exists already, so just return the nonce
-        const existingNonce = userDoc.data()?.nonce;
-        return response.status(200).json({ nonce: existingNonce });
-      } else {
-        // The user document does not exist, create it first
-        const generatedNonce = randomUUID();
-        const nonce = `${NONCE_MESSAGE}\n${generatedNonce}`;
+export const getNonceToSign = https.onCall(async (data, context) => {
+  context.app?.token;
+  try {
+    const address = data.address;
 
-        // Create an Auth user
-        const createdUser = await admin.auth().createUser({
-          uid: request.body.address,
-        });
-        // Associate the nonce with that user
-        await admin.firestore().collection('users').doc(createdUser.uid).set({
-          nonce,
-        });
-        return response.status(200).json({ nonce: generatedNonce });
-      }
-    } catch (err) {
-      console.log(err);
-      return response.sendStatus(500);
+    if (!address) {
+      throw new https.HttpsError('invalid-argument', 'Need address field');
     }
-  })
-);
+    // Get the user document for that address
+    const userDoc: FirebaseFirestore.DocumentSnapshot = await db
+      .collection('users')
+      .doc(address)
+      .get();
 
-export const verifySignedMessage = functions.https.onRequest(
-  (request, response) =>
-    cors(request, response, async () => {
-      try {
-        if (request.method !== 'POST') {
-          return response.sendStatus(403);
-        }
-        if (!request.body.address || !request.body.signature) {
-          return response.sendStatus(400);
-        }
-        const address = request.body.address;
-        const sig = request.body.signature;
-        // Get the nonce for this address
-        const userDocRef = admin.firestore().collection('users').doc(address);
-        const userDoc = await userDocRef.get();
-        if (userDoc.exists) {
-          const existingNonce = userDoc.data()?.nonce;
-          // Recover the address of the account
-          // used to create the given Ethereum signature.
-          const recoveredAddress = recoverPersonalSignature({
-            data: `0x${toHex(existingNonce)}`,
-            signature: sig,
-          });
-          // See if that matches the address
-          // the user is claiming the signature is from
-          if (recoveredAddress === address) {
-            // The signature was verified - update the nonce to prevent replay attacks
-            // update nonce
-            await userDocRef.update({
-              nonce: randomUUID(),
-            });
-            // Create a custom token for the specified address
-            const firebaseToken = await admin.auth().createCustomToken(address);
-            // Return the token
-            return response.status(200).json({ token: firebaseToken });
-          } else {
-            // The signature could not be verified
-            return response.sendStatus(401);
-          }
-        } else {
-          console.log('user doc does not exist');
-          return response.sendStatus(500);
-        }
-      } catch (err) {
-        console.log(err);
-        return response.sendStatus(500);
+    const existingNonce = userDoc.get('nonce');
+
+    if (userDoc.exists && existingNonce) {
+      // The user document exists already, so just return the nonce
+      return { nonce: toSignMessage(existingNonce) };
+    } else {
+      // The user document does not exist, create it first
+      // Create an Auth user
+      const user = await auth
+        .getUser(address)
+        .then((u) => u)
+        .catch(() =>
+          auth.createUser({
+            uid: address,
+          })
+        );
+
+      const nonce = randomUUID();
+
+      // Associate the nonce with that user
+      await db.collection('users').doc(user.uid).set({
+        nonce,
+      });
+
+      return { nonce: toSignMessage(nonce) };
+    }
+  } catch (err) {
+    console.log(err);
+    throw new https.HttpsError('internal', 'Internal server error');
+  }
+});
+
+export const verifySignedMessage = https.onCall(async (data) => {
+  try {
+    if (!data.address || !data.signature) {
+      throw new https.HttpsError(
+        'invalid-argument',
+        'Need address and signature field'
+      );
+    }
+    const address = data.address;
+    const sig = data.signature;
+
+    // Get the nonce for this address
+    const userDocRef = db.collection('users').doc(address);
+    const userDoc = await userDocRef.get();
+
+    const existingNonce = userDoc.get('nonce');
+
+    if (userDoc.exists && existingNonce) {
+      const toSign = toSignMessage(existingNonce);
+      // Recover the address of the account
+      // used to create the given Ethereum signature.
+      const recoveredAddress = recoverPersonalSignature({
+        data: `0x${toHex(toSign)}`,
+        signature: sig,
+      });
+      // See if that matches the address
+      // the user is claiming the signature is from
+      if (recoveredAddress === address) {
+        // The signature was verified - update the nonce to prevent replay attacks
+        // update nonce
+        await userDocRef.update({
+          nonce: randomUUID(),
+        });
+        // Create a custom token for the specified address
+        const firebaseToken = await auth.createCustomToken(address);
+        // Return the token
+        return { token: firebaseToken };
+      } else {
+        // The signature could not be verified
+        throw new https.HttpsError(
+          'permission-denied',
+          'The signature could not be verified'
+        );
       }
-    })
-);
+    } else {
+      console.log('user doc does not exist');
+      throw new https.HttpsError('internal', 'User document does not exist');
+    }
+  } catch (err) {
+    console.log(err);
+    throw new https.HttpsError('internal', 'InternalServer Error');
+  }
+});
 
 const toHex = (stringToConvert: string) =>
   stringToConvert

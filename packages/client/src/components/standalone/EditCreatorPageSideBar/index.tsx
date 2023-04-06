@@ -1,4 +1,3 @@
-import CreditCardIcon from '@mui/icons-material/CreditCardOutlined';
 import HomeIcon from '@mui/icons-material/HomeOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
 import PeopleIcon from '@mui/icons-material/PeopleOutline';
@@ -48,11 +47,6 @@ export const EditCreatorPageSideBar = (props: EditCreatorPageSideBarProps) => {
       path: '/edit/profile',
       text: t('profile'),
       to: '/edit/profile#posts',
-    },
-    {
-      Icon: CreditCardIcon,
-      path: '/edit/membership',
-      text: t('membership'),
     },
     {
       Icon: PeopleIcon,

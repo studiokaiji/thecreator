@@ -2,31 +2,49 @@
   "name": "functions",
   "scripts": {
     "lint": "eslint --ext .js,.ts .",
-    "build": "tsc",
-    "build:watch": "tsc --watch",
-    "serve": "npm run build && firebase emulators:start --only functions",
-    "shell": "npm run build && firebase functions:shell",
+    "build": "esbuild --bundle --outdir=lib --format=cjs --platform=node src/index.ts",
+    "build:watch": "yarn run build --watch",
+    "serve": "yarn run build && firebase emulators:start --only functions",
+    "shell": "yarn run build && firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "logs": "firebase functions:log",
+    "test": "mocha -r ts-node/register -r tsconfig-paths/register 'test/**/*.ts'"
   },
   "engines": {
     "node": "16"
   },
   "main": "lib/index.js",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.210.0",
+    "@aws-sdk/s3-presigned-post": "^3.213.0",
+    "@aws-sdk/s3-request-presigner": "^3.210.0",
     "@metamask/eth-sig-util": "^5.0.0",
+    "@unlock-protocol/contracts": "^0.0.14",
     "cors": "^2.8.5",
+    "esbuild": "^0.15.14",
+    "ethers": "^5.7.2",
     "firebase-admin": "^10.0.2",
-    "firebase-functions": "^4.0.2"
+    "firebase-functions": "^4.0.2",
+    "jsonwebtoken": "^8.5.1",
+    "zod": "^3.19.1"
   },
   "devDependencies": {
+    "@types/chai": "^4.3.4",
+    "@types/chai-as-promised": "^7.1.5",
+    "@types/eslint": "^8.4.10",
+    "@types/mocha": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^5.12.0",
     "@typescript-eslint/parser": "^5.12.0",
+    "chai": "^4.3.7",
+    "chai-as-promised": "^7.1.1",
     "eslint": "^8.9.0",
     "eslint-config-google": "^0.14.0",
     "eslint-plugin-import": "^2.25.4",
+    "ethereum-waffle": "^3.4.4",
     "firebase-functions-test": "^0.2.0",
+    "mocha": "^10.1.0",
+    "tsconfig-paths": "^4.1.0",
     "typescript": "^4.8.4"
   },
   "private": true
